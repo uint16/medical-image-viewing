@@ -23,7 +23,7 @@ public class MedicalImage{
 		//errImg is static, so it is only loaded by the first image instantiated
 		if(errImg == null){
 			try{
-				errImg = ImageIO.read(new File("errorImage.jpg"));
+				errImg = ImageIO.read(MedicalImage.class.getResource("/img/errorImage.jpg"));
 			} catch(IOException e){
 				System.err.println("Error image unable to be read!");
 			}
