@@ -1,7 +1,11 @@
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 
-
+/**
+ * class representing the four-up (2 by 2) display strategy
+ * @author Ethan Davidson (emd1771)
+ *
+ */
 public class FourUp implements DisplayMode {
 	private static int IMG_PER_PAGE = 4;
 

@@ -1,9 +1,11 @@
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Observable;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import org.apache.commons.io.FileUtils;
@@ -12,22 +14,35 @@ public class DisplayState extends Observable {
 	int index;
 	DisplayMode mode;
 	Study study;
+	static BufferedImage emptyImg;
 
 	public DisplayState(Study s) {
 		index = 0;
 		mode = new OneUp();
 		study = s;
+		if(emptyImg == null){
+			try{
+				emptyImg = ImageIO.read(MedicalImage.class.getResource("/img/emptyImage.jpg"));
+			} catch(IOException e){
+				System.err.println("Empty image unable to be read!");
+			}
+		}
 	}
 
 	/**
 	 * Generates a JFrame containing the images currently being viewed
+	 * If it is given indices which are out of range, displays them as a default emptyImg
 	 * @return JFrame containing the images currently being viewed
 	 */
 	public JFrame generateFrame() {
 		JFrame result = new JFrame();
 		result.setLayout(mode.getLayout());
 		for (int i : mode.getIndices(index)) {
-			result.add(new ImagePanel(study.getImage(i)));
+			if(!study.inRange(i)){
+				result.add(new ImagePanel(emptyImg));
+			} else {
+				result.add(new ImagePanel(study.getImage(i)));
+			}
 		}
 		return result;
 	}

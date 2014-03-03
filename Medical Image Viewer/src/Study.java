@@ -58,4 +58,8 @@ public class Study {
 	public MedicalImage getImage(int i) {
 		return images.get(i);
 	}
+
+	public boolean inRange(int i) {
+		return i >= 0 && i < images.size();
+	}
 }

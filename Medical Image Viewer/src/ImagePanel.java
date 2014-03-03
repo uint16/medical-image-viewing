@@ -10,6 +10,10 @@ public class ImagePanel extends JPanel {
 	public ImagePanel(MedicalImage i) {
 		img = i.showImage();
 	}
+	
+	public ImagePanel(BufferedImage i){
+		img = i;
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {

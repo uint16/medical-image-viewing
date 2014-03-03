@@ -1,7 +1,11 @@
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 
-
+/**
+ * Class respresenting the one-up display strategy
+ * @author Ethan Davidson (emd1771)
+ *
+ */
 public class OneUp implements DisplayMode {
 
 
