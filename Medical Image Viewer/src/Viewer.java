@@ -7,14 +7,19 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -51,7 +56,7 @@ public class Viewer extends JFrame implements Observer {
 
 	private static final String TITLE = "Medical Image Viewer";
 
-	public Viewer() {
+	public Viewer(){
 		super(TITLE);
 		container = getContentPane();
 		initComponents();
@@ -110,12 +115,9 @@ public class Viewer extends JFrame implements Observer {
 		menubar.add(jmHelp);
 	}
 
-	/**
-	 * Setup the layout and all UI components
-	 */
-	public void buildUI() {
+	public void buildUI(){
 		// Will check Study state and make calls for single or quad View
-		if (true) {
+		if (false) {
 			quadView();
 		} else {
 			singleView();
@@ -132,19 +134,32 @@ public class Viewer extends JFrame implements Observer {
 	 * Set up images from the List of Buffered Images
 	 */
 	public void quadView() {
+		
 		mainPanel.setLayout(quadView);
+		/*
 		mainPanel.add(new JButton("Image 1"));
 		mainPanel.add(new JButton("Image 2"));
 		mainPanel.add(new JButton("Image 3"));
 		mainPanel.add(new JButton("Image 4"));
+		*/
 	}
 
-	/**
-	 * Display single image
-	 */
 	public void singleView() {
+		
 		mainPanel.setLayout(singleView);
-		mainPanel.add(new JButton("Image"));
+		/*
+		BufferedImage image = null;
+		try {
+			image = ImageIO.read(new File(System.getProperty("user.home") + "/Pictures/share.jpg"));
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
+		
+		Image newimg = image.getScaledInstance(560, 560,  java.awt.Image.SCALE_SMOOTH);
+		
+		JLabel img = new JLabel(new ImageIcon(newimg));
+
+		mainPanel.add(img); */
 	}
 
 	/**
@@ -194,8 +209,11 @@ public class Viewer extends JFrame implements Observer {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				Viewer v = new Viewer();
+				Viewer v;
+
+				v = new Viewer();
 				v.setVisible(true);
+
 			}
 		});
 	}
