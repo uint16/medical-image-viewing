@@ -6,19 +6,15 @@
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -31,7 +27,7 @@ public class Viewer extends JFrame implements Observer {
 	// Navigation Buttons
 	private JButton btNextImage, btPrevImage;
 	// Label for Image currently displayed
-	private JLabel jlFileName;
+
 	// Panels for layouts
 	private JPanel mainPanel, navigationPanel;
 	// Menubar and items
@@ -41,10 +37,8 @@ public class Viewer extends JFrame implements Observer {
 	private JMenuItem fileOpen, fileSave, fileCopy, fileExit;
 	// Image and Button Click listener
 	private ClickListener btListener;
-	private List<BufferedImage> images;
+
 	// Layouts for Images and Buttons
-	private GridLayout quadView = new GridLayout(2, 2);
-	private GridLayout singleView = new GridLayout(1, 1);
 	private FlowLayout navigationAreaLayout = new FlowLayout();
 	// Application container
 	private Container container;
@@ -77,7 +71,6 @@ public class Viewer extends JFrame implements Observer {
 		btPrevImage = new JButton("Previous");
 		btPrevImage.addActionListener(btListener);
 		
-		jlFileName = new JLabel("Image Name Goes Here");
 		jmFile = new JMenu("File");
 		jmView = new JMenu("View");
 		jmHelp = new JMenu("Help");
@@ -127,14 +120,8 @@ public class Viewer extends JFrame implements Observer {
 	 * Setup the layout and all UI components
 	 */
 	public void buildUI() {
-		// Will check Study state and make calls for single or quad View
-/*		if (true) {
-			quadView();
-		} else {
-			singleView();
-		} */
-		System.out.println();
-		mainPanel.add(displayState.generatePanel());
+		//receive panel from the display state
+		mainPanel = displayState.generatePanel();
 		
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
@@ -144,30 +131,21 @@ public class Viewer extends JFrame implements Observer {
 		container.add(mainPanel, BorderLayout.CENTER);
 	}
 
-	/**
-	 * Set up images from the List of Buffered Images
-	 */
-	public void quadView() {
-		mainPanel.setLayout(quadView);
-		mainPanel.add(new JButton("Image 1"));
-		mainPanel.add(new JButton("Image 2"));
-		mainPanel.add(new JButton("Image 3"));
-		mainPanel.add(new JButton("Image 4"));
-	}
-
-	/**
-	 * Display single image
-	 */
-	public void singleView() {
-		mainPanel.setLayout(singleView);
-		mainPanel.add(new JButton("Image"));
-	}
 
 	/**
 	 * Add accessibility text for menus and buttons
 	 */
 	public void setAccessibility() {
-
+		btNextImage.getAccessibleContext().setAccessibleDescription("Navigate to the next image in current study");
+		btPrevImage.getAccessibleContext().setAccessibleDescription("Navigate to the previous image in current study");
+		jmFile.getAccessibleContext().setAccessibleDescription("Menu for operations on files");
+		jmFile.getAccessibleContext().setAccessibleDescription("Menu for operation on view modes");
+		jmHelp.getAccessibleContext().setAccessibleDescription("Menu for getting help on using this application");
+		fileOpen.getAccessibleContext().setAccessibleDescription("Menu for opening a study");
+		fileCopy.getAccessibleContext().setAccessibleDescription("Menu for copying a study");
+		fileSave.getAccessibleContext().setAccessibleDescription("Menu for saving a study");
+		fileExit.getAccessibleContext().setAccessibleDescription("Menu for exiting application");
+		cbQuadViewMode.getAccessibleContext().setAccessibleDescription("Menu for enabling or disabling quad view");
 	}
 
 	/**
@@ -178,7 +156,6 @@ public class Viewer extends JFrame implements Observer {
 		this.setLocation(100, 100);
 		this.setJMenuBar(menubar);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// this.setVisible(true);
 	}
 
 	/**
@@ -186,8 +163,7 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
-		
-
+		mainPanel = displayState.generatePanel();
 	}
 
 	/**
