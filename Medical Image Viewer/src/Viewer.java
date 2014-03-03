@@ -65,7 +65,11 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void initComponents() {
 		btNextImage = new JButton("Next");
+		btNextImage.addActionListener(btListener);
+		
 		btPrevImage = new JButton("Previous");
+		btPrevImage.addActionListener(btListener);
+		
 		jlFileName = new JLabel("Image Name Goes Here");
 		jmFile = new JMenu("File");
 		jmView = new JMenu("View");
@@ -169,8 +173,8 @@ public class Viewer extends JFrame implements Observer {
 	 * Observer for the Viewer
 	 */
 	@Override
-	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
+	public void update(Observable obs, Object obj) {
+		
 
 	}
 
@@ -185,7 +189,17 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+			Object button = e.getSource();
+				
+			if(button instanceof JButton){
+				if(e.getActionCommand().equals("Next")){
+					//call command
+				} else if(e.getActionCommand().equals("Previous")){
+					//call command
+				}
+			} else if(button instanceof JMenu){
+				
+			}
 		}
 
 	}
