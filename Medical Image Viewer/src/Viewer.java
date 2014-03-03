@@ -9,8 +9,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -48,16 +48,23 @@ public class Viewer extends JFrame implements Observer {
 	private FlowLayout navigationAreaLayout = new FlowLayout();
 	// Application container
 	private Container container;
+	
+	private DisplayState displayState;
+	private Study study;
 
 	private static final String TITLE = "Medical Image Viewer";
 
 	public Viewer() {
 		super(TITLE);
 		container = getContentPane();
+		
+		study = new Study(new File(System.getProperty("user.home")+"/Pictures/SuzyWallpapers/"));
+		displayState = new DisplayState(study);
+		
 		initComponents();
 		setMenu();
 		buildUI();
-		displayApplication();
+		displayApplication();		
 	}
 
 	/**
@@ -84,6 +91,8 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void setMenu() {
 		fileOpen = new JMenuItem("Open");
+		fileOpen.addActionListener(btListener);
+		
 		fileCopy = new JMenuItem("Copy");
 		fileSave = new JMenuItem("Save");
 		fileExit = new JMenuItem("Exit");
@@ -93,7 +102,7 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
 		cbQuadViewMode.setState(true);
-		cbQuadViewMode.setMnemonic(KeyEvent.VK_V);
+
 
 		/*
 		 * Add file menus
@@ -119,11 +128,14 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void buildUI() {
 		// Will check Study state and make calls for single or quad View
-		if (true) {
+/*		if (true) {
 			quadView();
 		} else {
 			singleView();
-		}
+		} */
+		System.out.println();
+		mainPanel.add(displayState.generatePanel());
+		
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
 		navigationPanel.add(btPrevImage);
@@ -194,6 +206,7 @@ public class Viewer extends JFrame implements Observer {
 			if(button instanceof JButton){
 				if(e.getActionCommand().equals("Next")){
 					//call command
+					System.out.println("Test");
 				} else if(e.getActionCommand().equals("Previous")){
 					//call command
 				}
