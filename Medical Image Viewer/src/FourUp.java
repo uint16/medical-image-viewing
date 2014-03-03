@@ -3,11 +3,12 @@ import java.awt.LayoutManager;
 
 
 public class FourUp implements DisplayMode {
+	private static int IMG_PER_PAGE = 4;
 
 	@Override
 	public int nextIndex(int index, Study s) {
-		if(index+4 < s.imgAmt()){
-			return index + 4;
+		if(index+IMG_PER_PAGE <= s.imgAmt()){
+			return index + IMG_PER_PAGE;
 		} else {
 			return index;
 		}
@@ -15,8 +16,8 @@ public class FourUp implements DisplayMode {
 
 	@Override
 	public int prevIndex(int index, Study s) {
-		if(index-4 > 0){
-			return index - 4;
+		if(index-IMG_PER_PAGE >= 0){
+			return index - IMG_PER_PAGE;
 		} else {
 			return index;
 		}
@@ -29,11 +30,10 @@ public class FourUp implements DisplayMode {
 
 	@Override
 	public int[] getIndices(int index) {
-		int[] result = new int[4];
-		result[0] = 4*((int) Math.floor(index/4))+0;
-		result[1] = 4*((int) Math.floor(index/4))+1;
-		result[2] = 4*((int) Math.floor(index/4))+2;
-		result[3] = 4*((int) Math.floor(index/4))+3;
+		int[] result = new int[IMG_PER_PAGE];
+		for(int i = 0; i < result.length; i++){
+			result[i] = IMG_PER_PAGE*((int) Math.floor(index/IMG_PER_PAGE))+i;
+		}
 		return result;
 	}
 
