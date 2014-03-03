@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Observable;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.commons.io.FileUtils;
@@ -19,7 +18,7 @@ public class DisplayState extends Observable {
 
 	public DisplayState(Study s) {
 		index = 0;
-		mode = new OneUp();
+		mode = new FourUp();
 		study = s;
 		if(emptyImg == null){
 			try{
@@ -28,6 +27,7 @@ public class DisplayState extends Observable {
 				System.err.println("Empty image unable to be read!");
 			}
 		}
+		load();
 	}
 	
 	/**
@@ -66,20 +66,25 @@ public class DisplayState extends Observable {
 	 * loads the display state from the text file in the study folder
 	 * TODO: use something more robust than a text file
 	 */
-	public void load(){
+	private void load(){
 		File saveFile = new File(study.folderPath, "displayState.txt");
 		
 		if (saveFile.exists()) {
 			try {
 				List<String> data = FileUtils.readLines(saveFile);
-				this.index = Integer.parseInt(data.get(0));
+				try{
+					index = Integer.parseInt(data.get(0));
+				} catch(NumberFormatException e){
+					System.err.println("Error loading index: " + saveFile.toString());
+					index = 0;
+				}
 				//dynamically load the right DisplayMode
 				try {
 					Class<?> m = Class.forName(data.get(1));
 					Constructor<?> c = m.getConstructor();
 					mode = (DisplayMode) c.newInstance();
 				} catch (Exception e) {	
-					e.printStackTrace();
+					System.err.println("Error loading display mode: " + saveFile.toString());
 					mode = new OneUp();
 				}
 			} catch (IOException e) {

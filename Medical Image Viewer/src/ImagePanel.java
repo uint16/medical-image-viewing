@@ -16,8 +16,23 @@ public class ImagePanel extends JPanel {
 	}
 
 	@Override
+	/**
+	 * Overrides the paint component to paint the image across the whole panel
+	 * does some maths to keep the aspect ratio the same
+	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(img, 0, 0, null); // see javadoc for more info on the parameters
+		int newWidth = img.getWidth();
+		int newHeight = img.getHeight();
+		//fit the image into the panel, keeping aspect ratio
+		if(img.getWidth() > this.getWidth()){
+			newWidth = this.getWidth();
+			newHeight = (newWidth * img.getHeight()) / img.getWidth();
+		}
+		if(img.getHeight() > this.getHeight()){
+			newHeight = this.getHeight();
+			newWidth = (newHeight * img.getWidth()) / img.getHeight();
+		}
+		g.drawImage(img, 0, 0, newWidth, newHeight, null);
 	}
 }
