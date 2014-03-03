@@ -1,4 +1,3 @@
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,7 @@ public class MedicalImage{
 	 * 
 	 * @return BufferedImage the image represented by this proxy class
 	 */
-	public Image showImage(){
+	public BufferedImage showImage(){
 		if(img == null){
 			try{
 				img = ImageIO.read(imgFile);

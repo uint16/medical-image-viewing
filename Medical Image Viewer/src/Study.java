@@ -50,4 +50,12 @@ public class Study {
 		}
 		return result;
 	}
+
+	public int imgAmt() {
+		return images.size();
+	}
+
+	public MedicalImage getImage(int i) {
+		return images.get(i);
+	}
 }
