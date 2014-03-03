@@ -7,6 +7,7 @@ import java.util.Observable;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.apache.commons.io.FileUtils;
 
@@ -28,14 +29,14 @@ public class DisplayState extends Observable {
 			}
 		}
 	}
-
+	
 	/**
-	 * Generates a JFrame containing the images currently being viewed
+	 * Generates a JPanel containing the images currently being viewed
 	 * If it is given indices which are out of range, displays them as a default emptyImg
-	 * @return JFrame containing the images currently being viewed
+	 * @return JPanel containing the images currently being viewed
 	 */
-	public JFrame generateFrame() {
-		JFrame result = new JFrame();
+	public JPanel generatePanel(){
+		JPanel result = new JPanel();
 		result.setLayout(mode.getLayout());
 		for (int i : mode.getIndices(index)) {
 			if(!study.inRange(i)){
