@@ -6,22 +6,19 @@
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.util.List;
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -31,7 +28,7 @@ public class Viewer extends JFrame implements Observer {
 	// Navigation Buttons
 	private JButton btNextImage, btPrevImage;
 	// Label for Image currently displayed
-	private JLabel jlFileName;
+
 	// Panels for layouts
 	private JPanel mainPanel, navigationPanel;
 	// Menubar and items
@@ -40,24 +37,29 @@ public class Viewer extends JFrame implements Observer {
 	private JCheckBoxMenuItem cbQuadViewMode;
 	private JMenuItem fileOpen, fileSave, fileCopy, fileExit;
 	// Image and Button Click listener
-	private ClickListener btListener;
-	private List<BufferedImage> images;
+	private ClickListener btListener = new ClickListener();
+
 	// Layouts for Images and Buttons
-	private GridLayout quadView = new GridLayout(2, 2);
-	private GridLayout singleView = new GridLayout(1, 1);
 	private FlowLayout navigationAreaLayout = new FlowLayout();
 	// Application container
 	private Container container;
+	
+	private DisplayState displayState;
+	private Study study;
 
 	private static final String TITLE = "Medical Image Viewer";
 
 	public Viewer() {
 		super(TITLE);
 		container = getContentPane();
+		
+		study = new Study(new File(System.getProperty("user.home")+"/Pictures/SuzyWallpapers/"));
+		displayState = new DisplayState(study);
+		
 		initComponents();
 		setMenu();
 		buildUI();
-		displayApplication();
+		displayApplication();		
 	}
 
 	/**
@@ -70,7 +72,6 @@ public class Viewer extends JFrame implements Observer {
 		btPrevImage = new JButton("Previous");
 		btPrevImage.addActionListener(btListener);
 		
-		jlFileName = new JLabel("Image Name Goes Here");
 		jmFile = new JMenu("File");
 		jmView = new JMenu("View");
 		jmHelp = new JMenu("Help");
@@ -84,6 +85,8 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void setMenu() {
 		fileOpen = new JMenuItem("Open");
+		fileOpen.addActionListener(btListener);
+		
 		fileCopy = new JMenuItem("Copy");
 		fileSave = new JMenuItem("Save");
 		fileExit = new JMenuItem("Exit");
@@ -93,7 +96,7 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
 		cbQuadViewMode.setState(true);
-		cbQuadViewMode.setMnemonic(KeyEvent.VK_V);
+
 
 		/*
 		 * Add file menus
@@ -118,12 +121,9 @@ public class Viewer extends JFrame implements Observer {
 	 * Setup the layout and all UI components
 	 */
 	public void buildUI() {
-		// Will check Study state and make calls for single or quad View
-		if (true) {
-			quadView();
-		} else {
-			singleView();
-		}
+		//receive panel from the display state
+		mainPanel = displayState.generatePanel();
+		
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
 		navigationPanel.add(btPrevImage);
@@ -132,30 +132,21 @@ public class Viewer extends JFrame implements Observer {
 		container.add(mainPanel, BorderLayout.CENTER);
 	}
 
-	/**
-	 * Set up images from the List of Buffered Images
-	 */
-	public void quadView() {
-		mainPanel.setLayout(quadView);
-		mainPanel.add(new JButton("Image 1"));
-		mainPanel.add(new JButton("Image 2"));
-		mainPanel.add(new JButton("Image 3"));
-		mainPanel.add(new JButton("Image 4"));
-	}
-
-	/**
-	 * Display single image
-	 */
-	public void singleView() {
-		mainPanel.setLayout(singleView);
-		mainPanel.add(new JButton("Image"));
-	}
 
 	/**
 	 * Add accessibility text for menus and buttons
 	 */
 	public void setAccessibility() {
-
+		btNextImage.getAccessibleContext().setAccessibleDescription("Navigate to the next image in current study");
+		btPrevImage.getAccessibleContext().setAccessibleDescription("Navigate to the previous image in current study");
+		jmFile.getAccessibleContext().setAccessibleDescription("Menu for operations on files");
+		jmFile.getAccessibleContext().setAccessibleDescription("Menu for operation on view modes");
+		jmHelp.getAccessibleContext().setAccessibleDescription("Menu for getting help on using this application");
+		fileOpen.getAccessibleContext().setAccessibleDescription("Menu for opening a study");
+		fileCopy.getAccessibleContext().setAccessibleDescription("Menu for copying a study");
+		fileSave.getAccessibleContext().setAccessibleDescription("Menu for saving a study");
+		fileExit.getAccessibleContext().setAccessibleDescription("Menu for exiting application");
+		cbQuadViewMode.getAccessibleContext().setAccessibleDescription("Menu for enabling or disabling quad view");
 	}
 
 	/**
@@ -166,7 +157,6 @@ public class Viewer extends JFrame implements Observer {
 		this.setLocation(100, 100);
 		this.setJMenuBar(menubar);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// this.setVisible(true);
 	}
 
 	/**
@@ -174,8 +164,7 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
-		
-
+		mainPanel = displayState.generatePanel();
 	}
 
 	/**
@@ -189,16 +178,9 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Object button = e.getSource();
-				
-			if(button instanceof JButton){
-				if(e.getActionCommand().equals("Next")){
-					//call command
-				} else if(e.getActionCommand().equals("Previous")){
-					//call command
-				}
-			} else if(button instanceof JMenu){
-				
+            
+			if(e.getActionCommand().equals("Next")){
+				displayState.mode.nextIndex(displayState.index, study);
 			}
 		}
 

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Observable;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.commons.io.FileUtils;
@@ -19,7 +18,7 @@ public class DisplayState extends Observable {
 
 	public DisplayState(Study s) {
 		index = 0;
-		mode = new OneUp();
+		mode = new FourUp();
 		study = s;
 		if(emptyImg == null){
 			try{
