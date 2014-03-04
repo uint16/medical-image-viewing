@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -36,7 +37,7 @@ public class Viewer extends JFrame implements Observer {
 	private JCheckBoxMenuItem cbQuadViewMode;
 	private JMenuItem fileOpen, fileSave, fileCopy, fileExit;
 	// Image and Button Click listener
-	private ClickListener btListener;
+	private ClickListener btListener = new ClickListener();
 
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
@@ -177,17 +178,9 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Object button = e.getSource();
-				
-			if(button instanceof JButton){
-				if(e.getActionCommand().equals("Next")){
-					//call command
-					System.out.println("Test");
-				} else if(e.getActionCommand().equals("Previous")){
-					//call command
-				}
-			} else if(button instanceof JMenu){
-				
+            
+			if(e.getActionCommand().equals("Next")){
+				displayState.mode.nextIndex(displayState.index, study);
 			}
 		}
 

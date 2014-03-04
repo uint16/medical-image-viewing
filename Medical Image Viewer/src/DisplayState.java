@@ -27,7 +27,6 @@ public class DisplayState extends Observable {
 				System.err.println("Empty image unable to be read!");
 			}
 		}
-		load();
 	}
 	
 	/**
@@ -66,25 +65,20 @@ public class DisplayState extends Observable {
 	 * loads the display state from the text file in the study folder
 	 * TODO: use something more robust than a text file
 	 */
-	private void load(){
+	public void load(){
 		File saveFile = new File(study.folderPath, "displayState.txt");
 		
 		if (saveFile.exists()) {
 			try {
 				List<String> data = FileUtils.readLines(saveFile);
-				try{
-					index = Integer.parseInt(data.get(0));
-				} catch(NumberFormatException e){
-					System.err.println("Error loading index: " + saveFile.toString());
-					index = 0;
-				}
+				this.index = Integer.parseInt(data.get(0));
 				//dynamically load the right DisplayMode
 				try {
 					Class<?> m = Class.forName(data.get(1));
 					Constructor<?> c = m.getConstructor();
 					mode = (DisplayMode) c.newInstance();
 				} catch (Exception e) {	
-					System.err.println("Error loading display mode: " + saveFile.toString());
+					e.printStackTrace();
 					mode = new OneUp();
 				}
 			} catch (IOException e) {
