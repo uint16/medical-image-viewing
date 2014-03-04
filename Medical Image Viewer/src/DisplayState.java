@@ -136,14 +136,4 @@ public class DisplayState extends Observable {
 		this.mode = m;
 		this.wasChanged();
 	}
-	public void ChangeToOneUp(){
-		if(mode instanceof FourUp){
-			mode = new OneUp();
-		}
-	}
-	public void ChangeToFourUp(){
-		if(mode instanceof OneUp){
-			mode = new FourUp();
-		}
-	}
 }

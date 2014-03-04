@@ -5,9 +5,12 @@ public class ChangeToOneUp implements Command{
 	public ChangeToOneUp(DisplayState newDisplayState){
 		dState = newDisplayState;
 	}
+	/**
+	 * Executes setMode(DisplayMode d) with a new FourUp display mode
+	 */
 	@Override
 	public void execute() {
-		dState.ChangeToOneUp();
+		dState.setMode(new OneUp());
 		
 	}
 

@@ -1,12 +1,18 @@
 
 public class NextCommand implements Command {
-	DisplayMode dMode;
-	public NextCommand(DisplayMode newDisplayMode){
-		dMode = newDisplayMode;
+	
+	DisplayState dState;
+	
+	public NextCommand(DisplayState newDisplayState){
+		dState = newDisplayState;
+		
 	}
+	/**
+	 * Executes DisplayState.next()
+	 */
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		dState.next();
 		
 	}
 
