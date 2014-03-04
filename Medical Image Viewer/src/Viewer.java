@@ -50,7 +50,6 @@ public class Viewer extends JFrame implements Observer {
 
 	private static final String TITLE = "Medical Image Viewer";
 	private JCheckBoxMenuItem cbSingleViewMode;
-	private Command nextCommand, previousCommand, saveCommand, loadCommand, fourUp, oneUp;
 	private ClickListener listener = new ClickListener();
 
 	public Viewer() {
@@ -97,15 +96,7 @@ public class Viewer extends JFrame implements Observer {
 		mainPanel = new JPanel();
 		navigationPanel = new JPanel();
 
-		// Initializing commands
-		nextCommand = new NextCommand(displayState);
-		loadCommand = new LoadCommand(displayState);
-		previousCommand = new PrevCommand(displayState);
-		saveCommand = new SaveCommand(displayState);
-		fourUp = new ChangeToFourUp(displayState);
-		oneUp = new ChangeToOneUp(displayState);
 		
-
 	}
 
 	/**
@@ -128,8 +119,6 @@ public class Viewer extends JFrame implements Observer {
 		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
 		cbQuadViewMode.addActionListener(listener);
 		
-		
-
 		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
 		cbSingleViewMode.addActionListener(listener);
 		
@@ -232,20 +221,20 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	class ClickListener implements ActionListener, KeyListener {
 		/**
-		 * Get event and perform an action
+		 * Get event and perform an action depending on clicked item
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
 			if (e.getActionCommand().equals("Next")) {
-				nextCommand.execute();
+				new NextCommand(displayState).execute();
 			} else if (e.getActionCommand().equals("Previous")) {
-				previousCommand.execute();
+				new PrevCommand(displayState).execute();
 			} else if (e.getActionCommand().equals("Single View")) {
-				oneUp.execute();
+				new ChangeToOneUp(displayState).execute();
 				cbQuadViewMode.setState(false);
 			} else if (e.getActionCommand().equals("Quad View")) {
-				fourUp.execute();
+				new ChangeToFourUp(displayState).execute();
 				cbSingleViewMode.setState(false);
 			} else if(e.getActionCommand().equals("Exit")){
 				if (!displayState.saved) {
@@ -254,10 +243,11 @@ public class Viewer extends JFrame implements Observer {
 					System.exit(0);
 				}
 			} else if(e.getActionCommand().equals("Save")){
-				displayState.save();
+				new SaveCommand(displayState).execute();
 			} else if(e.getActionCommand().equals("Open")){
 				new OpenCommand(displayState).execute();
 				// TODO complete switching to new study
+				
 			}
 		}
 
