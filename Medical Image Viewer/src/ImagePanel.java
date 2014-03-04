@@ -29,7 +29,7 @@ public class ImagePanel extends JPanel {
 			newWidth = this.getWidth();
 			newHeight = (newWidth * img.getHeight()) / img.getWidth();
 		}
-		if(img.getHeight() > this.getHeight()){
+		if(newHeight > this.getHeight()){
 			newHeight = this.getHeight();
 			newWidth = (newHeight * img.getWidth()) / img.getHeight();
 		}
