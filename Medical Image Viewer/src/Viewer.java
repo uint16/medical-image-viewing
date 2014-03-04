@@ -18,9 +18,10 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Viewer extends JFrame implements Observer {
 
@@ -36,9 +37,6 @@ public class Viewer extends JFrame implements Observer {
 	private JMenuBar menubar;
 	private JCheckBoxMenuItem cbQuadViewMode;
 	private JMenuItem fileOpen, fileSave, fileCopy, fileExit;
-	// Image and Button Click listener
-	private ClickListener btListener = new ClickListener();
-
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
 	// Application container
@@ -48,13 +46,26 @@ public class Viewer extends JFrame implements Observer {
 	private Study study;
 
 	private static final String TITLE = "Medical Image Viewer";
+	private JCheckBoxMenuItem cbSingleViewMode;
 
 	public Viewer() {
 		super(TITLE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				//TODO: exit command? this code is copied from the exit menu item
+				if(!displayState.saved){
+					new UnsavedStatePrompt(displayState);
+				} else {
+					System.exit(0);
+				}
+			}
+		});
 		container = getContentPane();
 		
-		study = new Study(new File(System.getProperty("user.home")+"/Pictures/SuzyWallpapers/"));
+		study = new Study(new File("D:\\Pictures\\Wallpapers\\"));
 		displayState = new DisplayState(study);
+		displayState.addObserver(this);
 		
 		initComponents();
 		setMenu();
@@ -67,10 +78,20 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void initComponents() {
 		btNextImage = new JButton("Next");
-		btNextImage.addActionListener(btListener);
+		btNextImage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TODO: replace this with next command
+				displayState.next();
+			}
+		});
 		
 		btPrevImage = new JButton("Previous");
-		btPrevImage.addActionListener(btListener);
+		btPrevImage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TODO: replace this with prev command
+				displayState.prev();
+			}
+		});
 		
 		jmFile = new JMenu("File");
 		jmView = new JMenu("View");
@@ -85,17 +106,37 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void setMenu() {
 		fileOpen = new JMenuItem("Open");
-		fileOpen.addActionListener(btListener);
 		
 		fileCopy = new JMenuItem("Copy");
 		fileSave = new JMenuItem("Save");
+		fileSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TODO: replace this with save command
+				displayState.save();
+			}
+		});
 		fileExit = new JMenuItem("Exit");
+		fileExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!displayState.saved){
+					new UnsavedStatePrompt(displayState);
+				} else {
+					System.exit(0);
+				}
+			}
+		});
 
 		/*
 		 * Create checkbox for state
 		 */
 		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
+		cbQuadViewMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				displayState.setMode(new FourUp());
+			}
+		});
 		cbQuadViewMode.setState(true);
+		
 
 
 		/*
@@ -114,6 +155,14 @@ public class Viewer extends JFrame implements Observer {
 
 		menubar.add(jmFile);
 		menubar.add(jmView);
+		
+		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
+		cbSingleViewMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				displayState.setMode(new OneUp());
+			}
+		});
+		jmView.add(cbSingleViewMode);
 		menubar.add(jmHelp);
 	}
 
@@ -164,7 +213,13 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
+		//TODO: set selected mode checkbox
+		
+		//replace mainPanel with new images
+		container.remove(mainPanel);
 		mainPanel = displayState.generatePanel();
+		container.add(mainPanel, BorderLayout.CENTER);
+		container.validate();
 	}
 
 	/**
@@ -180,7 +235,9 @@ public class Viewer extends JFrame implements Observer {
 		public void actionPerformed(ActionEvent e) {
             
 			if(e.getActionCommand().equals("Next")){
-				displayState.mode.nextIndex(displayState.index, study);
+				displayState.next();
+			} else if (e.getActionCommand().equals("Previous")){
+				displayState.prev();
 			}
 		}
 
