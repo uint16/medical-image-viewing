@@ -8,6 +8,8 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
@@ -20,6 +22,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -63,7 +66,7 @@ public class Viewer extends JFrame implements Observer {
 		});
 		container = getContentPane();
 		
-		study = new Study(new File("D:\\Pictures\\Wallpapers\\"));
+		study = new Study(new File(System.getProperty("user.home")+"/Pictures/SuzyWallpapers/"));
 		displayState = new DisplayState(study);
 		displayState.addObserver(this);
 		
@@ -227,7 +230,7 @@ public class Viewer extends JFrame implements Observer {
 	 * Handle all clicks from the view
 	 * 
 	 */
-	class ClickListener implements ActionListener {
+	class ClickListener implements ActionListener, KeyListener {
 		/**
 		 * Get event and perform an action
 		 */
@@ -239,6 +242,24 @@ public class Viewer extends JFrame implements Observer {
 			} else if (e.getActionCommand().equals("Previous")){
 				displayState.prev();
 			}
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	}
