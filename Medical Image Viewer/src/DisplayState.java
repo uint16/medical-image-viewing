@@ -136,4 +136,8 @@ public class DisplayState extends Observable {
 		this.mode = m;
 		this.wasChanged();
 	}
+	
+	public DisplayMode getMode(){
+		return mode;
+	}
 }

@@ -44,20 +44,23 @@ public class Viewer extends JFrame implements Observer {
 	private FlowLayout navigationAreaLayout = new FlowLayout();
 	// Application container
 	private Container container;
-	
+
 	private DisplayState displayState;
 	private Study study;
 
 	private static final String TITLE = "Medical Image Viewer";
 	private JCheckBoxMenuItem cbSingleViewMode;
+	private Command nextCommand, previousCommand, saveCommand, loadCommand, fourUp, oneUp;
+	private ClickListener listener = new ClickListener();
 
 	public Viewer() {
 		super(TITLE);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				//TODO: exit command? this code is copied from the exit menu item
-				if(!displayState.saved){
+				// TODO: exit command? this code is copied from the exit menu
+				// item
+				if (!displayState.saved) {
 					new UnsavedStatePrompt(displayState);
 				} else {
 					System.exit(0);
@@ -65,15 +68,16 @@ public class Viewer extends JFrame implements Observer {
 			}
 		});
 		container = getContentPane();
-		
-		study = new Study(new File(System.getProperty("user.home")+"/Pictures/SuzyWallpapers/"));
+
+		study = new Study(new File(System.getProperty("user.home")
+				+ "/Desktop/cta_head/"));
 		displayState = new DisplayState(study);
 		displayState.addObserver(this);
-		
+
 		initComponents();
 		setMenu();
 		buildUI();
-		displayApplication();		
+		displayApplication();
 	}
 
 	/**
@@ -81,27 +85,27 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void initComponents() {
 		btNextImage = new JButton("Next");
-		btNextImage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//TODO: replace this with next command
-				displayState.next();
-			}
-		});
-		
+		btNextImage.addActionListener(listener);
+
 		btPrevImage = new JButton("Previous");
-		btPrevImage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//TODO: replace this with prev command
-				displayState.prev();
-			}
-		});
-		
+		btPrevImage.addActionListener(listener);
+
 		jmFile = new JMenu("File");
 		jmView = new JMenu("View");
 		jmHelp = new JMenu("Help");
 		menubar = new JMenuBar();
 		mainPanel = new JPanel();
 		navigationPanel = new JPanel();
+
+		// Initializing commands
+		nextCommand = new NextCommand(displayState);
+		loadCommand = new LoadCommand(displayState);
+		previousCommand = new PrevCommand(displayState);
+		saveCommand = new SaveCommand(displayState);
+		fourUp = new ChangeToFourUp(displayState);
+		oneUp = new ChangeToOneUp(displayState);
+		
+
 	}
 
 	/**
@@ -109,38 +113,33 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void setMenu() {
 		fileOpen = new JMenuItem("Open");
-		
+		fileOpen.addActionListener(listener);
+
 		fileCopy = new JMenuItem("Copy");
 		fileSave = new JMenuItem("Save");
-		fileSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//TODO: replace this with save command
-				displayState.save();
-			}
-		});
+		fileSave.addActionListener(listener);
+		
 		fileExit = new JMenuItem("Exit");
-		fileExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!displayState.saved){
-					new UnsavedStatePrompt(displayState);
-				} else {
-					System.exit(0);
-				}
-			}
-		});
+		fileExit.addActionListener(listener);
 
 		/*
 		 * Create checkbox for state
 		 */
 		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
-		cbQuadViewMode.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				displayState.setMode(new FourUp());
-			}
-		});
-		cbQuadViewMode.setState(true);
+		cbQuadViewMode.addActionListener(listener);
+		
 		
 
+		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
+		cbSingleViewMode.addActionListener(listener);
+		
+		if(displayState.getMode() instanceof FourUp){
+			cbQuadViewMode.setState(true);
+			cbSingleViewMode.setState(false);
+		}else{
+			cbSingleViewMode.setState(true);
+			cbQuadViewMode.setState(false);
+		}
 
 		/*
 		 * Add file menus
@@ -155,17 +154,10 @@ public class Viewer extends JFrame implements Observer {
 		 */
 
 		jmView.add(cbQuadViewMode);
+		jmView.add(cbSingleViewMode);
 
 		menubar.add(jmFile);
 		menubar.add(jmView);
-		
-		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
-		cbSingleViewMode.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				displayState.setMode(new OneUp());
-			}
-		});
-		jmView.add(cbSingleViewMode);
 		menubar.add(jmHelp);
 	}
 
@@ -173,9 +165,9 @@ public class Viewer extends JFrame implements Observer {
 	 * Setup the layout and all UI components
 	 */
 	public void buildUI() {
-		//receive panel from the display state
+		// receive panel from the display state
 		mainPanel = displayState.generatePanel();
-		
+
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
 		navigationPanel.add(btPrevImage);
@@ -184,21 +176,30 @@ public class Viewer extends JFrame implements Observer {
 		container.add(mainPanel, BorderLayout.CENTER);
 	}
 
-
 	/**
 	 * Add accessibility text for menus and buttons
 	 */
 	public void setAccessibility() {
-		btNextImage.getAccessibleContext().setAccessibleDescription("Navigate to the next image in current study");
-		btPrevImage.getAccessibleContext().setAccessibleDescription("Navigate to the previous image in current study");
-		jmFile.getAccessibleContext().setAccessibleDescription("Menu for operations on files");
-		jmFile.getAccessibleContext().setAccessibleDescription("Menu for operation on view modes");
-		jmHelp.getAccessibleContext().setAccessibleDescription("Menu for getting help on using this application");
-		fileOpen.getAccessibleContext().setAccessibleDescription("Menu for opening a study");
-		fileCopy.getAccessibleContext().setAccessibleDescription("Menu for copying a study");
-		fileSave.getAccessibleContext().setAccessibleDescription("Menu for saving a study");
-		fileExit.getAccessibleContext().setAccessibleDescription("Menu for exiting application");
-		cbQuadViewMode.getAccessibleContext().setAccessibleDescription("Menu for enabling or disabling quad view");
+		btNextImage.getAccessibleContext().setAccessibleDescription(
+				"Navigate to the next image in current study");
+		btPrevImage.getAccessibleContext().setAccessibleDescription(
+				"Navigate to the previous image in current study");
+		jmFile.getAccessibleContext().setAccessibleDescription(
+				"Menu for operations on files");
+		jmFile.getAccessibleContext().setAccessibleDescription(
+				"Menu for operation on view modes");
+		jmHelp.getAccessibleContext().setAccessibleDescription(
+				"Menu for getting help on using this application");
+		fileOpen.getAccessibleContext().setAccessibleDescription(
+				"Menu for opening a study");
+		fileCopy.getAccessibleContext().setAccessibleDescription(
+				"Menu for copying a study");
+		fileSave.getAccessibleContext().setAccessibleDescription(
+				"Menu for saving a study");
+		fileExit.getAccessibleContext().setAccessibleDescription(
+				"Menu for exiting application");
+		cbQuadViewMode.getAccessibleContext().setAccessibleDescription(
+				"Menu for enabling or disabling quad view");
 	}
 
 	/**
@@ -216,9 +217,8 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
-		//TODO: set selected mode checkbox
 		
-		//replace mainPanel with new images
+		// replace mainPanel with new images
 		container.remove(mainPanel);
 		mainPanel = displayState.generatePanel();
 		container.add(mainPanel, BorderLayout.CENTER);
@@ -236,30 +236,47 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
-            
-			if(e.getActionCommand().equals("Next")){
-				displayState.next();
-			} else if (e.getActionCommand().equals("Previous")){
-				displayState.prev();
+
+			if (e.getActionCommand().equals("Next")) {
+				nextCommand.execute();
+			} else if (e.getActionCommand().equals("Previous")) {
+				previousCommand.execute();
+			} else if (e.getActionCommand().equals("Single View")) {
+				oneUp.execute();
+				cbQuadViewMode.setState(false);
+			} else if (e.getActionCommand().equals("Quad View")) {
+				fourUp.execute();
+				cbSingleViewMode.setState(false);
+			} else if(e.getActionCommand().equals("Exit")){
+				if (!displayState.saved) {
+					new UnsavedStatePrompt(displayState);
+				} else {
+					System.exit(0);
+				}
+			} else if(e.getActionCommand().equals("Save")){
+				displayState.save();
+			} else if(e.getActionCommand().equals("Open")){
+				new OpenCommand(displayState).execute();
+				// TODO complete switching to new study
 			}
 		}
 
 		@Override
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 	}
