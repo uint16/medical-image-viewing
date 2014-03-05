@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -45,8 +44,7 @@ public class Viewer extends JFrame implements Observer {
 	// Application container
 	private Container container;
 
-	private DisplayState displayState;
-	private Study study;
+	private StudyController controller;
 
 	private static final String TITLE = "Medical Image Viewer";
 	private JCheckBoxMenuItem cbSingleViewMode;
@@ -59,19 +57,17 @@ public class Viewer extends JFrame implements Observer {
 			public void windowClosing(WindowEvent arg0) {
 				// TODO: exit command? this code is copied from the exit menu
 				// item
-				if (!displayState.saved) {
-					new UnsavedStatePrompt(displayState);
+				if (!controller.curState.saved) {
+					new UnsavedStatePrompt(controller.curState);
 				} else {
 					System.exit(0);
 				}
 			}
 		});
 		container = getContentPane();
-
-		study = new Study(new File(System.getProperty("user.home")
-				+ "/Desktop/cta_head/"));
-		displayState = new DisplayState(study);
-		displayState.addObserver(this);
+		
+		controller = new StudyController();
+		controller.addObserver(this);
 
 		initComponents();
 		setMenu();
@@ -122,7 +118,7 @@ public class Viewer extends JFrame implements Observer {
 		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
 		cbSingleViewMode.addActionListener(listener);
 		
-		if(displayState.getMode() instanceof FourUp){
+		if(controller.curState.getMode() instanceof FourUp){
 			cbQuadViewMode.setState(true);
 			cbSingleViewMode.setState(false);
 		}else{
@@ -155,7 +151,7 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	public void buildUI() {
 		// receive panel from the display state
-		mainPanel = displayState.generatePanel();
+		mainPanel = controller.generatePanel();
 
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
@@ -206,10 +202,9 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
-		
 		// replace mainPanel with new images
 		container.remove(mainPanel);
-		mainPanel = displayState.generatePanel();
+		mainPanel = controller.generatePanel();
 		container.add(mainPanel, BorderLayout.CENTER);
 		container.validate();
 	}
@@ -227,25 +222,25 @@ public class Viewer extends JFrame implements Observer {
 		public void actionPerformed(ActionEvent e) {
 
 			if (e.getActionCommand().equals("Next")) {
-				new NextCommand(displayState).execute();
+				new NextCommand(controller.curState).execute();
 			} else if (e.getActionCommand().equals("Previous")) {
-				new PrevCommand(displayState).execute();
+				new PrevCommand(controller.curState).execute();
 			} else if (e.getActionCommand().equals("Single View")) {
-				new ChangeToOneUp(displayState).execute();
+				new ChangeToOneUp(controller.curState).execute();
 				cbQuadViewMode.setState(false);
 			} else if (e.getActionCommand().equals("Quad View")) {
-				new ChangeToFourUp(displayState).execute();
+				new ChangeToFourUp(controller.curState).execute();
 				cbSingleViewMode.setState(false);
 			} else if(e.getActionCommand().equals("Exit")){
-				if (!displayState.saved) {
-					new UnsavedStatePrompt(displayState);
+				if (!controller.curState.saved) {
+					new UnsavedStatePrompt(controller.curState);
 				} else {
 					System.exit(0);
 				}
 			} else if(e.getActionCommand().equals("Save")){
-				new SaveCommand(displayState).execute();
+				new SaveCommand(controller.curState).execute();
 			} else if(e.getActionCommand().equals("Open")){
-				new OpenCommand(displayState).execute();
+				new OpenCommand(controller.curState).execute();
 				// TODO complete switching to new study
 				
 			}

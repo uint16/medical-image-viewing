@@ -62,4 +62,8 @@ public class Study {
 	public boolean inRange(int i) {
 		return i >= 0 && i < images.size();
 	}
+	
+	public String toString(){
+		return folderPath.getName();
+	}
 }
