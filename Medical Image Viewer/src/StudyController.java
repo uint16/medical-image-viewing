@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 /**
  * Main controller class
  * Keeps track of the studies, the homeDir, and the current state/study
- * Kind of a god class?
  * @author Ethan Davidson (emd1771)
  *
  */
@@ -78,6 +77,7 @@ public class StudyController extends Observable implements Observer{
 	 * load all the studies (directories) from the homeDir
 	 */
 	private void loadStudies() {
+		studyList.clear();
 		for(File f: homeDir.listFiles()){
 			if(f.isDirectory()){
 				studyList.add(new Study(f));
@@ -116,6 +116,26 @@ public class StudyController extends Observable implements Observer{
 	 */
 	public void setInitialStudy(String s){
 		prefs.put("INITIAL_STUDY", s);
+	}
+	
+	/**
+	 * copies the current study into a new folder with the given name
+	 * @param s Name to save the study as
+	 */
+	public void saveStudyAs(String s){
+		File newFolder = new File(homeDir.toString() + "/" + s);
+		if(!newFolder.exists()){
+			newFolder.mkdir();
+		}
+		if(newFolder.isDirectory()){
+			if(!newFolder.exists()){
+				newFolder.mkdir();
+			}
+			curState.study.copyTo(newFolder);
+		} else {
+			System.err.println("Error: can't copy study into a file: " + newFolder.toString());
+		}
+		loadStudies();
 	}
 
 	@Override

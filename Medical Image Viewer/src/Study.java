@@ -1,7 +1,9 @@
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 enum ACCEPTABLE_FILE_EXT {
@@ -65,5 +67,13 @@ public class Study {
 	
 	public String toString(){
 		return folderPath.getName();
+	}
+	
+	public void copyTo(File destFolder){
+		try {
+			FileUtils.copyDirectory(folderPath, destFolder);
+		} catch (IOException e) {
+			System.err.println("Error copying study: " + folderPath + " to " + destFolder.toString());
+		}
 	}
 }

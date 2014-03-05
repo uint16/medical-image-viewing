@@ -48,7 +48,7 @@ public class UnsavedStatePrompt extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton saveButton = new JButton("Save and exit");
+				JButton saveButton = new JButton("Save");
 				saveButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						state.save();
@@ -60,7 +60,7 @@ public class UnsavedStatePrompt extends JDialog {
 				getRootPane().setDefaultButton(saveButton);
 			}
 			{
-				JButton exitButton = new JButton("Exit without saving");
+				JButton exitButton = new JButton("Continue without saving");
 				exitButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();

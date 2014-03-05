@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * Class representing a medical image in a study It proxies the actual image
  * object so that it only gets loaded once

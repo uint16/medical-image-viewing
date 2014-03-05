@@ -102,6 +102,8 @@ public class Viewer extends JFrame implements Observer {
 		fileOpen.addActionListener(listener);
 
 		fileCopy = new JMenuItem("Copy");
+		fileCopy.addActionListener(listener);
+		
 		fileSave = new JMenuItem("Save");
 		fileSave.addActionListener(listener);
 
@@ -255,6 +257,8 @@ public class Viewer extends JFrame implements Observer {
 				new OpenCommand(controller).execute();
 				// TODO complete switching to new study
 
+			} else if (e.getActionCommand().equals("Copy")){
+				new CopyStudyCommand(controller).execute();
 			}
 		}
 
