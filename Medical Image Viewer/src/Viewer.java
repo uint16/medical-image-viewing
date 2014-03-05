@@ -202,6 +202,16 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
+
+		// disable/enable buttons if first or last image
+		if (!controller.curState.hasPrev()) {
+			btPrevImage.setEnabled(false);
+		} 
+		if(!controller.curState.hasNext()){
+			btNextImage.setEnabled(false);
+		}
+
+
 		// replace mainPanel with new images
 		container.remove(mainPanel);
 		mainPanel = controller.generatePanel();

@@ -38,5 +38,14 @@ public class OneUp implements DisplayMode {
 		result[0] = index;
 		return result;
 	}
-	
+
+	@Override
+	public boolean hasPrev(int index, Study s) {
+		return index > 0;
+	}
+
+	@Override
+	public boolean hasNext(int index, Study s) {
+		return index < s.imgAmt() - 1;
+	}
 }

@@ -39,4 +39,14 @@ public interface DisplayMode {
 	 * @return int[] array of indices representing images to display
 	 */
 	public int[] getIndices(int index);
+
+	/**
+	 * Given the current index, returns true if there is a valid previous index
+	 */
+	public boolean hasPrev(int index, Study s);
+
+	/**
+	 * Given the current index, returns true if there is a valid next index
+	 */
+	public boolean hasNext(int index, Study s);
 }

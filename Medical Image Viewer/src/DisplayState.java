@@ -36,8 +36,10 @@ public class DisplayState extends Observable {
 	 * moves the index pointer to the next valid index
 	 */
 	public void next(){
+		if(index < study.imgAmt() - 1){
 		index = mode.nextIndex(index, study);
 		this.wasChanged();
+		}
 	}
 	
 	/**
@@ -137,7 +139,35 @@ public class DisplayState extends Observable {
 		this.wasChanged();
 	}
 	
+	/**
+	 * 
+	 * @return the current mode of the display
+	 */
 	public DisplayMode getMode(){
 		return mode;
+	}
+	
+	/**
+	 * 
+	 * @return index of the top right image
+	 */
+	public int getIndex(){
+		return index;
+	}
+
+	/**
+	 * 
+	 * @return True if there is a valid index previous to the current index
+	 */
+	public boolean hasPrev() {
+		return mode.hasPrev(index, study);
+	}
+
+	/**
+	 * 
+	 * @return True if there is a valid index after the current index
+	 */
+	public boolean hasNext() {
+		return mode.hasNext(index, study);
 	}
 }

@@ -41,4 +41,14 @@ public class FourUp implements DisplayMode {
 		return result;
 	}
 
+	@Override
+	public boolean hasPrev(int index, Study s) {
+		return prevIndex(index, s) != index;
+	}
+
+	@Override
+	public boolean hasNext(int index, Study s) {
+		return nextIndex(index, s) != index;
+	}
+
 }
