@@ -83,6 +83,12 @@ public class StudyController extends Observable implements Observer{
 				studyList.add(new Study(f));
 			}
 		}
+		
+		//if homeDir does not contain any subdirectories add current directory as study
+		if(studyList.size() == 0){
+			studyList.add(new Study(homeDir));
+		}
+		
 		this.setChanged();
 		this.notifyObservers();
 	}
