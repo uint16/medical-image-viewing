@@ -11,7 +11,9 @@ public class OpenCommand implements Command {
 
 	@Override
 	public void execute() {
-		new StudySelectorPrompt(controller);
+		StudySelectorPrompt s = new StudySelectorPrompt(controller);
+		String result = s.showStudySelector();
+		controller.openStudy(result);
 	}
 
 }

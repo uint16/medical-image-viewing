@@ -18,6 +18,7 @@ public class StudySelectorPrompt extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JComboBox comboBox;
+	private String selected;
 
 	/**
 	 * Popup prompt with a comboBox for selecting the study to view
@@ -53,7 +54,7 @@ public class StudySelectorPrompt extends JDialog {
 				JButton okButton = new JButton("View Study");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						sc.openStudy(comboBox.getSelectedItem().toString());
+						selected = comboBox.getSelectedItem().toString();
 						dispose();
 					}
 				});
@@ -72,6 +73,10 @@ public class StudySelectorPrompt extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	
+	public String showStudySelector(){
 		this.setVisible(true);
+		return selected;
 	}
 }
