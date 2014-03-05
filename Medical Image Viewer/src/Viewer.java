@@ -29,26 +29,35 @@ public class Viewer extends JFrame implements Observer {
 	private static final long serialVersionUID = 1L;
 	// Navigation Buttons
 	private JButton btNextImage, btPrevImage;
-	// Label for Image currently displayed
 
 	// Panels for layouts
 	private JPanel mainPanel, navigationPanel;
+
 	// Menubar and items
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
-	private JCheckBoxMenuItem cbQuadViewMode;
-	private JMenuItem fileOpen, fileSave, fileCopy, fileExit;
+	private JCheckBoxMenuItem cbQuadViewMode, cbSingleViewMode;
+	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileOpen;
+	
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
+	
 	// Application container
 	private Container container;
-
+	
+	// Controller for current study
 	private StudyController controller;
-
-	private static final String TITLE = "Medical Image Viewer";
-	private JCheckBoxMenuItem cbSingleViewMode;
+	
+	//Action Listener instance
 	private ClickListener listener = new ClickListener();
 
+	//JFrame window tittle
+	private static final String TITLE = "Medical Image Viewer";
+	
+	
+	/**
+	 * Viewer class, Application's GUI
+	 */
 	public Viewer() {
 		super(TITLE);
 		addWindowListener(new WindowAdapter() {
@@ -98,12 +107,15 @@ public class Viewer extends JFrame implements Observer {
 	 * Add menu commands
 	 */
 	public void setMenu() {
+		fileSwitchStudy = new JMenuItem("Switch Study");
+		fileSwitchStudy.addActionListener(listener);
+
 		fileOpen = new JMenuItem("Open");
 		fileOpen.addActionListener(listener);
 
 		fileCopy = new JMenuItem("Copy");
 		fileCopy.addActionListener(listener);
-		
+
 		fileSave = new JMenuItem("Save");
 		fileSave.addActionListener(listener);
 
@@ -119,6 +131,9 @@ public class Viewer extends JFrame implements Observer {
 		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
 		cbSingleViewMode.addActionListener(listener);
 
+		/*
+		 * Mark the correct state on initiate
+		 */
 		if (controller.curState.getMode() instanceof FourUp) {
 			cbQuadViewMode.setState(true);
 			cbSingleViewMode.setState(false);
@@ -130,6 +145,7 @@ public class Viewer extends JFrame implements Observer {
 		/*
 		 * Add file menus
 		 */
+		jmFile.add(fileSwitchStudy);
 		jmFile.add(fileOpen);
 		jmFile.add(fileCopy);
 		jmFile.add(fileSave);
@@ -176,8 +192,8 @@ public class Viewer extends JFrame implements Observer {
 				"Menu for operation on view modes");
 		jmHelp.getAccessibleContext().setAccessibleDescription(
 				"Menu for getting help on using this application");
-		fileOpen.getAccessibleContext().setAccessibleDescription(
-				"Menu for opening a study");
+		fileSwitchStudy.getAccessibleContext().setAccessibleDescription(
+				"Menu for switching studies");
 		fileCopy.getAccessibleContext().setAccessibleDescription(
 				"Menu for copying a study");
 		fileSave.getAccessibleContext().setAccessibleDescription(
@@ -228,8 +244,7 @@ public class Viewer extends JFrame implements Observer {
 	 * Handle all clicks from the view
 	 * 
 	 */
-	class ClickListener implements ActionListener, 
-			MouseWheelListener {
+	class ClickListener implements ActionListener, MouseWheelListener {
 		/**
 		 * Get event and perform an action depending on clicked item
 		 */
@@ -253,15 +268,15 @@ public class Viewer extends JFrame implements Observer {
 				System.exit(0);
 			} else if (e.getActionCommand().equals("Save")) {
 				new SaveCommand(controller.curState).execute();
+			} else if (e.getActionCommand().equals("Switch Study")) {
+				new OpenCommand(controller).execute();
 			} else if (e.getActionCommand().equals("Open")) {
 				new OpenCommand(controller).execute();
-				// TODO complete switching to new study
 
 			} else if (e.getActionCommand().equals("Copy")){
 				new CopyStudyCommand(controller).execute();
 			}
 		}
-
 
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
