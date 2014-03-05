@@ -96,7 +96,6 @@ public class Viewer extends JFrame implements Observer {
 		mainPanel = new JPanel();
 		navigationPanel = new JPanel();
 
-		
 	}
 
 	/**
@@ -109,7 +108,7 @@ public class Viewer extends JFrame implements Observer {
 		fileCopy = new JMenuItem("Copy");
 		fileSave = new JMenuItem("Save");
 		fileSave.addActionListener(listener);
-		
+
 		fileExit = new JMenuItem("Exit");
 		fileExit.addActionListener(listener);
 
@@ -118,14 +117,14 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
 		cbQuadViewMode.addActionListener(listener);
-		
+
 		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
 		cbSingleViewMode.addActionListener(listener);
-		
-		if(displayState.getMode() instanceof FourUp){
+
+		if (displayState.getMode() instanceof FourUp) {
 			cbQuadViewMode.setState(true);
 			cbSingleViewMode.setState(false);
-		}else{
+		} else {
 			cbSingleViewMode.setState(true);
 			cbQuadViewMode.setState(false);
 		}
@@ -206,7 +205,29 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
-		
+		// disable/enable buttons if first or last image
+		if (displayState.getMode() instanceof FourUp) {
+			if(displayState.getIndex() < 5){
+				btPrevImage.setEnabled(false);
+				btNextImage.setEnabled(true);
+			} else if(study.imgAmt() - displayState.getIndex() < 4){
+				btNextImage.setEnabled(false);
+				btPrevImage.setEnabled(true);
+			} else {
+				btNextImage.setEnabled(true);
+				btPrevImage.setEnabled(true);
+			}
+		} else {
+			if (displayState.getIndex() == 0) {
+				btPrevImage.setEnabled(false);
+			} else if (displayState.getIndex() < study.imgAmt() - 1) {
+				btPrevImage.setEnabled(true);
+				btNextImage.setEnabled(true);
+			} else {
+				btNextImage.setEnabled(false);
+			}
+		}
+
 		// replace mainPanel with new images
 		container.remove(mainPanel);
 		mainPanel = displayState.generatePanel();
@@ -236,18 +257,18 @@ public class Viewer extends JFrame implements Observer {
 			} else if (e.getActionCommand().equals("Quad View")) {
 				new ChangeToFourUp(displayState).execute();
 				cbSingleViewMode.setState(false);
-			} else if(e.getActionCommand().equals("Exit")){
+			} else if (e.getActionCommand().equals("Exit")) {
 				if (!displayState.saved) {
 					new UnsavedStatePrompt(displayState);
 				} else {
 					System.exit(0);
 				}
-			} else if(e.getActionCommand().equals("Save")){
+			} else if (e.getActionCommand().equals("Save")) {
 				new SaveCommand(displayState).execute();
-			} else if(e.getActionCommand().equals("Open")){
+			} else if (e.getActionCommand().equals("Open")) {
 				new OpenCommand(displayState).execute();
 				// TODO complete switching to new study
-				
+
 			}
 		}
 

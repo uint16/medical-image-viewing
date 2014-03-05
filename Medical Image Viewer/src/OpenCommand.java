@@ -14,22 +14,21 @@ public class OpenCommand implements Command {
 	@Override
 	public void execute() {
 		JFileChooser open = new JFileChooser();
-		
-		//FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		//        "JPG & JPEG Images", "JPG", "JPEG");
-		
-		//open.setFileFilter(filter);
-		
+		// FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		// "JPG & JPEG Images", "JPG", "JPEG");
+
+		// open.setFileFilter(filter);
+
 		open.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		
+
 		int returnVal = open.showOpenDialog(null);
-		
+
 		Study temp;
-		
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-		       temp = new Study(new File(open.getSelectedFile().getPath()));
-		       displayState = new DisplayState(temp);
-		    }
+
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			temp = new Study(new File(open.getSelectedFile().getPath()));
+			displayState = new DisplayState(temp);
+		}
 
 	}
 
