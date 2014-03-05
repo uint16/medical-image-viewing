@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -65,7 +67,7 @@ public class Viewer extends JFrame implements Observer {
 			}
 		});
 		container = getContentPane();
-		
+
 		controller = new StudyController();
 		controller.addObserver(this);
 
@@ -92,7 +94,8 @@ public class Viewer extends JFrame implements Observer {
 		mainPanel = new JPanel();
 		navigationPanel = new JPanel();
 
-		
+		container.addMouseWheelListener(listener);
+
 	}
 
 	/**
@@ -105,7 +108,7 @@ public class Viewer extends JFrame implements Observer {
 		fileCopy = new JMenuItem("Copy");
 		fileSave = new JMenuItem("Save");
 		fileSave.addActionListener(listener);
-		
+
 		fileExit = new JMenuItem("Exit");
 		fileExit.addActionListener(listener);
 
@@ -114,14 +117,14 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
 		cbQuadViewMode.addActionListener(listener);
-		
+
 		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
 		cbSingleViewMode.addActionListener(listener);
-		
-		if(controller.curState.getMode() instanceof FourUp){
+
+		if (controller.curState.getMode() instanceof FourUp) {
 			cbQuadViewMode.setState(true);
 			cbSingleViewMode.setState(false);
-		}else{
+		} else {
 			cbSingleViewMode.setState(true);
 			cbQuadViewMode.setState(false);
 		}
@@ -209,12 +212,11 @@ public class Viewer extends JFrame implements Observer {
 		} else {
 			btPrevImage.setEnabled(true);
 		}
-		if(!controller.curState.hasNext()){
+		if (!controller.curState.hasNext()) {
 			btNextImage.setEnabled(false);
 		} else {
 			btNextImage.setEnabled(true);
 		}
-
 
 		// replace mainPanel with new images
 		container.remove(mainPanel);
@@ -228,7 +230,8 @@ public class Viewer extends JFrame implements Observer {
 	 * Handle all clicks from the view
 	 * 
 	 */
-	class ClickListener implements ActionListener, KeyListener {
+	class ClickListener implements ActionListener, KeyListener,
+			MouseWheelListener {
 		/**
 		 * Get event and perform an action depending on clicked item
 		 */
@@ -245,17 +248,17 @@ public class Viewer extends JFrame implements Observer {
 			} else if (e.getActionCommand().equals("Quad View")) {
 				new ChangeToFourUp(controller.curState).execute();
 				cbSingleViewMode.setState(false);
-			} else if(e.getActionCommand().equals("Exit")){
+			} else if (e.getActionCommand().equals("Exit")) {
 				if (!controller.curState.saved) {
 					new UnsavedStatePrompt(controller.curState);
 				}
 				System.exit(0);
-			} else if(e.getActionCommand().equals("Save")){
+			} else if (e.getActionCommand().equals("Save")) {
 				new SaveCommand(controller.curState).execute();
-			} else if(e.getActionCommand().equals("Open")){
+			} else if (e.getActionCommand().equals("Open")) {
 				new OpenCommand(controller).execute();
 				// TODO complete switching to new study
-				
+
 			}
 		}
 
@@ -274,6 +277,17 @@ public class Viewer extends JFrame implements Observer {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (e.getWheelRotation() < 0) {
+				new NextCommand(controller.curState).execute();
+			} else {
+				new PrevCommand(controller.curState).execute();
+			}
+			update(controller, mainPanel);
 
 		}
 
