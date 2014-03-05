@@ -109,6 +109,14 @@ public class StudyController extends Observable implements Observer{
 		prefs.put("HOME_DIR", f.toString());
 		homeDir = f;
 	}
+	
+	/**
+	 * Saves the given string representing a study name as the study to open when the program loads
+	 * @param s
+	 */
+	public void setInitialStudy(String s){
+		prefs.put("INITIAL_STUDY", s);
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {
