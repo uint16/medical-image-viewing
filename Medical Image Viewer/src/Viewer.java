@@ -206,9 +206,13 @@ public class Viewer extends JFrame implements Observer {
 		// disable/enable buttons if first or last image
 		if (!controller.curState.hasPrev()) {
 			btPrevImage.setEnabled(false);
-		} 
+		} else {
+			btPrevImage.setEnabled(true);
+		}
 		if(!controller.curState.hasNext()){
 			btNextImage.setEnabled(false);
+		} else {
+			btNextImage.setEnabled(true);
 		}
 
 
