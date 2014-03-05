@@ -6,7 +6,13 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JPanel;
 
-
+/**
+ * Main controller class
+ * Keeps track of the studies, the homeDir, and the current state/study
+ * Kind of a god class?
+ * @author Ethan Davidson (emd1771)
+ *
+ */
 public class StudyController extends Observable implements Observer{
 	static Preferences prefs;
 	static String nodeName = "MedicalImageViewer";
@@ -31,9 +37,10 @@ public class StudyController extends Observable implements Observer{
 		if(savedStudy != null){
 			openStudy(savedStudy);
 		} else {	//otherwise, ask them which study to open
-			//TODO: replace this!
-			openStudy(new Study(new File(System.getProperty("user.home")
-					+ "/Desktop/cta_head/")));
+			new StudySelectorPrompt(this);
+		}
+		if(curState == null){	//curState is null if they don't select a study or specify an initial
+			System.exit(0);
 		}
 	}
 	
@@ -43,7 +50,7 @@ public class StudyController extends Observable implements Observer{
 	 * TODO: what do if it doesn't find the study matching the string?
 	 * @param savedStudy
 	 */
-	private void openStudy(String savedStudy) {
+	public void openStudy(String savedStudy) {
 		for(Study s: studyList){
 			if(s.toString().equals(savedStudy)){
 				openStudy(s);
@@ -56,6 +63,9 @@ public class StudyController extends Observable implements Observer{
 	 * @param s
 	 */
 	private void openStudy(Study s){
+		if(curState != null && !curState.saved){	//curState is null when loading the first study
+			new UnsavedStatePrompt(curState);
+		}
 		curState = new DisplayState(s);
 		curState.addObserver(this);
 		this.setChanged();

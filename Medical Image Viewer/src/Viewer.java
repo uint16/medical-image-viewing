@@ -248,13 +248,12 @@ public class Viewer extends JFrame implements Observer {
 			} else if(e.getActionCommand().equals("Exit")){
 				if (!controller.curState.saved) {
 					new UnsavedStatePrompt(controller.curState);
-				} else {
-					System.exit(0);
 				}
+				System.exit(0);
 			} else if(e.getActionCommand().equals("Save")){
 				new SaveCommand(controller.curState).execute();
 			} else if(e.getActionCommand().equals("Open")){
-				new OpenCommand(controller.curState).execute();
+				new OpenCommand(controller).execute();
 				// TODO complete switching to new study
 				
 			}

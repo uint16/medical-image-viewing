@@ -19,13 +19,18 @@ public class UnsavedStatePrompt extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private DisplayState state;
 
+
 	/**
-	 * Create the dialog.
+	 * Prompts the user to save the display state
+	 * For use when loading a new display state and the current state is unsaved (i.e. would be lost)
+	 * @param s DisplayState to save
 	 */
 	public UnsavedStatePrompt(DisplayState s) {
+		setTitle("Unsaved Display State");
+		setLocationByPlatform(true);
 		state = s;
 		setModal(true);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 400, 150);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -47,7 +52,7 @@ public class UnsavedStatePrompt extends JDialog {
 				saveButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						state.save();
-						System.exit(0);
+						dispose();
 					}
 				});
 				saveButton.setActionCommand("OK");
@@ -58,7 +63,7 @@ public class UnsavedStatePrompt extends JDialog {
 				JButton exitButton = new JButton("Exit without saving");
 				exitButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						System.exit(0);
+						dispose();
 					}
 				});
 				exitButton.setActionCommand("Cancel");
