@@ -1,12 +1,9 @@
-import java.io.File;
 
-public class OpenCommand implements Command {
-
+public class SetInitialStudyCommand implements Command {
 	private StudyController controller;
-	File filePath;
-
-	public OpenCommand(StudyController s) {
-		controller = s;
+	
+	public SetInitialStudyCommand(StudyController c){
+		controller = c;
 	}
 
 	@Override
@@ -14,7 +11,7 @@ public class OpenCommand implements Command {
 		StudySelectorPrompt s = new StudySelectorPrompt(controller);
 		String result = s.showStudySelector();
 		if(result != null){
-			controller.openStudy(result);
+			controller.setInitialStudy(result);
 		}
 	}
 

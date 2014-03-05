@@ -37,7 +37,7 @@ public class Viewer extends JFrame implements Observer {
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
 	private JCheckBoxMenuItem cbQuadViewMode, cbSingleViewMode;
-	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileOpen;
+	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileOpen, fileSetInit;
 	
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
@@ -121,6 +121,9 @@ public class Viewer extends JFrame implements Observer {
 
 		fileExit = new JMenuItem("Exit");
 		fileExit.addActionListener(listener);
+		
+		fileSetInit = new JMenuItem("Set Initial Study");
+		fileSetInit.addActionListener(listener);
 
 		/*
 		 * Create checkbox for state
@@ -149,6 +152,7 @@ public class Viewer extends JFrame implements Observer {
 		jmFile.add(fileOpen);
 		jmFile.add(fileCopy);
 		jmFile.add(fileSave);
+		jmFile.add(fileSetInit);
 		jmFile.add(fileExit);
 
 		/*
@@ -200,6 +204,8 @@ public class Viewer extends JFrame implements Observer {
 				"Menu for saving a study");
 		fileExit.getAccessibleContext().setAccessibleDescription(
 				"Menu for exiting application");
+		fileSetInit.getAccessibleContext().setAccessibleDescription(
+				"Menu item for setting the initial study.");
 		cbQuadViewMode.getAccessibleContext().setAccessibleDescription(
 				"Menu for enabling or disabling quad view");
 	}
@@ -272,9 +278,10 @@ public class Viewer extends JFrame implements Observer {
 				new OpenCommand(controller).execute();
 			} else if (e.getActionCommand().equals("Open")) {
 				new OpenCommand(controller).execute();
-
 			} else if (e.getActionCommand().equals("Copy")){
 				new CopyStudyCommand(controller).execute();
+			} else if (e.getActionCommand().equals("Set Initial Study")){
+				new SetInitialStudyCommand(controller).execute();
 			}
 		}
 

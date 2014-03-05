@@ -10,7 +10,7 @@ public class CopyStudyCommand implements Command {
 	public void execute() {
 		CopyStudyPrompt csp = new CopyStudyPrompt();
 		String newName = csp.showCopyStudyPrompt();
-		if(!newName.isEmpty()){
+		if(newName != null){
 			controller.saveStudyAs(newName);
 		}
 	}

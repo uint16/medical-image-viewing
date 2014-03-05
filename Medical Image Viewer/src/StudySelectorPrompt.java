@@ -36,7 +36,7 @@ public class StudySelectorPrompt extends JDialog {
 		SpringLayout sl_contentPanel = new SpringLayout();
 		contentPanel.setLayout(sl_contentPanel);
 		
-		JLabel lblSelectAStudy = new JLabel("Select a study to view:");
+		JLabel lblSelectAStudy = new JLabel("Select a study:");
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblSelectAStudy, 10, SpringLayout.NORTH, contentPanel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, lblSelectAStudy, 10, SpringLayout.WEST, contentPanel);
 		contentPanel.add(lblSelectAStudy);
@@ -51,7 +51,7 @@ public class StudySelectorPrompt extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("View Study");
+				JButton okButton = new JButton("Select Study");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						selected = comboBox.getSelectedItem().toString();
