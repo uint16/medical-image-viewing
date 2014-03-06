@@ -1,22 +1,28 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.SpringLayout;
-import javax.swing.JLabel;
 import javax.swing.JComboBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SpringLayout;
+import javax.swing.border.EmptyBorder;
 
 
 public class StudySelectorPrompt extends JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private StudyController sc;
 
 	private final JPanel contentPanel = new JPanel();
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBox;
 	private String selected;
 
@@ -24,6 +30,7 @@ public class StudySelectorPrompt extends JDialog {
 	 * Popup prompt with a comboBox for selecting the study to view
 	 * @param s StudyController context
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public StudySelectorPrompt(StudyController s) {
 		setLocationByPlatform(true);
 		setModal(true);

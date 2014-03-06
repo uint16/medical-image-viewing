@@ -37,7 +37,7 @@ public class Viewer extends JFrame implements Observer {
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
 	private JCheckBoxMenuItem cbQuadViewMode, cbSingleViewMode;
-	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileOpen, fileSetInit;
+	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit;
 	
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
@@ -110,9 +110,6 @@ public class Viewer extends JFrame implements Observer {
 		fileSwitchStudy = new JMenuItem("Switch Study");
 		fileSwitchStudy.addActionListener(listener);
 
-		fileOpen = new JMenuItem("Open");
-		fileOpen.addActionListener(listener);
-
 		fileCopy = new JMenuItem("Copy");
 		fileCopy.addActionListener(listener);
 
@@ -149,7 +146,6 @@ public class Viewer extends JFrame implements Observer {
 		 * Add file menus
 		 */
 		jmFile.add(fileSwitchStudy);
-		jmFile.add(fileOpen);
 		jmFile.add(fileCopy);
 		jmFile.add(fileSave);
 		jmFile.add(fileSetInit);
@@ -275,8 +271,6 @@ public class Viewer extends JFrame implements Observer {
 			} else if (e.getActionCommand().equals("Save")) {
 				new SaveCommand(controller.curState).execute();
 			} else if (e.getActionCommand().equals("Switch Study")) {
-				new OpenCommand(controller).execute();
-			} else if (e.getActionCommand().equals("Open")) {
 				new OpenCommand(controller).execute();
 			} else if (e.getActionCommand().equals("Copy")){
 				new CopyStudyCommand(controller).execute();
