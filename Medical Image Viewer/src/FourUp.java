@@ -11,7 +11,7 @@ public class FourUp implements DisplayMode {
 
 	@Override
 	public int nextIndex(int index, Study s) {
-		if(index+IMG_PER_PAGE <= s.imgAmt()){
+		if(IMG_PER_PAGE*((int) Math.floor(index/IMG_PER_PAGE)) + IMG_PER_PAGE < s.imgAmt()){
 			return index + IMG_PER_PAGE;
 		} else {
 			return index;
