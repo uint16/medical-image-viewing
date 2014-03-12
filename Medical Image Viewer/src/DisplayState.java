@@ -1,21 +1,20 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Observable;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import org.apache.commons.io.FileUtils;
-
-public class DisplayState extends Observable {
+public class DisplayState extends Observable implements Serializable {
 	int index;
 	DisplayMode mode;
-	Study study;
-	boolean saved;
-	static BufferedImage emptyImg;
+	transient Study study;
+	transient boolean saved;
+	transient static BufferedImage emptyImg;
 
 	public DisplayState(Study s) {
 		saved = false;
@@ -67,51 +66,31 @@ public class DisplayState extends Observable {
 		}
 		return result;
 	}
-
-	/**
-	 * saves the display state to a text file in the study folder
-	 * TODO: use something more robust than a text file (possibly preferences?)
-	 */
-	public void save() {
-		File saveFile = new File(study.folderPath, "displayState.txt");
-		try {
-			FileUtils.writeStringToFile(saveFile, Integer.toString(index) + "\n" + mode.getClass().getName() + "\n");
-			saved = true;
-		} catch (IOException e) {
-			System.err.println("Error saving display state: " + saveFile.toString());
-		}
-	}
 	
 	/**
 	 * loads the display state from the text file in the study folder
-	 * TODO: use something more robust than a text file
+	 * This should really be refactored out of this class, but that would be 
+	 * more trouble than it's worth at this point
 	 */
 	private void load(){
-		File saveFile = new File(study.folderPath, "displayState.txt");
+		File saveFile = new File(study.folderPath, "displayState");
 		boolean loadSuccess = true;
 		
 		if (saveFile.exists()) {
 			try {
-				List<String> data = FileUtils.readLines(saveFile);
-				try{
-					this.index = Integer.parseInt(data.get(0));
-				} catch(NumberFormatException e){
-					System.err.println("Error loading index: " + saveFile.toString());
-					index = 0;
-					loadSuccess = false;
-				}
-				//dynamically load the right DisplayMode
-				try {
-					Class<?> m = Class.forName(data.get(1));
-					Constructor<?> c = m.getConstructor();
-					mode = (DisplayMode) c.newInstance();
-				} catch (Exception e) {	
-					System.err.println("Error loading display mode: " + saveFile.toString());
-					mode = new OneUp();
-					loadSuccess = false;
-				}
+				FileInputStream fis = new FileInputStream(saveFile);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				DisplayState ds = (DisplayState) ois.readObject();
+				this.index = ds.index;
+				this.mode = ds.mode;
+				
+				ois.close();
+				fis.close();
 			} catch (IOException e) {
 				System.err.println("Error loading display state: " + saveFile.toString());
+				loadSuccess = false;
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 				loadSuccess = false;
 			}
 		}

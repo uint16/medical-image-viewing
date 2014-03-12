@@ -1,12 +1,13 @@
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.io.Serializable;
 
 /**
  * Class respresenting the one-up display strategy
  * @author Ethan Davidson (emd1771)
  *
  */
-public class OneUp implements DisplayMode {
+public class OneUp implements DisplayMode, Serializable {
 
 
 	@Override

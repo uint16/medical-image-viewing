@@ -70,7 +70,7 @@ public class StudyController extends Observable implements Observer {
 	private void openStudy(Study s) {
 		if (curState != null && !curState.saved) { // curState is null when
 													// loading the first study
-			new UnsavedStatePrompt(curState);
+			new UnsavedStatePrompt(this);
 		}
 		curState = new DisplayState(s);
 		curState.addObserver(this);

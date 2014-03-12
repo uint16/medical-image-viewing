@@ -66,7 +66,7 @@ public class Viewer extends JFrame implements Observer {
 				// TODO: exit command? this code is copied from the exit menu
 				// item
 				if (!controller.curState.saved) {
-					new UnsavedStatePrompt(controller.curState);
+					new UnsavedStatePrompt(controller);
 				} else {
 					System.exit(0);
 				}
@@ -265,7 +265,7 @@ public class Viewer extends JFrame implements Observer {
 				cbSingleViewMode.setState(false);
 			} else if (e.getActionCommand().equals("Exit")) {
 				if (!controller.curState.saved) {
-					new UnsavedStatePrompt(controller.curState);
+					new UnsavedStatePrompt(controller);
 				}
 				System.exit(0);
 			} else if (e.getActionCommand().equals("Save")) {

@@ -1,3 +1,8 @@
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 
 public class SaveCommand implements Command {
 	
@@ -7,8 +12,16 @@ public class SaveCommand implements Command {
 	}
 	@Override
 	public void execute() {
-		dState.save();
-		
+		try{
+			FileOutputStream fileOut = new FileOutputStream(new File(dState.study.folderPath, "displayState"));
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(dState);
+			out.close();
+			fileOut.close();
+			dState.saved = true;
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
 }

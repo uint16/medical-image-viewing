@@ -1,12 +1,13 @@
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.io.Serializable;
 
 /**
  * class representing the four-up (2 by 2) display strategy
  * @author Ethan Davidson (emd1771)
  *
  */
-public class FourUp implements DisplayMode {
+public class FourUp implements DisplayMode, Serializable {
 	private static int IMG_PER_PAGE = 4;
 
 	@Override
