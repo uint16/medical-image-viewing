@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class DisplayState extends Observable implements Serializable {
 	int index;
-	DisplayMode mode;
+	DisplayStrategy mode;
 	transient Study study;
 	transient boolean saved;
 	transient static BufferedImage emptyImg;
@@ -113,7 +113,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * sets the display mode to the given mode
 	 * @param m DisplayMode to use
 	 */
-	public void setMode(DisplayMode m) {
+	public void setMode(DisplayStrategy m) {
 		this.mode = m;
 		this.wasChanged();
 	}
@@ -122,7 +122,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * 
 	 * @return the current mode of the display
 	 */
-	public DisplayMode getMode(){
+	public DisplayStrategy getMode(){
 		return mode;
 	}
 	

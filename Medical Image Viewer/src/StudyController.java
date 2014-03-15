@@ -107,7 +107,7 @@ public class StudyController extends Observable implements Observer {
 		return studyList;
 	}
 
-	public DisplayMode getCurrentMode() {
+	public DisplayStrategy getCurrentMode() {
 		return curState.mode;
 	}
 

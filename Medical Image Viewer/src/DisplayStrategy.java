@@ -5,7 +5,7 @@ import java.awt.LayoutManager;
  * @author Ethan Davidson (emd1771)
  *
  */
-public interface DisplayMode {
+public interface DisplayStrategy {
 	
 	/**
 	 * returns the next index, given the current index

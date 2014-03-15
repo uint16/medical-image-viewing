@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author Ethan Davidson (emd1771)
  *
  */
-public class FourUp implements DisplayMode, Serializable {
+public class FourUp implements DisplayStrategy, Serializable {
 	private static int IMG_PER_PAGE = 4;
 
 	@Override

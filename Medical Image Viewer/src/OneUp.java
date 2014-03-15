@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author Ethan Davidson (emd1771)
  *
  */
-public class OneUp implements DisplayMode, Serializable {
+public class OneUp implements DisplayStrategy, Serializable {
 
 
 	@Override
