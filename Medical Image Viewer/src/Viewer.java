@@ -285,7 +285,11 @@ public class Viewer extends JFrame implements Observer {
 			} else if (command.equals("Copy")){
 				invoker.add(new CopyStudyCommand(controller));
 			} else if (command.equals("Set Initial Study")){
-				invoker.add(new SetInitialStudyCommand(controller));
+				StudySelectorPrompt s = new StudySelectorPrompt(controller);
+				String result = s.showStudySelector();
+				if(result != null){
+					invoker.add(new SetInitialStudyCommand(controller, result));
+				}
 			} else if (command.equals("Undo")){
 				invoker.undo();
 			}
