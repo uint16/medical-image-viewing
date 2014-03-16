@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class DisplayState extends Observable implements Serializable {
 	int index;
-	DisplayStrategy mode;
+	DisplayStrategy strategy;
 	transient Study study;
 	transient boolean saved;
 	transient static BufferedImage emptyImg;
@@ -19,7 +19,7 @@ public class DisplayState extends Observable implements Serializable {
 	public DisplayState(Study s) {
 		saved = false;
 		index = 0;
-		mode = new FourUp();
+		strategy = new FourUp();
 		study = s;
 		if(emptyImg == null){
 			try{
@@ -36,7 +36,7 @@ public class DisplayState extends Observable implements Serializable {
 	 */
 	public void next(){
 		if(index < study.imgAmt() - 1){
-		index = mode.nextIndex(index, study);
+		index = strategy.nextIndex(index, study);
 		this.wasChanged();
 		}
 	}
@@ -45,7 +45,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * moves the index pointer to the prev valid index
 	 */
 	public void prev(){
-		index = mode.prevIndex(index, study);
+		index = strategy.prevIndex(index, study);
 		this.wasChanged();
 	}
 	
@@ -56,8 +56,8 @@ public class DisplayState extends Observable implements Serializable {
 	 */
 	public JPanel generatePanel(){
 		JPanel result = new JPanel();
-		result.setLayout(mode.getLayout());
-		for (int i : mode.getIndices(index)) {
+		result.setLayout(strategy.getLayout());
+		for (int i : strategy.getIndices(index)) {
 			if(!study.inRange(i)){
 				result.add(new ImagePanel(emptyImg));
 			} else {
@@ -82,7 +82,7 @@ public class DisplayState extends Observable implements Serializable {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				DisplayState ds = (DisplayState) ois.readObject();
 				this.index = ds.index;
-				this.mode = ds.mode;
+				this.strategy = ds.strategy;
 				
 				ois.close();
 				fis.close();
@@ -113,8 +113,8 @@ public class DisplayState extends Observable implements Serializable {
 	 * sets the display mode to the given mode
 	 * @param m DisplayMode to use
 	 */
-	public void setMode(DisplayStrategy m) {
-		this.mode = m;
+	public void setStrategy(DisplayStrategy m) {
+		this.strategy = m;
 		this.wasChanged();
 	}
 	
@@ -123,7 +123,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return the current mode of the display
 	 */
 	public DisplayStrategy getMode(){
-		return mode;
+		return strategy;
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return True if there is a valid index previous to the current index
 	 */
 	public boolean hasPrev() {
-		return mode.hasPrev(index, study);
+		return strategy.hasPrev(index, study);
 	}
 
 	/**
@@ -147,6 +147,6 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return True if there is a valid index after the current index
 	 */
 	public boolean hasNext() {
-		return mode.hasNext(index, study);
+		return strategy.hasNext(index, study);
 	}
 }

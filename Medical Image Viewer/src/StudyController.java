@@ -14,15 +14,17 @@ import javax.swing.JPanel;
  * 
  */
 public class StudyController extends Observable implements Observer {
+	final String NODE_NAME = "MedicalImageViewer";
+	final String INITIAL_STUDY_KEY = "INITIAL_STUDY";
+	
 	static Preferences prefs;
-	static String nodeName = "MedicalImageViewer";
 	File homeDir;
 	ArrayList<Study> studyList;
 	DisplayState curState;
 
 	public StudyController() {
 		studyList = new ArrayList<Study>();
-		prefs = Preferences.userRoot().node(nodeName);
+		prefs = Preferences.userRoot().node(NODE_NAME);
 		// If no home dir is saved, ask user where their studies are stored
 		String homeDirPath = prefs.get("HOME_DIR", null);
 		if (homeDirPath == null) {
@@ -33,7 +35,7 @@ public class StudyController extends Observable implements Observer {
 		// load the studies from the home dir
 		loadStudies();
 		// if the user has saved which study to initially open, open that study
-		String savedStudy = prefs.get("INITIAL_STUDY", null);
+		String savedStudy = prefs.get(INITIAL_STUDY_KEY, null);
 		if (savedStudy != null) {
 			openStudy(savedStudy);
 		} else { // otherwise, ask them which study to open
@@ -108,7 +110,7 @@ public class StudyController extends Observable implements Observer {
 	}
 
 	public DisplayStrategy getCurrentMode() {
-		return curState.mode;
+		return curState.strategy;
 	}
 
 	public void setHomeDir(File f) {
@@ -123,7 +125,7 @@ public class StudyController extends Observable implements Observer {
 	 * @param s
 	 */
 	public void setInitialStudy(String s) {
-		prefs.put("INITIAL_STUDY", s);
+		
 	}
 
 	/**

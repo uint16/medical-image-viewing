@@ -15,13 +15,14 @@ import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 
 public class Viewer extends JFrame implements Observer {
@@ -36,8 +37,8 @@ public class Viewer extends JFrame implements Observer {
 	// Menubar and items
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
-	private JCheckBoxMenuItem cbQuadViewMode, cbSingleViewMode;
-	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit;
+	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode;
+	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit, fileUndo;
 	
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
@@ -48,11 +49,17 @@ public class Viewer extends JFrame implements Observer {
 	// Controller for current study
 	private StudyController controller;
 	
+	//Invoker for commands
+	private Invoker invoker;
+	
 	//Action Listener instance
 	private ClickListener listener = new ClickListener();
 
-	//JFrame window tittle
+	//JFrame window title
 	private static final String TITLE = "Medical Image Viewer";
+	
+	//ButtonGroup for display strategies
+	private ButtonGroup stratButtonGroup = new ButtonGroup();
 	
 	
 	/**
@@ -76,6 +83,7 @@ public class Viewer extends JFrame implements Observer {
 
 		controller = new StudyController();
 		controller.addObserver(this);
+		invoker = new Invoker();
 
 		initComponents();
 		setMenu();
@@ -115,32 +123,26 @@ public class Viewer extends JFrame implements Observer {
 
 		fileSave = new JMenuItem("Save");
 		fileSave.addActionListener(listener);
-
-		fileExit = new JMenuItem("Exit");
-		fileExit.addActionListener(listener);
 		
 		fileSetInit = new JMenuItem("Set Initial Study");
 		fileSetInit.addActionListener(listener);
+		
+		fileUndo = new JMenuItem("Undo");
+		fileUndo.addActionListener(listener);
+
+		fileExit = new JMenuItem("Exit");
+		fileExit.addActionListener(listener);
 
 		/*
 		 * Create checkbox for state
 		 */
-		cbQuadViewMode = new JCheckBoxMenuItem("Quad View");
-		cbQuadViewMode.addActionListener(listener);
+		rbQuadViewMode = new JRadioButtonMenuItem("Quad View");
+		rbQuadViewMode.addActionListener(listener);
+		stratButtonGroup.add(rbQuadViewMode);
 
-		cbSingleViewMode = new JCheckBoxMenuItem("Single View");
-		cbSingleViewMode.addActionListener(listener);
-
-		/*
-		 * Mark the correct state on initiate
-		 */
-		if (controller.curState.getMode() instanceof FourUp) {
-			cbQuadViewMode.setState(true);
-			cbSingleViewMode.setState(false);
-		} else {
-			cbSingleViewMode.setState(true);
-			cbQuadViewMode.setState(false);
-		}
+		rbSingleViewMode = new JRadioButtonMenuItem("Single View");
+		rbSingleViewMode.addActionListener(listener);
+		stratButtonGroup.add(rbSingleViewMode);
 
 		/*
 		 * Add file menus
@@ -149,14 +151,15 @@ public class Viewer extends JFrame implements Observer {
 		jmFile.add(fileCopy);
 		jmFile.add(fileSave);
 		jmFile.add(fileSetInit);
+		jmFile.add(fileUndo);
 		jmFile.add(fileExit);
 
 		/*
 		 * Add view menu
 		 */
 
-		jmView.add(cbQuadViewMode);
-		jmView.add(cbSingleViewMode);
+		jmView.add(rbQuadViewMode);
+		jmView.add(rbSingleViewMode);
 
 		menubar.add(jmFile);
 		menubar.add(jmView);
@@ -202,7 +205,9 @@ public class Viewer extends JFrame implements Observer {
 				"Menu for exiting application");
 		fileSetInit.getAccessibleContext().setAccessibleDescription(
 				"Menu item for setting the initial study.");
-		cbQuadViewMode.getAccessibleContext().setAccessibleDescription(
+		fileUndo.getAccessibleContext().setAccessibleDescription(
+				"Menu item for undoing the last action");
+		rbQuadViewMode.getAccessibleContext().setAccessibleDescription(
 				"Menu for enabling or disabling quad view");
 	}
 
@@ -233,6 +238,17 @@ public class Viewer extends JFrame implements Observer {
 		} else {
 			btNextImage.setEnabled(true);
 		}
+		
+		//select menu item corresponding to current display strategy
+		DisplayStrategy curStrat = controller.curState.strategy;
+		if (curStrat instanceof FourUp) {
+			stratButtonGroup.setSelected(rbQuadViewMode.getModel(), true);
+		} else if (curStrat instanceof OneUp) {
+			stratButtonGroup.setSelected(rbSingleViewMode.getModel(), true);
+		} else {
+			System.err.println("Error: Current display strategy was not recognized!");
+			stratButtonGroup.clearSelection();
+		}
 
 		// replace mainPanel with new images
 		container.remove(mainPanel);
@@ -252,30 +268,31 @@ public class Viewer extends JFrame implements Observer {
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
 
-			if (e.getActionCommand().equals("Next")) {
-				new NextCommand(controller.curState).execute();
-			} else if (e.getActionCommand().equals("Previous")) {
-				new PrevCommand(controller.curState).execute();
-			} else if (e.getActionCommand().equals("Single View")) {
-				new ChangeToOneUp(controller.curState).execute();
-				cbQuadViewMode.setState(false);
-			} else if (e.getActionCommand().equals("Quad View")) {
-				new ChangeToFourUp(controller.curState).execute();
-				cbSingleViewMode.setState(false);
-			} else if (e.getActionCommand().equals("Exit")) {
+			if (command.equals("Next")) {
+				invoker.add(new NextCommand(controller.curState));
+			} else if (command.equals("Previous")) {
+				invoker.add(new PrevCommand(controller.curState));
+			} else if (command.equals("Single View")) {
+				invoker.add(new ChangeToOneUp(controller.curState));
+			} else if (command.equals("Quad View")) {
+				invoker.add(new ChangeToFourUp(controller.curState));
+			} else if (command.equals("Exit")) {
 				if (!controller.curState.saved) {
 					new UnsavedStatePrompt(controller);
 				}
 				System.exit(0);
-			} else if (e.getActionCommand().equals("Save")) {
-				new SaveCommand(controller.curState).execute();
-			} else if (e.getActionCommand().equals("Switch Study")) {
-				new OpenCommand(controller).execute();
-			} else if (e.getActionCommand().equals("Copy")){
-				new CopyStudyCommand(controller).execute();
-			} else if (e.getActionCommand().equals("Set Initial Study")){
-				new SetInitialStudyCommand(controller).execute();
+			} else if (command.equals("Save")) {
+				invoker.add(new SaveCommand(controller.curState));
+			} else if (command.equals("Switch Study")) {
+				invoker.add(new OpenCommand(controller));
+			} else if (command.equals("Copy")){
+				invoker.add(new CopyStudyCommand(controller));
+			} else if (command.equals("Set Initial Study")){
+				invoker.add(new SetInitialStudyCommand(controller));
+			} else if (command.equals("Undo")){
+				invoker.undo();
 			}
 		}
 
