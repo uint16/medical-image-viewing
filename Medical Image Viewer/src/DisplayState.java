@@ -36,8 +36,8 @@ public class DisplayState extends Observable implements Serializable {
 	 */
 	public void next(){
 		if(index < study.imgAmt() - 1){
-		index = strategy.nextIndex(index, study);
-		this.wasChanged();
+			index = strategy.nextIndex(index, study);
+			this.wasChanged();
 		}
 	}
 	

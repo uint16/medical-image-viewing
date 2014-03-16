@@ -99,7 +99,7 @@ public class Viewer extends JFrame implements Observer {
 		btNextImage.addActionListener(listener);
 
 		btPrevImage = new JButton("Previous");
-		btPrevImage.addActionListener(listener);
+		btPrevImage.addActionListener(listener);	
 
 		jmFile = new JMenu("File");
 		jmView = new JMenu("View");
@@ -219,6 +219,9 @@ public class Viewer extends JFrame implements Observer {
 		this.setLocation(100, 100);
 		this.setJMenuBar(menubar);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//get the buttons, menu items, etc to init to correct states
+		controller.notifyObservers();
 	}
 
 	/**
@@ -228,16 +231,8 @@ public class Viewer extends JFrame implements Observer {
 	public void update(Observable obs, Object obj) {
 
 		// disable/enable buttons if first or last image
-		if (!controller.curState.hasPrev()) {
-			btPrevImage.setEnabled(false);
-		} else {
-			btPrevImage.setEnabled(true);
-		}
-		if (!controller.curState.hasNext()) {
-			btNextImage.setEnabled(false);
-		} else {
-			btNextImage.setEnabled(true);
-		}
+		btPrevImage.setEnabled(controller.curState.hasPrev());
+		btNextImage.setEnabled(controller.curState.hasNext());
 		
 		//select menu item corresponding to current display strategy
 		DisplayStrategy curStrat = controller.curState.strategy;

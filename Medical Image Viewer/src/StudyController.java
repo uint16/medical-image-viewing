@@ -47,6 +47,8 @@ public class StudyController extends Observable implements Observer {
 								// or specify an initial
 			System.exit(0);
 		}
+		
+		this.setChanged();
 	}
 
 	/**
@@ -116,16 +118,6 @@ public class StudyController extends Observable implements Observer {
 	public void setHomeDir(File f) {
 		prefs.put("HOME_DIR", f.toString());
 		homeDir = f;
-	}
-
-	/**
-	 * Saves the given string representing a study name as the study to open
-	 * when the program loads
-	 * 
-	 * @param s
-	 */
-	public void setInitialStudy(String s) {
-		
 	}
 
 	/**
