@@ -55,16 +55,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return JPanel containing the images currently being viewed
 	 */
 	public JPanel generatePanel(){
-		JPanel result = new JPanel();
-		result.setLayout(strategy.getLayout());
-		for (int i : strategy.getIndices(index)) {
-			if(!study.inRange(i)){
-				result.add(new ImagePanel(emptyImg));
-			} else {
-				result.add(new ImagePanel(study.getImage(i)));
-			}
-		}
-		return result;
+		return strategy.getPanel(index, study);
 	}
 	
 	/**

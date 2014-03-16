@@ -3,10 +3,10 @@ import java.util.Deque;
 
 
 public class Invoker {
-	private Deque<Undoable> stack = new ArrayDeque<Undoable>();
+	private Deque<Undoable> stack;
 	
 	public Invoker(){
-		
+		stack = new ArrayDeque<Undoable>();
 	}
 
 	public void add(Command c) {
@@ -17,8 +17,10 @@ public class Invoker {
 	}
 	
 	public void undo(){
-		Undoable lastCommand = stack.pop();
-		lastCommand.undo();
+		if(!stack.isEmpty()){
+			Undoable lastCommand = stack.pop();
+			lastCommand.undo();
+		}
 	}
 	
 }

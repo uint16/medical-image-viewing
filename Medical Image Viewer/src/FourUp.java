@@ -2,6 +2,8 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.io.Serializable;
 
+import javax.swing.JPanel;
+
 /**
  * class representing the four-up (2 by 2) display strategy
  * @author Ethan Davidson (emd1771)
@@ -28,13 +30,11 @@ public class FourUp implements DisplayStrategy, Serializable {
 		}
 	}
 
-	@Override
-	public LayoutManager getLayout() {
+	private LayoutManager getLayout() {
 		return new GridLayout(2, 2);
 	}
 
-	@Override
-	public int[] getIndices(int index) {
+	private int[] getIndices(int index) {
 		int[] result = new int[IMG_PER_PAGE];
 		for(int i = 0; i < result.length; i++){
 			result[i] = IMG_PER_PAGE*((int) Math.floor(index/IMG_PER_PAGE))+i;
@@ -50,6 +50,20 @@ public class FourUp implements DisplayStrategy, Serializable {
 	@Override
 	public boolean hasNext(int index, Study s) {
 		return nextIndex(index, s) != index;
+	}
+
+	@Override
+	public JPanel getPanel(int index, Study s) {
+		JPanel result = new JPanel();
+		result.setLayout(getLayout());
+		for (int i : getIndices(index)) {
+			if(!s.inRange(i)){
+				result.add(new ImagePanel(DisplayState.emptyImg));
+			} else {
+				result.add(new ImagePanel(s.getImage(i)));
+			}
+		}
+		return result;
 	}
 
 }

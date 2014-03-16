@@ -1,4 +1,4 @@
-import java.awt.LayoutManager;
+import javax.swing.JPanel;
 
 /**
  * Interface representing a display mode strategy
@@ -28,17 +28,13 @@ public interface DisplayStrategy {
 	public int prevIndex(int index, Study s);
 
 	/**
-	 * 
-	 * @return LayoutManager associated with this display mode
+	 * Creates a panel displaying the study in the terms of the strategy
+	 * @param index the index of the image currently being displayed
+	 * @param s the study being displayed
+	 * @return panel containing the images specified by the strategy 
+	 * 			in the context of the current index and study
 	 */
-	public LayoutManager getLayout();
-
-	/**
-	 * Given the current index, returns the indices of the images to display
-	 * @param index
-	 * @return int[] array of indices representing images to display
-	 */
-	public int[] getIndices(int index);
+	public JPanel getPanel(int index, Study s);
 
 	/**
 	 * Given the current index, returns true if there is a valid previous index
