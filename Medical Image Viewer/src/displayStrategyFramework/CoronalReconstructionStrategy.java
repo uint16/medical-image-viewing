@@ -1,3 +1,5 @@
+package displayStrategyFramework;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -7,10 +9,16 @@ import java.io.Serializable;
 
 import javax.swing.JPanel;
 
+import model.MedicalImage;
+import model.Study;
+
+import view.ImagePanel;
+
 /**
  * Class representing the coronal reconstruction strategy
  * Layout is a 2x2 grid
  * top left grid is a "oneup" view of the study
+ * bottom left grid is a coronal reconstruction of the study
  * 
  * @author Ethan Davidson (emd1771)
  *

@@ -1,3 +1,9 @@
+package commandFramework;
+import controller.StudyController;
+import view.CopyStudyPrompt;
+
+
+
 
 public class CopyStudyCommand implements Command {
 	StudyController controller;

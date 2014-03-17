@@ -1,7 +1,11 @@
+package view;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+
+import model.MedicalImage;
 
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel{

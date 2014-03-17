@@ -1,3 +1,8 @@
+package commandFramework;
+import model.DisplayState;
+
+
+
 
 public class NextCommand implements Command {
 	

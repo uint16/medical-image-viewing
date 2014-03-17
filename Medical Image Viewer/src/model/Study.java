@@ -1,3 +1,4 @@
+package model;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -19,7 +20,7 @@ enum ACCEPTABLE_FILE_EXT {
  */
 public class Study {
 	ArrayList<MedicalImage> images;
-	File folderPath;
+	public File folderPath;
 	private static FilenameFilter validExtFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {

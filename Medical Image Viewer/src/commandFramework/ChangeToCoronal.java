@@ -1,3 +1,8 @@
+package commandFramework;
+import model.DisplayState;
+import displayStrategyFramework.CoronalReconstructionStrategy;
+import displayStrategyFramework.DisplayStrategy;
+
 
 public class ChangeToCoronal implements Command, Undoable {
 	DisplayState dState;

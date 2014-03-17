@@ -1,3 +1,4 @@
+package model;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,12 +11,15 @@ import java.util.Observable;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import displayStrategyFramework.DisplayStrategy;
+import displayStrategyFramework.FourUpStrategy;
+
 public class DisplayState extends Observable implements Serializable {
 	int index;
-	DisplayStrategy strategy;
-	transient Study study;
-	transient boolean saved;
-	transient static BufferedImage emptyImg;
+	public DisplayStrategy strategy;
+	public transient Study study;
+	public transient boolean saved;
+	public transient static BufferedImage emptyImg;
 
 	public DisplayState(Study s) {
 		saved = false;

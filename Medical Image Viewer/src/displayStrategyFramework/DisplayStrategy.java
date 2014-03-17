@@ -1,6 +1,12 @@
+package displayStrategyFramework;
+
 import java.awt.Point;
 
 import javax.swing.JPanel;
+
+import model.Study;
+
+import view.ImagePanel;
 
 /**
  * Interface representing a display mode strategy

@@ -1,3 +1,8 @@
+package commandFramework;
+import model.DisplayState;
+import displayStrategyFramework.DisplayStrategy;
+import displayStrategyFramework.FourUpStrategy;
+
 
 public class ChangeToFourUp implements Command, Undoable{
 	DisplayState dState;

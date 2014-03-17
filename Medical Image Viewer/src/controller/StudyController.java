@@ -1,3 +1,4 @@
+package controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -5,6 +6,15 @@ import java.util.Observer;
 import java.util.prefs.Preferences;
 
 import javax.swing.JPanel;
+
+import model.DisplayState;
+import model.Study;
+
+import displayStrategyFramework.DisplayStrategy;
+
+import view.HomeDirPrompt;
+import view.StudySelectorPrompt;
+import view.UnsavedStatePrompt;
 
 /**
  * Main controller class Keeps track of the studies, the homeDir, and the
@@ -14,13 +24,13 @@ import javax.swing.JPanel;
  * 
  */
 public class StudyController extends Observable implements Observer {
-	final String NODE_NAME = "MedicalImageViewer";
-	final String INITIAL_STUDY_KEY = "INITIAL_STUDY";
+	public final String NODE_NAME = "MedicalImageViewer";
+	public final String INITIAL_STUDY_KEY = "INITIAL_STUDY";
 	
 	static Preferences prefs;
 	File homeDir;
 	ArrayList<Study> studyList;
-	DisplayState curState;
+	public DisplayState curState;
 
 	public StudyController() {
 		studyList = new ArrayList<Study>();
@@ -123,8 +133,7 @@ public class StudyController extends Observable implements Observer {
 	/**
 	 * copies the current study into a new folder with the given name
 	 * 
-	 * @param s
-	 *            Name to save the study as
+	 * @param s Name to save the study as
 	 */
 	public void saveStudyAs(String s) {
 		File newFolder = new File(homeDir.toString() + "/" + s);

@@ -1,8 +1,15 @@
+package displayStrategyFramework;
+
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.io.Serializable;
 
 import javax.swing.JPanel;
+
+import model.DisplayState;
+import model.Study;
+
+import view.ImagePanel;
 
 /**
  * class representing the four-up (2 by 2) display strategy

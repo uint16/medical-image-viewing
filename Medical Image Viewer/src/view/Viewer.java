@@ -1,7 +1,9 @@
+package view;
 /**
  * @author Damas Mlabwa
  * Course: Engineering of Software SubSystems, SWEN262
  */
+
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -27,6 +29,23 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
+
+import commandFramework.ChangeToCoronal;
+import commandFramework.ChangeToFourUp;
+import commandFramework.ChangeToOneUp;
+import commandFramework.CopyStudyCommand;
+import commandFramework.Invoker;
+import commandFramework.NextCommand;
+import commandFramework.OpenCommand;
+import commandFramework.PrevCommand;
+import commandFramework.SaveCommand;
+import commandFramework.SetInitialStudyCommand;
+import commandFramework.SetReconstructionIndex;
+import controller.StudyController;
+import displayStrategyFramework.CoronalReconstructionStrategy;
+import displayStrategyFramework.DisplayStrategy;
+import displayStrategyFramework.FourUpStrategy;
+import displayStrategyFramework.OneUpStrategy;
 
 public class Viewer extends JFrame implements Observer {
 

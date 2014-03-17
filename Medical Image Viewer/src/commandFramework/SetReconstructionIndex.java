@@ -1,4 +1,9 @@
+package commandFramework;
+
 import java.awt.Point;
+
+import model.DisplayState;
+
 
 
 public class SetReconstructionIndex implements Command, Undoable {
