@@ -3,8 +3,8 @@ public class ChangeToFourUp implements Command, Undoable{
 	DisplayState dState;
 	DisplayStrategy prevStrat;
 	
-	public ChangeToFourUp(DisplayState newDisplayState){
-		dState = newDisplayState;
+	public ChangeToFourUp(DisplayState ds){
+		dState = ds;
 	}
 	
 	/**
@@ -13,7 +13,7 @@ public class ChangeToFourUp implements Command, Undoable{
 	@Override
 	public void execute() {
 		prevStrat = dState.strategy;
-		dState.setStrategy(new FourUp());
+		dState.setStrategy(new FourUpStrategy());
 	}
 
 	@Override

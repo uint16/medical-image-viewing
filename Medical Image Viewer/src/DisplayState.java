@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +20,7 @@ public class DisplayState extends Observable implements Serializable {
 	public DisplayState(Study s) {
 		saved = false;
 		index = 0;
-		strategy = new FourUp();
+		strategy = new FourUpStrategy();
 		study = s;
 		if(emptyImg == null){
 			try{
@@ -139,5 +140,10 @@ public class DisplayState extends Observable implements Serializable {
 	 */
 	public boolean hasNext() {
 		return strategy.hasNext(index, study);
+	}
+
+	public void setReconstructionIndex(Point p) {
+		strategy.setReconstructionIndex(p);
+		this.wasChanged();
 	}
 }

@@ -1,4 +1,9 @@
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,7 +20,7 @@ import org.apache.commons.io.FilenameUtils;
  * @author Ethan Davidson (emd1771)
  * 
  */
-public class MedicalImage {
+public class MedicalImage extends Image{
 	private File imgFile;
 	private BufferedImage img;
 	private static BufferedImage errImg;
@@ -28,12 +33,25 @@ public class MedicalImage {
 		// instantiated
 		if (errImg == null) {
 			try {
-
 				errImg = ImageIO.read(this.getClass().getResource("/img/errorImage.jpg"));
 			} catch (IOException e) {
 				System.err.println("Error image unable to be read!");
 			}
 		}
+	}
+	
+	public int getWidth(){
+		if (img == null) {
+			img = loadImage();
+		}
+		return img.getWidth();
+	}
+	
+	public int getHeight(){
+		if (img == null) {
+			img = loadImage();
+		}
+		return img.getHeight();
 	}
 
 	/**
@@ -110,6 +128,56 @@ public class MedicalImage {
 		if(result == null){
 			result = errImg;
 		}
+		return result;
+	}
+
+	public int getRGB(int i, int j) {
+		return img.getRGB(i, j);
+	}
+	
+	public int getType(){
+		return img.getType();
+	}
+
+	public Graphics2D createGraphics() {
+		return img.createGraphics();
+	}
+
+	@Override
+	public Graphics getGraphics() {
+		return img.getGraphics();
+	}
+
+	@Override
+	public int getHeight(ImageObserver observer) {
+		return img.getHeight(observer);
+	}
+
+	@Override
+	public Object getProperty(String name, ImageObserver observer) {
+		return img.getProperty(name, observer);
+	}
+
+	@Override
+	public ImageProducer getSource() {
+		return img.getSource();
+	}
+
+	@Override
+	public int getWidth(ImageObserver observer) {
+		return img.getWidth(observer);
+	}
+
+	public Image getSubImage(int x, int y, int w, int h) {
+		return img.getSubimage(x, y, w, h);
+	}
+	
+	public BufferedImage getImageCopy(){
+		if (img == null) {
+			img = loadImage();
+		}
+		BufferedImage result = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+		result.setData(img.getData());
 		return result;
 	}
 }

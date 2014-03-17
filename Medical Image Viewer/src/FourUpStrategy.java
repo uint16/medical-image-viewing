@@ -1,5 +1,5 @@
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
+import java.awt.Point;
 import java.io.Serializable;
 
 import javax.swing.JPanel;
@@ -9,8 +9,9 @@ import javax.swing.JPanel;
  * @author Ethan Davidson (emd1771)
  *
  */
-public class FourUp implements DisplayStrategy, Serializable {
+public class FourUpStrategy implements DisplayStrategy, Serializable {
 	private static int IMG_PER_PAGE = 4;
+	private transient ImagePanel studyPanel;
 
 	@Override
 	public int nextIndex(int index, Study s) {
@@ -28,10 +29,6 @@ public class FourUp implements DisplayStrategy, Serializable {
 		} else {
 			return index;
 		}
-	}
-
-	private LayoutManager getLayout() {
-		return new GridLayout(2, 2);
 	}
 
 	private int[] getIndices(int index) {
@@ -55,15 +52,37 @@ public class FourUp implements DisplayStrategy, Serializable {
 	@Override
 	public JPanel getPanel(int index, Study s) {
 		JPanel result = new JPanel();
-		result.setLayout(getLayout());
+		result.setLayout(new GridLayout(2, 2));
+		boolean setStudy = false;
+		
 		for (int i : getIndices(index)) {
 			if(!s.inRange(i)){
 				result.add(new ImagePanel(DisplayState.emptyImg));
 			} else {
-				result.add(new ImagePanel(s.getImage(i)));
+				ImagePanel newPanel = new ImagePanel(s.getImage(i));
+				if(!setStudy){
+					studyPanel = newPanel;
+					setStudy = true;
+				}
+				result.add(newPanel);
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void setReconstructionIndex(Point p) {
+		return;
+	}
+
+	@Override
+	public Point getReconstructionIndex() {
+		return new Point(0, 0);
+	}
+
+	@Override
+	public ImagePanel getStudyPanel() {
+		return studyPanel;
 	}
 
 }

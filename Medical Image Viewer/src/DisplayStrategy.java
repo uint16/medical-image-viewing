@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 import javax.swing.JPanel;
 
 /**
@@ -45,4 +47,27 @@ public interface DisplayStrategy {
 	 * Given the current index, returns true if there is a valid next index
 	 */
 	public boolean hasNext(int index, Study s);
+
+	/**
+	 * Sets the reconstruction index
+	 * for strategies that don't display a reconstruction, this method does nothing
+	 * @param newIndex Point containing the XY coordinates representing where the user clicked
+	 * 			because only the strategy knows whether it needs the x or the y
+	 */
+	public void setReconstructionIndex(Point newIndex);
+
+	/**
+	 * Gets the reconstruction index
+	 * Since the strategies only keep one int for whichever axis they use, one value in the point will be 0
+	 * for strategies that don't display a reconstruction, this method returns Point(0, 0)
+	 * @return
+	 */
+	public Point getReconstructionIndex();
+
+	/**
+	 * Gets the panel displaying the "study" image
+	 * for strategies that don't display a reconstruction, this method returns the top left panel
+	 * @return
+	 */
+	public ImagePanel getStudyPanel();
 }

@@ -3,8 +3,8 @@ public class ChangeToOneUp implements Command, Undoable{
 	DisplayState dState;
 	DisplayStrategy prevStrat;
 	
-	public ChangeToOneUp(DisplayState newDisplayState){
-		dState = newDisplayState;
+	public ChangeToOneUp(DisplayState ds){
+		dState = ds;
 	}
 	
 	/**
@@ -13,7 +13,7 @@ public class ChangeToOneUp implements Command, Undoable{
 	@Override
 	public void execute() {
 		prevStrat = dState.strategy;
-		dState.setStrategy(new OneUp());
+		dState.setStrategy(new OneUpStrategy());
 	}
 	
 	@Override
