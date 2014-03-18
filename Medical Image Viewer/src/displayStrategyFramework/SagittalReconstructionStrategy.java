@@ -11,23 +11,13 @@ import javax.swing.JPanel;
 
 import model.MedicalImage;
 import model.Study;
-
 import view.ImagePanel;
 
-/**
- * Class representing the coronal reconstruction strategy
- * Layout is a 2x2 grid
- * top left grid is a "oneup" view of the study
- * bottom left grid is a coronal reconstruction of the study
- * 
- * @author Ethan Davidson (emd1771)
- *
- */
-public class CoronalReconstructionStrategy implements DisplayStrategy, Serializable {
+public class SagittalReconstructionStrategy implements DisplayStrategy, Serializable {
 	private int reconstructionIndex;
 	transient ImagePanel studyPanel;
 	
-	public CoronalReconstructionStrategy(){
+	public SagittalReconstructionStrategy(){
 		reconstructionIndex = 0;
 	}
 
@@ -61,16 +51,29 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 		cg.setColor(Color.RED);
 		//The line is 3px wide so that it always shows, even when image scaling causes
 		//	the line of pixels at reconstructionIndex to not be shown
-		cg.fillRect(0, reconstructionIndex-1, copy.getWidth(), 3);
+		cg.fillRect(reconstructionIndex-1, 0, 3, copy.getHeight());
 		studyPanel = new ImagePanel(copy);
 		result.add(studyPanel);
 		
 		//create and add reconstruction
-		BufferedImage recon = new BufferedImage(studyImg.getWidth(), s.imgAmt(), studyImg.getType());
-		Graphics2D rg = recon.createGraphics();
+		BufferedImage recon = new BufferedImage(studyImg.getHeight(), s.imgAmt(), studyImg.getType());
 		for(int i = 0; i < s.imgAmt(); i++){
 			MedicalImage tmpImg = s.getImage(i);
-			rg.drawImage(tmpImg.getSubImage(0, reconstructionIndex, tmpImg.getWidth(), 1), 0, s.imgAmt()-i-1, null);
+			BufferedImage subImg = (BufferedImage) tmpImg.getSubImage(reconstructionIndex, 0, 1, tmpImg.getHeight());
+			//draw the column as a row
+			for(int j = 0; j < subImg.getHeight(); j++){
+				int rgb = subImg.getRGB(0, j);
+				try{
+					recon.setRGB(subImg.getHeight()-j-1, s.imgAmt()-i-1, rgb);
+				} catch(ArrayIndexOutOfBoundsException e){
+					//Since we don't explicitly check that the subImgs all fit within the reconstruction,
+					//the setRGB may sometimes throw this exception. all it means is that a few pixels
+					//are outside the image and won't be displayed.
+					//This may occur when the images in the study aren't all the same size
+					System.err.println("Warning: pixel out of bounds: " + Integer.toString(subImg.getHeight()-j-1) + Integer.toString(s.imgAmt()-i-1));
+				}
+			}
+			//rg.drawImage(subImg, i, 0, null);
 		}
 		result.add(new ImagePanel(recon));
 		
@@ -89,12 +92,12 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 
 	@Override
 	public void setReconstructionIndex(Point p) {
-		reconstructionIndex = p.y;
+		reconstructionIndex = p.x;
 	}
 
 	@Override
 	public Point getReconstructionIndex() {
-		return new Point(0, reconstructionIndex);
+		return new Point(reconstructionIndex, 0);
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public interface DisplayStrategy {
 	 * @param newIndex Point containing the XY coordinates representing where the user clicked
 	 * 			because only the strategy knows whether it needs the x or the y
 	 */
-	public void setReconstructionIndex(Point newIndex);
+	public void setReconstructionIndex(Point p);
 
 	/**
 	 * Gets the reconstruction index
