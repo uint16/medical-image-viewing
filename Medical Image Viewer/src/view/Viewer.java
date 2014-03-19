@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
@@ -48,6 +49,7 @@ import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
+import javax.swing.JLayeredPane;
 
 public class Viewer extends JFrame implements Observer {
 
@@ -84,6 +86,9 @@ public class Viewer extends JFrame implements Observer {
 	
 	//ButtonGroup for display strategies
 	private ButtonGroup stratButtonGroup = new ButtonGroup();
+	
+	//layeredPane containing mainPanel, for catching drag events
+	private JLayeredPane layeredPane;
 	
 	
 	/**
@@ -206,14 +211,19 @@ public class Viewer extends JFrame implements Observer {
 	public void buildUI() {
 		// receive panel from the display state
 		mainPanel = controller.generatePanel();
-		mainPanel.addMouseListener(listener);
 
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
 		navigationPanel.add(btPrevImage);
 		navigationPanel.add(btNextImage);
 		container.add(navigationPanel, BorderLayout.SOUTH);
-		container.add(mainPanel, BorderLayout.CENTER);
+		
+		//set up layered pane
+		layeredPane = new JLayeredPane();
+		getContentPane().add(layeredPane, BorderLayout.CENTER);
+		layeredPane.setLayout(new BorderLayout(0, 0));
+		layeredPane.addMouseListener(listener);
+		layeredPane.addMouseMotionListener(listener);
 	}
 
 	/**
@@ -285,10 +295,9 @@ public class Viewer extends JFrame implements Observer {
 		}
 
 		// replace mainPanel with new images
-		container.remove(mainPanel);
+		layeredPane.remove(mainPanel);
 		mainPanel = controller.generatePanel();
-		mainPanel.addMouseListener(listener);
-		container.add(mainPanel, BorderLayout.CENTER);
+		layeredPane.add(mainPanel);
 		container.validate();
 	}
 
@@ -297,7 +306,7 @@ public class Viewer extends JFrame implements Observer {
 	 * Handle all clicks from the view
 	 * 
 	 */
-	class ClickListener implements ActionListener, MouseWheelListener, MouseListener {
+	class ClickListener implements ActionListener, MouseWheelListener, MouseListener, MouseMotionListener {
 		/**
 		 * Get event and perform an action depending on clicked item
 		 */
@@ -375,6 +384,25 @@ public class Viewer extends JFrame implements Observer {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			ImagePanel studyPanel = controller.curState.strategy.getStudyPanel();
+			Point clicked = e.getPoint();
+			if(studyPanel.contains(clicked)){
+				//get coordinates relative to the panel
+				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
+				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedImageWidth();
+				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedImageHeight();
+				Point scaledP = new Point(scaledX, scaledY);
+				if(scaledP.x < studyPanel.getImageWidth() && scaledP.y < studyPanel.getImageHeight()){
+					invoker.add(new SetReconstructionIndex(controller.curState, scaledP));
+				}
+			}
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {}
 	}
 
 	public static void main(String[] args) {
