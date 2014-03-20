@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
@@ -200,6 +201,7 @@ public class Viewer extends JFrame implements Observer {
 		// receive panel from the display state
 		mainPanel = controller.generatePanel();
 		mainPanel.addMouseListener(listener);
+		mainPanel.addMouseMotionListener(listener);
 
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
@@ -288,7 +290,7 @@ public class Viewer extends JFrame implements Observer {
 	 * Handle all clicks from the view
 	 * 
 	 */
-	class ClickListener implements ActionListener, MouseWheelListener, MouseListener {
+	class ClickListener implements ActionListener, MouseWheelListener, MouseListener, MouseMotionListener {
 		/**
 		 * Get event and perform an action depending on clicked item
 		 */
@@ -364,6 +366,19 @@ public class Viewer extends JFrame implements Observer {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			// TODO Auto-generated method stub
+			System.out.println("Dragged: " + e.getX() + " " + e.getY());
+			
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			System.out.println("Moved: " + e.getX() + " " + e.getY());
+			
+		}
 	}
 
 	public static void main(String[] args) {
