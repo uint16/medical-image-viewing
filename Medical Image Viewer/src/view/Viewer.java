@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 import commandFramework.ChangeToCoronal;
 import commandFramework.ChangeToFourUp;
 import commandFramework.ChangeToOneUp;
+import commandFramework.ChangeToSagittal;
 import commandFramework.CopyStudyCommand;
 import commandFramework.Invoker;
 import commandFramework.NextCommand;
@@ -47,6 +48,8 @@ import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
+import displayStrategyFramework.SagittalReconstructionStrategy;
+import javax.swing.JLayeredPane;
 
 public class Viewer extends JFrame implements Observer {
 
@@ -60,7 +63,7 @@ public class Viewer extends JFrame implements Observer {
 	// Menubar and items
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
-	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode, rbCoronalViewMode;
+	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode, rbCoronalViewMode, rbSagittalViewMode;
 	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit, fileUndo;
 	
 	// Layouts for Images and Buttons
@@ -83,6 +86,9 @@ public class Viewer extends JFrame implements Observer {
 	
 	//ButtonGroup for display strategies
 	private ButtonGroup stratButtonGroup = new ButtonGroup();
+	
+	//layeredPane containing mainPanel, for catching drag events
+	private JLayeredPane layeredPane;
 	
 	
 	/**
@@ -170,6 +176,10 @@ public class Viewer extends JFrame implements Observer {
 		rbCoronalViewMode = new JRadioButtonMenuItem("Coronal Reconstruction");
 		rbCoronalViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbCoronalViewMode);
+		
+		rbSagittalViewMode = new JRadioButtonMenuItem("Sagittal Reconstruction");
+		rbSagittalViewMode.addActionListener(listener);
+		stratButtonGroup.add(rbSagittalViewMode);
 
 		/*
 		 * Add file menus
@@ -188,6 +198,7 @@ public class Viewer extends JFrame implements Observer {
 		jmView.add(rbQuadViewMode);
 		jmView.add(rbSingleViewMode);
 		jmView.add(rbCoronalViewMode);
+		jmView.add(rbSagittalViewMode);
 
 		menubar.add(jmFile);
 		menubar.add(jmView);
@@ -208,7 +219,13 @@ public class Viewer extends JFrame implements Observer {
 		navigationPanel.add(btPrevImage);
 		navigationPanel.add(btNextImage);
 		container.add(navigationPanel, BorderLayout.SOUTH);
-		container.add(mainPanel, BorderLayout.CENTER);
+		
+		//set up layered pane
+		layeredPane = new JLayeredPane();
+		getContentPane().add(layeredPane, BorderLayout.CENTER);
+		layeredPane.setLayout(new BorderLayout(0, 0));
+		layeredPane.addMouseListener(listener);
+		layeredPane.addMouseMotionListener(listener);
 	}
 
 	/**
@@ -272,16 +289,17 @@ public class Viewer extends JFrame implements Observer {
 			stratButtonGroup.setSelected(rbSingleViewMode.getModel(), true);
 		} else if (curStrat instanceof CoronalReconstructionStrategy){
 			stratButtonGroup.setSelected(rbCoronalViewMode.getModel(), true);
+		} else if (curStrat instanceof SagittalReconstructionStrategy){
+			stratButtonGroup.setSelected(rbSagittalViewMode.getModel(), true);
 		} else {
 			System.err.println("Error: Current display strategy was not recognized!");
 			stratButtonGroup.clearSelection();
 		}
 
 		// replace mainPanel with new images
-		container.remove(mainPanel);
+		layeredPane.remove(mainPanel);
 		mainPanel = controller.generatePanel();
-		mainPanel.addMouseListener(listener);
-		container.add(mainPanel, BorderLayout.CENTER);
+		layeredPane.add(mainPanel);
 		container.validate();
 	}
 
@@ -308,6 +326,8 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new ChangeToFourUp(controller.curState));
 			} else if (command.equals("Coronal Reconstruction")){
 				invoker.add(new ChangeToCoronal(controller.curState));
+			} else if (command.equals("Sagittal Reconstruction")){
+				invoker.add(new ChangeToSagittal(controller.curState));
 			} else if (command.equals("Exit")) {
 				if (!controller.curState.saved) {
 					new UnsavedStatePrompt(controller);
@@ -369,16 +389,23 @@ public class Viewer extends JFrame implements Observer {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			// TODO Auto-generated method stub
-			System.out.println("Dragged: " + e.getX() + " " + e.getY());
-			
+			ImagePanel studyPanel = controller.curState.strategy.getStudyPanel();
+			Point clicked = e.getPoint();
+			if(studyPanel.contains(clicked)){
+				//get coordinates relative to the panel
+				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
+				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedImageWidth();
+				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedImageHeight();
+				Point scaledP = new Point(scaledX, scaledY);
+				if(scaledP.x < studyPanel.getImageWidth() && scaledP.y < studyPanel.getImageHeight()){
+					invoker.add(new SetReconstructionIndex(controller.curState, scaledP));
+				}
+			}
 		}
 
 		@Override
-		public void mouseMoved(MouseEvent e) {
-			System.out.println("Moved: " + e.getX() + " " + e.getY());
-			
-		}
+		public void mouseMoved(MouseEvent e) {}
+
 	}
 
 	public static void main(String[] args) {
