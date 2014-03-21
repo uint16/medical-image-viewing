@@ -43,6 +43,7 @@ import commandFramework.PrevCommand;
 import commandFramework.SaveCommand;
 import commandFramework.SetInitialStudyCommand;
 import commandFramework.SetReconstructionIndex;
+import commandFramework.SetWindowingCommand;
 import controller.StudyController;
 import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
@@ -50,6 +51,7 @@ import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
 import javax.swing.JLayeredPane;
+import javax.swing.JSeparator;
 
 public class Viewer extends JFrame implements Observer {
 
@@ -65,6 +67,8 @@ public class Viewer extends JFrame implements Observer {
 	private JMenuBar menubar;
 	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode, rbCoronalViewMode, rbSagittalViewMode;
 	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit, fileUndo;
+	private JSeparator viewSeparator;
+	private JMenuItem viewSetWindowing;
 	
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
@@ -165,6 +169,13 @@ public class Viewer extends JFrame implements Observer {
 		/*
 		 * Create checkbox for state
 		 */
+		viewSetWindowing = new JMenuItem("Set Windowing");
+		viewSetWindowing.addActionListener(listener);
+		jmView.add(viewSetWindowing);
+		
+		viewSeparator = new JSeparator();
+		jmView.add(viewSeparator);
+		
 		rbQuadViewMode = new JRadioButtonMenuItem("Quad View");
 		rbQuadViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbQuadViewMode);
@@ -339,12 +350,18 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new CopyStudyCommand(controller));
 			} else if (command.equals("Set Initial Study")){
 				StudySelectorPrompt s = new StudySelectorPrompt(controller);
-				String result = s.showStudySelector();
+				String result = s.showPrompt();
 				if(result != null){
 					invoker.add(new SetInitialStudyCommand(controller, result));
 				}
 			} else if (command.equals("Undo")){
 				invoker.undo();
+			} else if (command.equals("Set Windowing")){
+				WindowingValuesPrompt wvp = new WindowingValuesPrompt();
+				int[] newCutoffs = wvp.showPrompt();
+				if(newCutoffs != null && newCutoffs.length == 2){
+					invoker.add(new SetWindowingCommand(controller.curState, newCutoffs[0], newCutoffs[1]));
+				}
 			}
 		}
 

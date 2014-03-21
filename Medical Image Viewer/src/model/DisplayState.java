@@ -15,7 +15,9 @@ import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
 
 public class DisplayState extends Observable implements Serializable {
-	int index;
+	private int index;
+	public int highCutoff;
+	public int lowCutoff;
 	public DisplayStrategy strategy;
 	public transient Study study;
 	public transient boolean saved;
@@ -24,6 +26,8 @@ public class DisplayState extends Observable implements Serializable {
 	public DisplayState(Study s) {
 		saved = false;
 		index = 0;
+		highCutoff = 255;
+		lowCutoff = 0;
 		strategy = new FourUpStrategy();
 		study = s;
 		if(emptyImg == null){
@@ -60,7 +64,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return JPanel containing the images currently being viewed
 	 */
 	public JPanel generatePanel(){
-		return strategy.getPanel(index, study);
+		return strategy.getPanel(index, study, lowCutoff, highCutoff);
 	}
 	
 	/**
@@ -78,7 +82,8 @@ public class DisplayState extends Observable implements Serializable {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				DisplayState ds = (DisplayState) ois.readObject();
 				this.index = ds.index;
-				this.strategy = ds.strategy;
+				this.setStrategy(ds.strategy);
+				this.setWindow(ds.highCutoff, ds.lowCutoff);
 				
 				ois.close();
 				fis.close();
@@ -149,5 +154,31 @@ public class DisplayState extends Observable implements Serializable {
 	public void setReconstructionIndex(Point p) {
 		strategy.setReconstructionIndex(p);
 		this.wasChanged();
+	}
+	
+	/**
+	 * ensures that the given values are within legal bounds (0 to 255) 
+	 * and sets them as the windowing intensity cutoffs
+	 * @param low lower windowing cutoff, must be less than high
+	 * @param high upper windowing cutoff, must be greater than low
+	 */
+	public void setWindow(int low, int high) {
+		low = bound(low, 0, 255);
+		high = bound(high, 0, 255);
+		lowCutoff = low;
+		highCutoff = high;
+		for(MedicalImage i : study.images){
+			i.setWindow(low, high);
+		}
+		this.wasChanged();
+	}
+
+	private int bound(int in, int low, int high){
+		if(in < low){
+			in = low;
+		} else if (in > high){
+			in = high;
+		}
+		return in;
 	}
 }

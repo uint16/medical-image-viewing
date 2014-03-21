@@ -57,7 +57,7 @@ public class FourUpStrategy implements DisplayStrategy, Serializable {
 	}
 
 	@Override
-	public JPanel getPanel(int index, Study s) {
+	public JPanel getPanel(int index, Study s, int low, int high) {
 		JPanel result = new JPanel();
 		result.setLayout(new GridLayout(2, 2));
 		boolean setStudy = false;

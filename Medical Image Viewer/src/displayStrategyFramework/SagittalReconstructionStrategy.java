@@ -40,7 +40,7 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 	}
 
 	@Override
-	public JPanel getPanel(int index, Study s) {
+	public JPanel getPanel(int index, Study s, int low, int high) {
 		JPanel result = new JPanel();
 		result.setLayout(new GridLayout(2, 2));
 		
@@ -73,8 +73,11 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 					System.err.println("Warning: pixel out of bounds: " + Integer.toString(subImg.getHeight()-j-1) + Integer.toString(s.imgAmt()-i-1));
 				}
 			}
-			//rg.drawImage(subImg, i, 0, null);
 		}
+		//add index line to reconstruction
+		Graphics2D rg = recon.createGraphics();
+		rg.setColor(Color.RED);
+		rg.fillRect(0, s.imgAmt()-index-1, recon.getWidth(), 3);
 		result.add(new ImagePanel(recon));
 		
 		return result;

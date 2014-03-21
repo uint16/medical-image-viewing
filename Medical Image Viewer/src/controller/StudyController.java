@@ -50,7 +50,7 @@ public class StudyController extends Observable implements Observer {
 			openStudy(savedStudy);
 		} else { // otherwise, ask them which study to open
 			StudySelectorPrompt s = new StudySelectorPrompt(this);
-			String result = s.showStudySelector();
+			String result = s.showPrompt();
 			openStudy(result);
 		}
 		if (curState == null) { // curState is null if they don't select a study

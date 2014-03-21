@@ -50,7 +50,7 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 	}
 
 	@Override
-	public JPanel getPanel(int index, Study s) {
+	public JPanel getPanel(int index, Study s, int low, int high) {
 		JPanel result = new JPanel();
 		result.setLayout(new GridLayout(2, 2));
 		
@@ -72,6 +72,10 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 			MedicalImage tmpImg = s.getImage(i);
 			rg.drawImage(tmpImg.getSubImage(0, reconstructionIndex, tmpImg.getWidth(), 1), 0, s.imgAmt()-i-1, null);
 		}
+		//add index line to reconstruction
+		rg.setColor(Color.RED);
+		rg.fillRect(0, s.imgAmt()-index-1, recon.getWidth(), 3);
+		
 		result.add(new ImagePanel(recon));
 		
 		return result;

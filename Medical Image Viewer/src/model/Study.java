@@ -19,7 +19,7 @@ enum ACCEPTABLE_FILE_EXT {
  *
  */
 public class Study {
-	ArrayList<MedicalImage> images;
+	public ArrayList<MedicalImage> images;
 	public File folderPath;
 	private static FilenameFilter validExtFilter = new FilenameFilter() {
 		@Override
