@@ -122,7 +122,7 @@ public class StudyController extends Observable implements Observer {
 	}
 
 	public DisplayStrategy getCurrentMode() {
-		return curState.strategy;
+		return curState.curStrategy;
 	}
 
 	public void setHomeDir(File f) {

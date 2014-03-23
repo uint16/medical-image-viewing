@@ -6,19 +6,24 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Observable;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
+import displayStrategyFramework.OneUpStrategy;
+import displayStrategyFramework.SagittalReconstructionStrategy;
 
 public class DisplayState extends Observable implements Serializable {
 	private int index;
 	public int highCutoff;
 	public int lowCutoff;
-	public DisplayStrategy strategy;
+	private ArrayList<DisplayStrategy> strategies;
+	public DisplayStrategy curStrategy;
 	public transient Study study;
 	public transient boolean saved;
 	public transient static BufferedImage emptyImg;
@@ -28,7 +33,12 @@ public class DisplayState extends Observable implements Serializable {
 		index = 0;
 		highCutoff = 255;
 		lowCutoff = 0;
-		strategy = new FourUpStrategy();
+		strategies = new ArrayList<DisplayStrategy>();
+		strategies.add(new OneUpStrategy());
+		strategies.add(new FourUpStrategy());
+		strategies.add(new CoronalReconstructionStrategy());
+		strategies.add(new SagittalReconstructionStrategy());
+		curStrategy = strategies.get(0);
 		study = s;
 		if(emptyImg == null){
 			try{
@@ -45,7 +55,7 @@ public class DisplayState extends Observable implements Serializable {
 	 */
 	public void next(){
 		if(index < study.imgAmt() - 1){
-			index = strategy.nextIndex(index, study);
+			index = curStrategy.nextIndex(index, study);
 			this.wasChanged();
 		}
 	}
@@ -54,7 +64,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * moves the index pointer to the prev valid index
 	 */
 	public void prev(){
-		index = strategy.prevIndex(index, study);
+		index = curStrategy.prevIndex(index, study);
 		this.wasChanged();
 	}
 	
@@ -64,7 +74,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return JPanel containing the images currently being viewed
 	 */
 	public JPanel generatePanel(){
-		return strategy.getPanel(index, study, lowCutoff, highCutoff);
+		return curStrategy.getPanel(index, study, lowCutoff, highCutoff);
 	}
 	
 	/**
@@ -82,8 +92,9 @@ public class DisplayState extends Observable implements Serializable {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				DisplayState ds = (DisplayState) ois.readObject();
 				this.index = ds.index;
-				this.setStrategy(ds.strategy);
-				this.setWindow(ds.highCutoff, ds.lowCutoff);
+				this.strategies = ds.strategies;
+				this.setStrategy(ds.curStrategy);
+				this.setWindow(ds.lowCutoff, ds.highCutoff);
 				
 				ois.close();
 				fis.close();
@@ -115,7 +126,11 @@ public class DisplayState extends Observable implements Serializable {
 	 * @param m DisplayMode to use
 	 */
 	public void setStrategy(DisplayStrategy m) {
-		this.strategy = m;
+		for(int i = 0; i < strategies.size(); i++){
+			if(m.getClass() == strategies.get(i).getClass()){
+				curStrategy = strategies.get(i);
+			}
+		}
 		this.wasChanged();
 	}
 	
@@ -124,7 +139,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return the current mode of the display
 	 */
 	public DisplayStrategy getMode(){
-		return strategy;
+		return curStrategy;
 	}
 	
 	/**
@@ -140,7 +155,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return True if there is a valid index previous to the current index
 	 */
 	public boolean hasPrev() {
-		return strategy.hasPrev(index, study);
+		return curStrategy.hasPrev(index, study);
 	}
 
 	/**
@@ -148,11 +163,11 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return True if there is a valid index after the current index
 	 */
 	public boolean hasNext() {
-		return strategy.hasNext(index, study);
+		return curStrategy.hasNext(index, study);
 	}
 
 	public void setReconstructionIndex(Point p) {
-		strategy.setReconstructionIndex(p);
+		curStrategy.setReconstructionIndex(p);
 		this.wasChanged();
 	}
 	

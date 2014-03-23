@@ -291,7 +291,7 @@ public class Viewer extends JFrame implements Observer {
 		btNextImage.setEnabled(controller.curState.hasNext());
 		
 		//select menu item corresponding to current display strategy
-		DisplayStrategy curStrat = controller.curState.strategy;
+		DisplayStrategy curStrat = controller.curState.curStrategy;
 		if (curStrat instanceof FourUpStrategy) {
 			stratButtonGroup.setSelected(rbQuadViewMode.getModel(), true);
 		} else if (curStrat instanceof OneUpStrategy) {
@@ -385,7 +385,7 @@ public class Viewer extends JFrame implements Observer {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			ImagePanel studyPanel = controller.curState.strategy.getStudyPanel();
+			ImagePanel studyPanel = controller.curState.curStrategy.getStudyPanel();
 			Point clicked = e.getPoint();
 			if(studyPanel.contains(clicked)){
 				//get coordinates relative to the panel
@@ -404,7 +404,7 @@ public class Viewer extends JFrame implements Observer {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			ImagePanel studyPanel = controller.curState.strategy.getStudyPanel();
+			ImagePanel studyPanel = controller.curState.curStrategy.getStudyPanel();
 			Point clicked = e.getPoint();
 			if(studyPanel.contains(clicked)){
 				//get coordinates relative to the panel

@@ -67,6 +67,11 @@ public class MedicalImage extends Image{
 		if (img == null) {
 			img = loadImage();
 		}
+		return img;
+	}
+	
+	public BufferedImage getWindowedImage(){
+		getImage();
 		if(windowImg == null){
 			windowImg = window(lowCutoff, highCutoff);
 		}
@@ -171,7 +176,26 @@ public class MedicalImage extends Image{
 	}
 
 	public int getRGB(int i, int j) {
-		return getImage().getRGB(i, j);
+		if (img == null) {
+			img = loadImage();
+		}
+		int result = img.getRGB(i,j);
+		Color c = new Color(result);
+		Color r;
+		if(c.getRed() == c.getBlue() && c.getBlue() == c.getGreen()){	//only window greyscale
+			int intensity = c.getRed();
+			if(intensity < lowCutoff){
+				r = new Color(0, 0, 0);
+			} else if (intensity > highCutoff){
+				r = new Color(255, 255, 255);
+			} else {	//scale intensity
+				intensity = (255 * (intensity-lowCutoff)) / (highCutoff - lowCutoff);
+				r = new Color(intensity, intensity, intensity);
+			}
+			result = r.getRGB();
+		}
+		
+		return result;
 	}
 	
 	public int getType(){
@@ -179,12 +203,12 @@ public class MedicalImage extends Image{
 	}
 
 	public Graphics2D createGraphics() {
-		return getImage().createGraphics();
+		return getWindowedImage().createGraphics();
 	}
 
 	@Override
 	public Graphics getGraphics() {
-		return getImage().getGraphics();
+		return getWindowedImage().getGraphics();
 	}
 
 	@Override
@@ -212,7 +236,7 @@ public class MedicalImage extends Image{
 	}
 	
 	public BufferedImage getImageCopy(){
-		BufferedImage i = getImage();
+		BufferedImage i = getWindowedImage();
 		BufferedImage result = new BufferedImage(i.getWidth(), i.getHeight(), i.getType());
 		result.setData(i.getData());
 		return result;

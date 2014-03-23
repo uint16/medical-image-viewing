@@ -19,7 +19,7 @@ public class SetReconstructionIndex implements Command, Undoable {
 
 	@Override
 	public void execute() {
-		prevIndex = state.strategy.getReconstructionIndex();
+		prevIndex = state.curStrategy.getReconstructionIndex();
 		state.setReconstructionIndex(newIndex);
 	}
 	

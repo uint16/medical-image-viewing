@@ -12,7 +12,7 @@ public class ImagePanel extends JPanel{
 	private BufferedImage img;
 	
 	public ImagePanel(MedicalImage i){
-		img = i.getImage();
+		img = i.getWindowedImage();
 	}
 	
 	public ImagePanel(BufferedImage i){
