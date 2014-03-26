@@ -14,7 +14,7 @@ public class ChangeToSagittal implements UndoableCommand {
 
 	@Override
 	public void execute() {
-		prevStrat = dState.curStrategy;
+		prevStrat = dState.getCurStrategy();
 		dState.setStrategy(new SagittalReconstructionStrategy());
 	}
 	

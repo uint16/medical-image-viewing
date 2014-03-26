@@ -25,7 +25,7 @@ import view.ImagePanel;
  */
 public class CoronalReconstructionStrategy implements DisplayStrategy, Serializable {
 	private int reconstructionIndex;
-	transient ImagePanel studyPanel;
+	private transient ImagePanel studyPanel;
 	
 	public CoronalReconstructionStrategy(){
 		reconstructionIndex = 0;

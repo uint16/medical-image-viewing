@@ -10,8 +10,8 @@ public class SetWindowingCommand implements UndoableCommand {
 		state = ds;
 		highCutoff = high;
 		lowCutoff = low;
-		prevHigh = ds.highCutoff;
-		prevLow = ds.lowCutoff;
+		prevHigh = ds.getHighCutoff();
+		prevLow = ds.getLowCutoff();
 	}
 
 	@Override

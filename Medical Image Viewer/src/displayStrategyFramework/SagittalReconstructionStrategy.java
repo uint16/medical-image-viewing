@@ -15,7 +15,7 @@ import view.ImagePanel;
 
 public class SagittalReconstructionStrategy implements DisplayStrategy, Serializable {
 	private int reconstructionIndex;
-	transient ImagePanel studyPanel;
+	private transient ImagePanel studyPanel;
 	
 	public SagittalReconstructionStrategy(){
 		reconstructionIndex = 0;

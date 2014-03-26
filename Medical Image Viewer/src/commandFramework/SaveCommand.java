@@ -20,7 +20,7 @@ public class SaveCommand implements Command {
 	@Override
 	public void execute() {
 		try{
-			FileOutputStream fileOut = new FileOutputStream(dState.study.getSaveFile());
+			FileOutputStream fileOut = new FileOutputStream(dState.getStudy().getSaveFile());
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(dState);
 			out.close();

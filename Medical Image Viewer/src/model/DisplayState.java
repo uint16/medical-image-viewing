@@ -1,6 +1,5 @@
 package model;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import displayStrategyFramework.CoronalReconstructionStrategy;
@@ -20,13 +18,12 @@ import displayStrategyFramework.SagittalReconstructionStrategy;
 
 public class DisplayState extends Observable implements Serializable {
 	private int index;
-	public int highCutoff;
-	public int lowCutoff;
+	private int highCutoff;
+	private int lowCutoff;
 	private ArrayList<DisplayStrategy> strategies;
-	public DisplayStrategy curStrategy;
-	public transient Study study;
+	private DisplayStrategy curStrategy;
+	private transient Study study;
 	public transient boolean saved;
-	public transient static BufferedImage emptyImg;
 
 	public DisplayState(Study s) {
 		saved = false;
@@ -40,16 +37,13 @@ public class DisplayState extends Observable implements Serializable {
 		strategies.add(new SagittalReconstructionStrategy());
 		curStrategy = strategies.get(0);
 		study = s;
-		if(emptyImg == null){
-			try{
-				emptyImg = ImageIO.read(MedicalImage.class.getResource("/img/emptyImage.jpg"));
-			} catch(IOException e){
-				System.err.println("Empty image unable to be read!");
-			}
-		}
 		load();
 	}
 	
+	public Study getStudy() {
+		return study;
+	}
+
 	/**
 	 * moves the index pointer to the next valid index
 	 */
@@ -74,7 +68,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return JPanel containing the images currently being viewed
 	 */
 	public JPanel generatePanel(){
-		return curStrategy.getPanel(index, study, lowCutoff, highCutoff);
+		return curStrategy.getPanel(index, study, lowCutoff, getHighCutoff());
 	}
 	
 	/**
@@ -94,7 +88,7 @@ public class DisplayState extends Observable implements Serializable {
 				this.index = ds.index;
 				this.strategies = ds.strategies;
 				this.setStrategy(ds.curStrategy);
-				this.setWindow(ds.lowCutoff, ds.highCutoff);
+				this.setWindow(ds.lowCutoff, ds.getHighCutoff());
 				
 				ois.close();
 				fis.close();
@@ -132,14 +126,6 @@ public class DisplayState extends Observable implements Serializable {
 			}
 		}
 		this.wasChanged();
-	}
-	
-	/**
-	 * 
-	 * @return the current mode of the display
-	 */
-	public DisplayStrategy getMode(){
-		return curStrategy;
 	}
 	
 	/**
@@ -195,5 +181,17 @@ public class DisplayState extends Observable implements Serializable {
 			in = high;
 		}
 		return in;
+	}
+
+	public int getHighCutoff() {
+		return highCutoff;
+	}
+
+	public int getLowCutoff() {
+		return lowCutoff;
+	}
+
+	public DisplayStrategy getCurStrategy() {
+		return curStrategy;
 	}
 }

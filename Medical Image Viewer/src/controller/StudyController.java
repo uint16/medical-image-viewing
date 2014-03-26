@@ -122,7 +122,7 @@ public class StudyController extends Observable implements Observer {
 	}
 
 	public DisplayStrategy getCurrentMode() {
-		return curState.curStrategy;
+		return curState.getCurStrategy();
 	}
 
 	public void setHomeDir(File f) {
@@ -144,7 +144,7 @@ public class StudyController extends Observable implements Observer {
 			if (!newFolder.exists()) {
 				newFolder.mkdir();
 			}
-			curState.study.copyTo(newFolder);
+			curState.getStudy().copyTo(newFolder);
 		} else {
 			System.err.println("Error: can't copy study into a file: "
 					+ newFolder.toString());
