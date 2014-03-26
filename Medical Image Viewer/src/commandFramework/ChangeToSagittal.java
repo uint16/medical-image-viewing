@@ -4,9 +4,9 @@ import model.DisplayState;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
 
-public class ChangeToSagittal implements Command, Undoable {
-	DisplayState dState;
-	DisplayStrategy prevStrat;
+public class ChangeToSagittal implements UndoableCommand {
+	private DisplayState dState;
+	private DisplayStrategy prevStrat;
 	
 	public ChangeToSagittal(DisplayState ds){
 		dState = ds;

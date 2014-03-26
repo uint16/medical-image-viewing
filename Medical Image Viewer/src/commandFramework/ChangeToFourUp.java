@@ -4,9 +4,9 @@ import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
 
 
-public class ChangeToFourUp implements Command, Undoable{
-	DisplayState dState;
-	DisplayStrategy prevStrat;
+public class ChangeToFourUp implements UndoableCommand{
+	private DisplayState dState;
+	private DisplayStrategy prevStrat;
 	
 	public ChangeToFourUp(DisplayState ds){
 		dState = ds;

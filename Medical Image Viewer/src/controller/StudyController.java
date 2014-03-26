@@ -27,9 +27,9 @@ public class StudyController extends Observable implements Observer {
 	public final String NODE_NAME = "MedicalImageViewer";
 	public final String INITIAL_STUDY_KEY = "INITIAL_STUDY";
 	
-	static Preferences prefs;
-	File homeDir;
-	ArrayList<Study> studyList;
+	private static Preferences prefs;
+	private File homeDir;
+	private ArrayList<Study> studyList;
 	public DisplayState curState;
 
 	public StudyController() {
@@ -63,8 +63,8 @@ public class StudyController extends Observable implements Observer {
 
 	/**
 	 * Given a string representing the folder name of a study, open that study
-	 * i.e. create the displayState for that study and set it to current TODO:
-	 * what do if it doesn't find the study matching the string?
+	 * i.e. create the displayState for that study and set it to current 
+	 * TODO: what do if it doesn't find the study matching the string?
 	 * 
 	 * @param savedStudy
 	 */

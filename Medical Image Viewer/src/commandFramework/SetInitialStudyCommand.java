@@ -8,7 +8,7 @@ import java.util.prefs.Preferences;
 import controller.StudyController;
 
 
-public class SetInitialStudyCommand implements Command, Undoable {
+public class SetInitialStudyCommand implements UndoableCommand {
 	private StudyController controller;
 	private String newInitialStudy;
 	private String prevInitialStudy;

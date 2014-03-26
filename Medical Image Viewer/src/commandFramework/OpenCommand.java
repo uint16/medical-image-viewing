@@ -7,7 +7,6 @@ import view.StudySelectorPrompt;
 
 
 public class OpenCommand implements Command {
-
 	private StudyController controller;
 
 	public OpenCommand(StudyController s) {

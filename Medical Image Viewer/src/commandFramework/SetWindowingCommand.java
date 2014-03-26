@@ -2,7 +2,7 @@ package commandFramework;
 
 import model.DisplayState;
 
-public class SetWindowingCommand implements Command, Undoable {
+public class SetWindowingCommand implements UndoableCommand {
 	private DisplayState state;
 	private int highCutoff, lowCutoff, prevHigh, prevLow;
 	

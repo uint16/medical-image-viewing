@@ -4,9 +4,9 @@ import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
 
 
-public class ChangeToCoronal implements Command, Undoable {
-	DisplayState dState;
-	DisplayStrategy prevStrat;
+public class ChangeToCoronal implements UndoableCommand {
+	private DisplayState dState;
+	private DisplayStrategy prevStrat;
 	
 	public ChangeToCoronal(DisplayState ds){
 		dState = ds;

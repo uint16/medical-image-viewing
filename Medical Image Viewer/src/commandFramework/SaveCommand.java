@@ -3,7 +3,6 @@ package commandFramework;
 
 
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -12,11 +11,12 @@ import model.DisplayState;
 
 
 public class SaveCommand implements Command {
+	private DisplayState dState;
 	
-	DisplayState dState;
 	public SaveCommand(DisplayState newDisplayState){
 		dState = newDisplayState;
 	}
+	
 	@Override
 	public void execute() {
 		try{

@@ -6,7 +6,7 @@ import model.DisplayState;
 
 
 
-public class SetReconstructionIndex implements Command, Undoable {
+public class SetReconstructionIndex implements UndoableCommand {
 	private DisplayState state;
 	private Point prevIndex;
 	private Point newIndex;
