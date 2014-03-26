@@ -83,7 +83,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * more trouble than it's worth at this point
 	 */
 	private void load(){
-		File saveFile = new File(study.folderPath, "displayState");
+		File saveFile = study.getSaveFile();
 		boolean loadSuccess = true;
 		
 		if (saveFile.exists()) {
