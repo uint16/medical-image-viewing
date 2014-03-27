@@ -6,7 +6,7 @@ import view.CopyStudyPrompt;
 
 
 public class CopyStudyCommand implements Command {
-	StudyController controller;
+	private StudyController controller;
 	
 	public CopyStudyCommand(StudyController c){
 		controller = c;

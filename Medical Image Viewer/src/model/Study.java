@@ -19,8 +19,9 @@ enum ACCEPTABLE_FILE_EXT {
  *
  */
 public class Study {
-	ArrayList<MedicalImage> images;
-	public File folderPath;
+	public ArrayList<MedicalImage> images;
+	public ArrayList<Study> subStudies;
+	private File folderPath;
 	private static FilenameFilter validExtFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {
@@ -37,6 +38,7 @@ public class Study {
 	public Study(File f) {
 		folderPath = f;
 		images = loadImages(folderPath);
+		subStudies = loadStudies(folderPath);
 	}
 
 	/**
@@ -50,6 +52,23 @@ public class Study {
 		ArrayList<MedicalImage> result = new ArrayList<MedicalImage>();
 		for (File f : folder.listFiles(validExtFilter)) {
 			result.add(new MedicalImage(f));
+		}
+		return result;
+	}
+	
+	/**
+	 * Iterates over the files in given directory and creates a Study for each subdirectory
+	 * Because this is called in the Study constructor, it recursively loads all studies below this folder
+	 * 
+	 * @param folder File object pointing to the folder containing the studies to load.
+	 * @return ArrayList of Studies
+	 */
+	private ArrayList<Study> loadStudies(File folder){
+		ArrayList<Study> result = new ArrayList<Study>();
+		for(File f: folder.listFiles()){
+			if(f.isDirectory()){
+				result.add(new Study(f));
+			}
 		}
 		return result;
 	}
@@ -70,11 +89,23 @@ public class Study {
 		return folderPath.getName();
 	}
 	
+	/**
+	 * Uses Apache Commons FileUtils library to copy the folder containing this study to 
+	 * a specified new folder
+	 * @param destFolder
+	 */
 	public void copyTo(File destFolder){
 		try {
 			FileUtils.copyDirectory(folderPath, destFolder);
 		} catch (IOException e) {
 			System.err.println("Error copying study: " + folderPath + " to " + destFolder.toString());
 		}
+	}
+	
+	/**
+	 * @return File object representing the file used to serialize this study's display state
+	 */
+	public File getSaveFile(){
+		return new File(this.folderPath, "displayState");
 	}
 }

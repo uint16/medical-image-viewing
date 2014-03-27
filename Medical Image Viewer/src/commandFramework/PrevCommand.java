@@ -6,8 +6,7 @@ import model.DisplayState;
 
 
 public class PrevCommand implements Command{
-
-	DisplayState dState;
+	private DisplayState dState;
 	
 	public PrevCommand(DisplayState newDisplayState){
 		dState = newDisplayState;

@@ -2,11 +2,15 @@ package displayStrategyFramework;
 
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.Serializable;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import model.DisplayState;
+import model.MedicalImage;
 import model.Study;
 
 import view.ImagePanel;
@@ -19,6 +23,17 @@ import view.ImagePanel;
 public class FourUpStrategy implements DisplayStrategy, Serializable {
 	private static int IMG_PER_PAGE = 4;
 	private transient ImagePanel studyPanel;
+	private transient static BufferedImage emptyImg;
+	
+	public FourUpStrategy(){
+		if(emptyImg == null){
+			try{
+				emptyImg = ImageIO.read(MedicalImage.class.getResource("/img/emptyImage.jpg"));
+			} catch(IOException e){
+				System.err.println("Empty image unable to be read!");
+			}
+		}
+	}
 
 	@Override
 	public int nextIndex(int index, Study s) {
@@ -57,14 +72,14 @@ public class FourUpStrategy implements DisplayStrategy, Serializable {
 	}
 
 	@Override
-	public JPanel getPanel(int index, Study s) {
+	public JPanel getPanel(int index, Study s, int low, int high) {
 		JPanel result = new JPanel();
 		result.setLayout(new GridLayout(2, 2));
 		boolean setStudy = false;
 		
 		for (int i : getIndices(index)) {
 			if(!s.inRange(i)){
-				result.add(new ImagePanel(DisplayState.emptyImg));
+				result.add(new ImagePanel(emptyImg));
 			} else {
 				ImagePanel newPanel = new ImagePanel(s.getImage(i));
 				if(!setStudy){

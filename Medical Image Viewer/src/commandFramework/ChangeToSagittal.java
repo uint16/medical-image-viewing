@@ -4,9 +4,9 @@ import model.DisplayState;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
 
-public class ChangeToSagittal implements Command, Undoable {
-	DisplayState dState;
-	DisplayStrategy prevStrat;
+public class ChangeToSagittal implements UndoableCommand {
+	private DisplayState dState;
+	private DisplayStrategy prevStrat;
 	
 	public ChangeToSagittal(DisplayState ds){
 		dState = ds;
@@ -14,7 +14,7 @@ public class ChangeToSagittal implements Command, Undoable {
 
 	@Override
 	public void execute() {
-		prevStrat = dState.strategy;
+		prevStrat = dState.getCurStrategy();
 		dState.setStrategy(new SagittalReconstructionStrategy());
 	}
 	

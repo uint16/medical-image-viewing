@@ -27,9 +27,9 @@ public class StudyController extends Observable implements Observer {
 	public final String NODE_NAME = "MedicalImageViewer";
 	public final String INITIAL_STUDY_KEY = "INITIAL_STUDY";
 	
-	static Preferences prefs;
-	File homeDir;
-	ArrayList<Study> studyList;
+	private static Preferences prefs;
+	private File homeDir;
+	private ArrayList<Study> studyList;
 	public DisplayState curState;
 
 	public StudyController() {
@@ -50,7 +50,7 @@ public class StudyController extends Observable implements Observer {
 			openStudy(savedStudy);
 		} else { // otherwise, ask them which study to open
 			StudySelectorPrompt s = new StudySelectorPrompt(this);
-			String result = s.showStudySelector();
+			String result = s.showPrompt();
 			openStudy(result);
 		}
 		if (curState == null) { // curState is null if they don't select a study
@@ -63,8 +63,8 @@ public class StudyController extends Observable implements Observer {
 
 	/**
 	 * Given a string representing the folder name of a study, open that study
-	 * i.e. create the displayState for that study and set it to current TODO:
-	 * what do if it doesn't find the study matching the string?
+	 * i.e. create the displayState for that study and set it to current 
+	 * TODO: what do if it doesn't find the study matching the string?
 	 * 
 	 * @param savedStudy
 	 */
@@ -122,7 +122,7 @@ public class StudyController extends Observable implements Observer {
 	}
 
 	public DisplayStrategy getCurrentMode() {
-		return curState.strategy;
+		return curState.getCurStrategy();
 	}
 
 	public void setHomeDir(File f) {
@@ -144,7 +144,7 @@ public class StudyController extends Observable implements Observer {
 			if (!newFolder.exists()) {
 				newFolder.mkdir();
 			}
-			curState.study.copyTo(newFolder);
+			curState.getStudy().copyTo(newFolder);
 		} else {
 			System.err.println("Error: can't copy study into a file: "
 					+ newFolder.toString());

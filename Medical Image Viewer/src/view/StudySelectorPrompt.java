@@ -84,7 +84,7 @@ public class StudySelectorPrompt extends JDialog {
 		}
 	}
 	
-	public String showStudySelector(){
+	public String showPrompt(){
 		this.setVisible(true);
 		return selected;
 	}

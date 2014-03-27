@@ -5,22 +5,22 @@ import java.util.Deque;
 
 
 public class Invoker {
-	private Deque<Undoable> stack;
+	private Deque<UndoableCommand> stack;
 	
 	public Invoker(){
-		stack = new ArrayDeque<Undoable>();
+		stack = new ArrayDeque<UndoableCommand>();
 	}
 
 	public void add(Command c) {
-		if(c instanceof Undoable){
-			stack.push((Undoable) c);
+		if(c instanceof UndoableCommand){
+			stack.push((UndoableCommand) c);
 		}
 		c.execute();
 	}
 	
 	public void undo(){
 		if(!stack.isEmpty()){
-			Undoable lastCommand = stack.pop();
+			UndoableCommand lastCommand = stack.pop();
 			lastCommand.undo();
 		}
 	}

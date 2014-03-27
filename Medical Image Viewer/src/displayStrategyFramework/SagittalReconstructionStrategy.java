@@ -15,7 +15,7 @@ import view.ImagePanel;
 
 public class SagittalReconstructionStrategy implements DisplayStrategy, Serializable {
 	private int reconstructionIndex;
-	transient ImagePanel studyPanel;
+	private transient ImagePanel studyPanel;
 	
 	public SagittalReconstructionStrategy(){
 		reconstructionIndex = 0;
@@ -40,7 +40,7 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 	}
 
 	@Override
-	public JPanel getPanel(int index, Study s) {
+	public JPanel getPanel(int index, Study s, int low, int high) {
 		JPanel result = new JPanel();
 		result.setLayout(new GridLayout(2, 2));
 		
@@ -59,22 +59,24 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 		BufferedImage recon = new BufferedImage(studyImg.getHeight(), s.imgAmt(), studyImg.getType());
 		for(int i = 0; i < s.imgAmt(); i++){
 			MedicalImage tmpImg = s.getImage(i);
-			BufferedImage subImg = (BufferedImage) tmpImg.getSubImage(reconstructionIndex, 0, 1, tmpImg.getHeight());
 			//draw the column as a row
-			for(int j = 0; j < subImg.getHeight(); j++){
-				int rgb = subImg.getRGB(0, j);
+			for(int j = 0; j < tmpImg.getHeight(); j++){
+				int rgb = tmpImg.getRGB(reconstructionIndex, j);
 				try{
-					recon.setRGB(subImg.getHeight()-j-1, s.imgAmt()-i-1, rgb);
+					recon.setRGB(tmpImg.getHeight()-j-1, s.imgAmt()-i-1, rgb);
 				} catch(ArrayIndexOutOfBoundsException e){
 					//Since we don't explicitly check that the subImgs all fit within the reconstruction,
 					//the setRGB may sometimes throw this exception. all it means is that a few pixels
 					//are outside the image and won't be displayed.
 					//This may occur when the images in the study aren't all the same size
-					System.err.println("Warning: pixel out of bounds: " + Integer.toString(subImg.getHeight()-j-1) + Integer.toString(s.imgAmt()-i-1));
+					System.err.println("Warning: pixel out of bounds: " + Integer.toString(tmpImg.getHeight()-j-1) + Integer.toString(s.imgAmt()-i-1));
 				}
 			}
-			//rg.drawImage(subImg, i, 0, null);
 		}
+		//add index line to reconstruction
+		Graphics2D rg = recon.createGraphics();
+		rg.setColor(Color.RED);
+		rg.fillRect(0, s.imgAmt()-index-1, recon.getWidth(), 3);
 		result.add(new ImagePanel(recon));
 		
 		return result;

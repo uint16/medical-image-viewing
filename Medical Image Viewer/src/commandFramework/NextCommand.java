@@ -5,8 +5,7 @@ import model.DisplayState;
 
 
 public class NextCommand implements Command {
-	
-	DisplayState dState;
+	private DisplayState dState;
 	
 	public NextCommand(DisplayState newDisplayState){
 		dState = newDisplayState;

@@ -11,14 +11,10 @@ import model.MedicalImage;
 public class ImagePanel extends JPanel{
 	private BufferedImage img;
 	
-
-	public ImagePanel(MedicalImage i) {
-		img = i.showImage();
+	public ImagePanel(MedicalImage i){
+		img = i.getWindowedImage();
 	}
 	
-	/**
-	 * @wbp.parser.constructor
-	 */
 	public ImagePanel(BufferedImage i){
 		img = i;
 	}
@@ -30,9 +26,9 @@ public class ImagePanel extends JPanel{
 	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		//fit the image into the panel, keeping aspect ratio
 		int newWidth = img.getWidth();
 		int newHeight = img.getHeight();
-		//fit the image into the panel, keeping aspect ratio
 		if(img.getWidth() > this.getWidth()){
 			newWidth = this.getWidth();
 			newHeight = (newWidth * img.getHeight()) / img.getWidth();

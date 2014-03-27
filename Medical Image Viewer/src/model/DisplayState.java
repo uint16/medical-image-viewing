@@ -1,47 +1,55 @@
 package model;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Observable;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
+import displayStrategyFramework.OneUpStrategy;
+import displayStrategyFramework.SagittalReconstructionStrategy;
 
 public class DisplayState extends Observable implements Serializable {
-	int index;
-	public DisplayStrategy strategy;
-	public transient Study study;
+	private int index;
+	private int highCutoff;
+	private int lowCutoff;
+	private ArrayList<DisplayStrategy> strategies;
+	private DisplayStrategy curStrategy;
+	private transient Study study;
 	public transient boolean saved;
-	public transient static BufferedImage emptyImg;
 
 	public DisplayState(Study s) {
 		saved = false;
 		index = 0;
-		strategy = new FourUpStrategy();
+		highCutoff = 255;
+		lowCutoff = 0;
+		strategies = new ArrayList<DisplayStrategy>();
+		strategies.add(new OneUpStrategy());
+		strategies.add(new FourUpStrategy());
+		strategies.add(new CoronalReconstructionStrategy());
+		strategies.add(new SagittalReconstructionStrategy());
+		curStrategy = strategies.get(0);
 		study = s;
-		if(emptyImg == null){
-			try{
-				emptyImg = ImageIO.read(MedicalImage.class.getResource("/img/emptyImage.jpg"));
-			} catch(IOException e){
-				System.err.println("Empty image unable to be read!");
-			}
-		}
 		load();
 	}
 	
+	public Study getStudy() {
+		return study;
+	}
+
 	/**
 	 * moves the index pointer to the next valid index
 	 */
 	public void next(){
 		if(index < study.imgAmt() - 1){
-			index = strategy.nextIndex(index, study);
+			index = curStrategy.nextIndex(index, study);
 			this.wasChanged();
 		}
 	}
@@ -50,7 +58,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * moves the index pointer to the prev valid index
 	 */
 	public void prev(){
-		index = strategy.prevIndex(index, study);
+		index = curStrategy.prevIndex(index, study);
 		this.wasChanged();
 	}
 	
@@ -60,7 +68,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return JPanel containing the images currently being viewed
 	 */
 	public JPanel generatePanel(){
-		return strategy.getPanel(index, study);
+		return curStrategy.getPanel(index, study, lowCutoff, getHighCutoff());
 	}
 	
 	/**
@@ -69,7 +77,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * more trouble than it's worth at this point
 	 */
 	private void load(){
-		File saveFile = new File(study.folderPath, "displayState");
+		File saveFile = study.getSaveFile();
 		boolean loadSuccess = true;
 		
 		if (saveFile.exists()) {
@@ -78,7 +86,9 @@ public class DisplayState extends Observable implements Serializable {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				DisplayState ds = (DisplayState) ois.readObject();
 				this.index = ds.index;
-				this.strategy = ds.strategy;
+				this.strategies = ds.strategies;
+				this.setStrategy(ds.curStrategy);
+				this.setWindow(ds.lowCutoff, ds.getHighCutoff());
 				
 				ois.close();
 				fis.close();
@@ -110,16 +120,12 @@ public class DisplayState extends Observable implements Serializable {
 	 * @param m DisplayMode to use
 	 */
 	public void setStrategy(DisplayStrategy m) {
-		this.strategy = m;
+		for(int i = 0; i < strategies.size(); i++){
+			if(m.getClass() == strategies.get(i).getClass()){
+				curStrategy = strategies.get(i);
+			}
+		}
 		this.wasChanged();
-	}
-	
-	/**
-	 * 
-	 * @return the current mode of the display
-	 */
-	public DisplayStrategy getMode(){
-		return strategy;
 	}
 	
 	/**
@@ -135,7 +141,7 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return True if there is a valid index previous to the current index
 	 */
 	public boolean hasPrev() {
-		return strategy.hasPrev(index, study);
+		return curStrategy.hasPrev(index, study);
 	}
 
 	/**
@@ -143,11 +149,49 @@ public class DisplayState extends Observable implements Serializable {
 	 * @return True if there is a valid index after the current index
 	 */
 	public boolean hasNext() {
-		return strategy.hasNext(index, study);
+		return curStrategy.hasNext(index, study);
 	}
 
 	public void setReconstructionIndex(Point p) {
-		strategy.setReconstructionIndex(p);
+		curStrategy.setReconstructionIndex(p);
 		this.wasChanged();
+	}
+	
+	/**
+	 * ensures that the given values are within legal bounds (0 to 255) 
+	 * and sets them as the windowing intensity cutoffs
+	 * @param low lower windowing cutoff, must be less than high
+	 * @param high upper windowing cutoff, must be greater than low
+	 */
+	public void setWindow(int low, int high) {
+		low = bound(low, 0, 255);
+		high = bound(high, 0, 255);
+		lowCutoff = low;
+		highCutoff = high;
+		for(MedicalImage i : study.images){
+			i.setWindow(low, high);
+		}
+		this.wasChanged();
+	}
+
+	private int bound(int in, int low, int high){
+		if(in < low){
+			in = low;
+		} else if (in > high){
+			in = high;
+		}
+		return in;
+	}
+
+	public int getHighCutoff() {
+		return highCutoff;
+	}
+
+	public int getLowCutoff() {
+		return lowCutoff;
+	}
+
+	public DisplayStrategy getCurStrategy() {
+		return curStrategy;
 	}
 }

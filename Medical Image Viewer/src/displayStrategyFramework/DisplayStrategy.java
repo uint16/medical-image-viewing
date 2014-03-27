@@ -39,10 +39,12 @@ public interface DisplayStrategy {
 	 * Creates a panel displaying the study in the terms of the strategy
 	 * @param index the index of the image currently being displayed
 	 * @param s the study being displayed
+	 * @param low the lower windowing value
+	 * @param high the upper windowing value
 	 * @return panel containing the images specified by the strategy 
 	 * 			in the context of the current index and study
 	 */
-	public JPanel getPanel(int index, Study s);
+	public JPanel getPanel(int index, Study s, int low, int high);
 
 	/**
 	 * Given the current index, returns true if there is a valid previous index
