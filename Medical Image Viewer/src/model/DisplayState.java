@@ -14,6 +14,7 @@ import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
+import displayStrategyFramework.ReconstructionStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
 
 public class DisplayState extends Observable implements Serializable {
@@ -35,6 +36,7 @@ public class DisplayState extends Observable implements Serializable {
 		strategies.add(new FourUpStrategy());
 		strategies.add(new CoronalReconstructionStrategy());
 		strategies.add(new SagittalReconstructionStrategy());
+		strategies.add(new ReconstructionStrategy());
 		curStrategy = strategies.get(0);
 		study = s;
 		load();

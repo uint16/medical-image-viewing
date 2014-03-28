@@ -11,26 +11,16 @@ import javax.swing.JPanel;
 
 import model.MedicalImage;
 import model.Study;
-
 import view.ImagePanel;
 
-/**
- * Class representing the coronal reconstruction strategy
- * Layout is a 2x2 grid
- * top left grid is a "oneup" view of the study
- * bottom left grid is a coronal reconstruction of the study
- * 
- * @author Ethan Davidson (emd1771)
- *
- */
-public class CoronalReconstructionStrategy implements DisplayStrategy, Serializable {
-	private int reconstructionIndex;
+public class ReconstructionStrategy implements DisplayStrategy, Serializable {
+	private Point reconstructionPoint;
 	private transient ImagePanel studyPanel;
 	
-	public CoronalReconstructionStrategy(){
-		reconstructionIndex = 0;
+	public ReconstructionStrategy(){
+		reconstructionPoint = new Point(0, 0);
 	}
-
+	
 	@Override
 	public int nextIndex(int index, Study s) {
 		if(index < s.imgAmt()){
@@ -61,9 +51,35 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 		cg.setColor(Color.RED);
 		//The line is 3px wide so that it always shows, even when image scaling causes
 		//	the line of pixels at reconstructionIndex to not be shown
-		cg.fillRect(0, reconstructionIndex-1, copy.getWidth(), 3);
+		cg.fillRect(0, reconstructionPoint.y-1, copy.getWidth(), 3);
+		cg.fillRect(reconstructionPoint.x-1, 0, 3, copy.getHeight());
 		studyPanel = new ImagePanel(copy);
 		result.add(studyPanel);
+		
+		//TODO: combine these loops to optimize performance
+		//create and add sagittal reconstruction
+		BufferedImage sagittalRecon = new BufferedImage(studyImg.getHeight(), s.imgAmt(), studyImg.getType());
+		for(int i = 0; i < s.imgAmt(); i++){
+			MedicalImage tmpImg = s.getImage(i);
+			//draw the column as a row
+			for(int j = 0; j < tmpImg.getHeight(); j++){
+				int rgb = tmpImg.getRGB(reconstructionPoint.x, j);
+				try{
+					sagittalRecon.setRGB(tmpImg.getHeight()-j-1, s.imgAmt()-i-1, rgb);
+				} catch(ArrayIndexOutOfBoundsException e){
+					//Since we don't explicitly check that the subImgs all fit within the reconstruction,
+					//the setRGB may sometimes throw this exception. all it means is that a few pixels
+					//are outside the image and won't be displayed.
+					//This may occur when the images in the study aren't all the same size
+					System.err.printf("Warning: pixel out of bounds: (%d, %d)\n", tmpImg.getHeight()-j-1, s.imgAmt()-i-1);
+				}
+			}
+		}
+		//add index line to reconstruction
+		Graphics2D rg = sagittalRecon.createGraphics();
+		rg.setColor(Color.RED);
+		rg.fillRect(0, s.imgAmt()-index-1, sagittalRecon.getWidth(), 3);
+		result.add(new ImagePanel(sagittalRecon));
 		
 		//create and add coronal reconstruction
 		BufferedImage coronalRecon = new BufferedImage(studyImg.getWidth(), s.imgAmt(), studyImg.getType());
@@ -71,7 +87,7 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 		for(int i = 0; i < s.imgAmt(); i++){
 			MedicalImage tmpImg = s.getImage(i);
 			for(int j = 0; j < tmpImg.getWidth(); j++){
-				int rgb = tmpImg.getRGB(j, reconstructionIndex);
+				int rgb = tmpImg.getRGB(j, reconstructionPoint.y);
 				try{
 					coronalRecon.setRGB(j, coronalRecon.getHeight()-i-1, rgb);
 				} catch(ArrayIndexOutOfBoundsException e){
@@ -99,12 +115,12 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 
 	@Override
 	public void setReconstructionIndex(Point p) {
-		reconstructionIndex = p.y;
+		reconstructionPoint = p;
 	}
 
 	@Override
 	public Point getReconstructionIndex() {
-		return new Point(0, reconstructionIndex);
+		return reconstructionPoint;
 	}
 
 	@Override
