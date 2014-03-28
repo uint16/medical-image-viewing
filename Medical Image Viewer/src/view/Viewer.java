@@ -285,6 +285,8 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
+		// show the name of the current study in the title
+		this.setTitle(TITLE + ": " + controller.curState.getStudy().toString());
 
 		// disable/enable buttons if first or last image
 		btPrevImage.setEnabled(controller.curState.hasPrev());

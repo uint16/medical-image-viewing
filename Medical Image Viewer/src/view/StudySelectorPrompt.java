@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 
+import model.Study;
+
 import controller.StudyController;
 
 
@@ -51,7 +53,7 @@ public class StudySelectorPrompt extends JDialog {
 		contentPanel.add(lblSelectAStudy);
 		
 		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(sc.getStudies().toArray()));
+		comboBox.setModel(new DefaultComboBoxModel(sc.rootStudy.substudies.toArray()));
 		sl_contentPanel.putConstraint(SpringLayout.NORTH, comboBox, 6, SpringLayout.SOUTH, lblSelectAStudy);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, comboBox, 0, SpringLayout.WEST, lblSelectAStudy);
 		contentPanel.add(comboBox);

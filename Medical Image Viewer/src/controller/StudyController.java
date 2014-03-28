@@ -1,6 +1,5 @@
 package controller;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.prefs.Preferences;
@@ -12,12 +11,12 @@ import model.Study;
 
 import displayStrategyFramework.DisplayStrategy;
 
-import view.HomeDirPrompt;
+import view.RootDirPrompt;
 import view.StudySelectorPrompt;
 import view.UnsavedStatePrompt;
 
 /**
- * Main controller class Keeps track of the studies, the homeDir, and the
+ * Main controller class Keeps track of the root study and the
  * current state/study
  * 
  * @author Ethan Davidson (emd1771)
@@ -26,23 +25,23 @@ import view.UnsavedStatePrompt;
 public class StudyController extends Observable implements Observer {
 	public final String NODE_NAME = "MedicalImageViewer";
 	public final String INITIAL_STUDY_KEY = "INITIAL_STUDY";
+	public final String ROOT_STUDY_KEY = "ROOT_STUDY";
 	
 	private static Preferences prefs;
-	private File homeDir;
-	private ArrayList<Study> studyList;
+	private File rootDir;
+	public Study rootStudy;
 	public DisplayState curState;
 
 	public StudyController() {
-		studyList = new ArrayList<Study>();
 		prefs = Preferences.userRoot().node(NODE_NAME);
-		// If no home dir is saved, ask user where their studies are stored
-		String homeDirPath = prefs.get("HOME_DIR", null);
-		if (homeDirPath == null) {
-			new HomeDirPrompt(this);
+		// If no root dir is saved, ask user where their studies are stored
+		String rootDirPath = prefs.get(ROOT_STUDY_KEY, null);
+		if (rootDirPath == null) {
+			new RootDirPrompt(this);
 		} else {
-			homeDir = new File(homeDirPath);
+			rootDir = new File(rootDirPath);
 		}
-		// load the studies from the home dir
+		// load the studies from the root directory
 		loadStudies();
 		// if the user has saved which study to initially open, open that study
 		String savedStudy = prefs.get(INITIAL_STUDY_KEY, null);
@@ -69,10 +68,9 @@ public class StudyController extends Observable implements Observer {
 	 * @param savedStudy
 	 */
 	public void openStudy(String savedStudy) {
-		for (Study s : studyList) {
-			if (s.toString().equals(savedStudy)) {
-				openStudy(s);
-			}
+		Study s = rootStudy.findStudy(savedStudy);
+		if(s != null){
+			openStudy(s);
 		}
 	}
 
@@ -93,21 +91,10 @@ public class StudyController extends Observable implements Observer {
 	}
 
 	/**
-	 * load all the studies (directories) from the homeDir
+	 * load all the studies (directories) from the rootDir
 	 */
 	private void loadStudies() {
-		studyList.clear();
-		for (File f : homeDir.listFiles()) {
-			if (f.isDirectory()) {
-				studyList.add(new Study(f));
-			}
-		}
-
-		// if homeDir does not contain any subdirectories add current directory
-		// as study
-		if (studyList.size() == 0) {
-			studyList.add(new Study(homeDir));
-		}
+		rootStudy = new Study(rootDir);
 
 		this.setChanged();
 		this.notifyObservers();
@@ -117,17 +104,13 @@ public class StudyController extends Observable implements Observer {
 		return curState.generatePanel();
 	}
 
-	public ArrayList<Study> getStudies() {
-		return studyList;
-	}
-
 	public DisplayStrategy getCurrentMode() {
 		return curState.getCurStrategy();
 	}
 
-	public void setHomeDir(File f) {
-		prefs.put("HOME_DIR", f.toString());
-		homeDir = f;
+	public void setRootDir(File f) {
+		prefs.put(ROOT_STUDY_KEY, f.toString());
+		rootDir = f;
 	}
 
 	/**
@@ -136,7 +119,7 @@ public class StudyController extends Observable implements Observer {
 	 * @param s Name to save the study as
 	 */
 	public void saveStudyAs(String s) {
-		File newFolder = new File(homeDir.toString() + "/" + s);
+		File newFolder = new File(rootDir.toString() + "/" + s);
 		if (!newFolder.exists()) {
 			newFolder.mkdir();
 		}

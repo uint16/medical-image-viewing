@@ -18,7 +18,7 @@ import javax.swing.border.EmptyBorder;
 import controller.StudyController;
 
 
-public class HomeDirPrompt extends JDialog {
+public class RootDirPrompt extends JDialog {
 
 	/**
 	 * 
@@ -31,7 +31,7 @@ public class HomeDirPrompt extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public HomeDirPrompt(StudyController s) {
+	public RootDirPrompt(StudyController s) {
 		setModal(true);
 		this.sc = s;
 		
@@ -88,7 +88,7 @@ public class HomeDirPrompt extends JDialog {
 						String newDir = textField.getText();
 						File newDirFile = new File(newDir);
 						if (!newDir.isEmpty() && newDirFile.exists() && newDirFile.isDirectory()) {
-							sc.setHomeDir(newDirFile);
+							sc.setRootDir(newDirFile);
 							dispose();
 						}
 					}
