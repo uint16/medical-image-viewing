@@ -12,8 +12,14 @@ import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 
 public class WindowingValuesPrompt extends JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int[] selectedValues = new int[2];
-
+	private JLabel lblLowCutoff, lblHighCutoff;
+	private JSlider highSlider, lowSlider ;
+	
 	/**
 	 * Create the dialog.
 	 */
@@ -47,16 +53,17 @@ public class WindowingValuesPrompt extends JDialog {
 		springLayout.putConstraint(SpringLayout.EAST, btnCancel, -6, SpringLayout.WEST, btnSetWindowing);
 		getContentPane().add(btnCancel);
 		
-		JLabel lblLowCutoff = new JLabel("Low Cutoff");
+		lblLowCutoff = new JLabel("Low Cutoff");
 		springLayout.putConstraint(SpringLayout.NORTH, lblLowCutoff, 10, SpringLayout.NORTH, getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, lblLowCutoff, 10, SpringLayout.WEST, getContentPane());
 		getContentPane().add(lblLowCutoff);
 		
-		JSlider lowSlider = new JSlider();
+		lowSlider = new JSlider();
 		lowSlider.setValue(0);
 		lowSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
+				lblLowCutoff.setText("Low Cutoff: " + lowSlider.getValue());
 				if(!source.getValueIsAdjusting()){
 					selectedValues[0] = source.getValue();
 				}
@@ -68,18 +75,19 @@ public class WindowingValuesPrompt extends JDialog {
 		springLayout.putConstraint(SpringLayout.NORTH, lowSlider, 6, SpringLayout.SOUTH, lblLowCutoff);
 		getContentPane().add(lowSlider);
 		
-		JLabel lblHighCutoff = new JLabel("High Cutoff");
+		lblHighCutoff = new JLabel("High Cutoff");
 		springLayout.putConstraint(SpringLayout.NORTH, lblHighCutoff, 6, SpringLayout.SOUTH, lowSlider);
 		springLayout.putConstraint(SpringLayout.WEST, lblHighCutoff, 0, SpringLayout.WEST, lblLowCutoff);
 		getContentPane().add(lblHighCutoff);
 		
-		JSlider highSlider = new JSlider();
+		highSlider = new JSlider();
 		highSlider.setValue(255);
 		highSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
+				lblHighCutoff.setText("High Cutoff: " + highSlider.getValue());
 				if(!source.getValueIsAdjusting()){
-					selectedValues[1] = source.getValue();
+					selectedValues[1] = source.getValue();					
 				}
 			}
 		});

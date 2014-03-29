@@ -140,4 +140,8 @@ public class StudyController extends Observable implements Observer {
 		this.setChanged();
 		this.notifyObservers();
 	}
+
+	public File getHomeDir() {
+		return rootDir;
+	}
 }
