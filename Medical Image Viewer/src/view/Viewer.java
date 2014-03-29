@@ -398,18 +398,7 @@ public class Viewer extends JFrame implements Observer {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			ImagePanel studyPanel = controller.curState.getCurStrategy().getStudyPanel();
-			Point clicked = e.getPoint();
-			if(studyPanel.contains(clicked)){
-				//get coordinates relative to the panel
-				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
-				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedImageWidth();
-				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedImageHeight();
-				Point scaledP = new Point(scaledX, scaledY);
-				if(scaledP.x < studyPanel.getImageWidth() && scaledP.y < studyPanel.getImageHeight()){
-					invoker.add(new SetReconstructionIndex(controller.curState, scaledP));
-				}
-			}
+			mouseDragged(e);
 		}
 
 		@Override
@@ -422,8 +411,8 @@ public class Viewer extends JFrame implements Observer {
 			if(studyPanel.contains(clicked)){
 				//get coordinates relative to the panel
 				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
-				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedImageWidth();
-				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedImageHeight();
+				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedDimensions().width;
+				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedDimensions().height;
 				Point scaledP = new Point(scaledX, scaledY);
 				if(scaledP.x < studyPanel.getImageWidth() && scaledP.y < studyPanel.getImageHeight()){
 					invoker.add(new SetReconstructionIndex(controller.curState, scaledP));

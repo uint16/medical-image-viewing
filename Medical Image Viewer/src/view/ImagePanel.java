@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -26,18 +27,8 @@ public class ImagePanel extends JPanel{
 	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		//fit the image into the panel, keeping aspect ratio
-		int newWidth = img.getWidth();
-		int newHeight = img.getHeight();
-		if(img.getWidth() > this.getWidth()){
-			newWidth = this.getWidth();
-			newHeight = (newWidth * img.getHeight()) / img.getWidth();
-		}
-		if(newHeight > this.getHeight()){
-			newHeight = this.getHeight();
-			newWidth = (newHeight * img.getWidth()) / img.getHeight();
-		}
-		g.drawImage(img, 0, 0, newWidth, newHeight, null);
+		Dimension dim = getDisplayedDimensions();
+		g.drawImage(img, 0, 0, dim.width, dim.height, null);
 	}
 
 	public int getImageWidth() {
@@ -48,7 +39,7 @@ public class ImagePanel extends JPanel{
 		return img.getHeight();
 	}
 	
-	public int getDisplayedImageHeight(){
+	public Dimension getDisplayedDimensions(){
 		int newWidth = img.getWidth();
 		int newHeight = img.getHeight();
 		//fit the image into the panel, keeping aspect ratio
@@ -60,21 +51,6 @@ public class ImagePanel extends JPanel{
 			newHeight = this.getHeight();
 			newWidth = (newHeight * img.getWidth()) / img.getHeight();
 		}
-		return newHeight;
-	}
-	
-	public int getDisplayedImageWidth(){
-		int newWidth = img.getWidth();
-		int newHeight = img.getHeight();
-		//fit the image into the panel, keeping aspect ratio
-		if(img.getWidth() > this.getWidth()){
-			newWidth = this.getWidth();
-			newHeight = (newWidth * img.getHeight()) / img.getWidth();
-		}
-		if(newHeight > this.getHeight()){
-			newHeight = this.getHeight();
-			newWidth = (newHeight * img.getWidth()) / img.getHeight();
-		}
-		return newWidth;
+		return new Dimension(newWidth, newHeight);
 	}
 }
