@@ -1,13 +1,14 @@
 package view;
+
 /**
  * @author Damas Mlabwa
  * Course: Engineering of Software SubSystems, SWEN262
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,18 +19,25 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 import commandFramework.ChangeToCoronal;
 import commandFramework.ChangeToFourUp;
@@ -50,8 +58,6 @@ import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
-import javax.swing.JLayeredPane;
-import javax.swing.JSeparator;
 
 public class Viewer extends JFrame implements Observer {
 
@@ -60,41 +66,45 @@ public class Viewer extends JFrame implements Observer {
 	private JButton btNextImage, btPrevImage;
 
 	// Panels for layouts
-	private JPanel mainPanel, navigationPanel;
+	private JPanel mainPanel, navigationPanel, studiesPanel;
 
 	// Menubar and items
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
-	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode, rbCoronalViewMode, rbSagittalViewMode;
-	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit, fileUndo;
+	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode,
+			rbCoronalViewMode, rbSagittalViewMode;
+	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit,
+			fileSetInit, fileUndo;
 	private JSeparator viewSeparator;
 	private JMenuItem viewSetWindowing;
-	
+
 	// Layouts for Images and Buttons
 	private FlowLayout navigationAreaLayout = new FlowLayout();
-	
+
 	// Application container
 	private Container container;
-	
+
 	// Controller for current study
 	private StudyController controller;
-	
-	//Invoker for commands
+
+	// Invoker for commands
 	private Invoker invoker;
-	
-	//Action Listener instance
+
+	// Action Listener instance
 	private ClickListener listener = new ClickListener();
 
-	//JFrame window title
+	// JFrame window title
 	private static final String TITLE = "Medical Image Viewer";
-	
-	//ButtonGroup for display strategies
+
+	// ButtonGroup for display strategies
 	private ButtonGroup stratButtonGroup = new ButtonGroup();
-	
-	//layeredPane containing mainPanel, for catching drag events
+
+	// layeredPane containing mainPanel, for catching drag events
 	private JLayeredPane layeredPane;
-	
-	
+
+	private JTree studies;
+	FileSystemModel fs;
+
 	/**
 	 * Viewer class, Application's GUI
 	 */
@@ -120,6 +130,7 @@ public class Viewer extends JFrame implements Observer {
 
 		initComponents();
 		setMenu();
+		navigationJTree();
 		buildUI();
 		displayApplication();
 	}
@@ -132,7 +143,7 @@ public class Viewer extends JFrame implements Observer {
 		btNextImage.addActionListener(listener);
 
 		btPrevImage = new JButton("Previous");
-		btPrevImage.addActionListener(listener);	
+		btPrevImage.addActionListener(listener);
 
 		jmFile = new JMenu("File");
 		jmView = new JMenu("View");
@@ -140,8 +151,24 @@ public class Viewer extends JFrame implements Observer {
 		menubar = new JMenuBar();
 		mainPanel = new JPanel();
 		navigationPanel = new JPanel();
+		studiesPanel = new JPanel();
 
 		container.addMouseWheelListener(listener);
+	}
+
+	public void navigationJTree() {
+		fs = new FileSystemModel(controller.getHomeDir());
+		studies = new JTree(fs);
+		studies.setEditable(false);
+		studies.setRootVisible(false);
+
+		studies.addTreeSelectionListener(new TreeSelectionListener() {
+			public void valueChanged(TreeSelectionEvent event) {
+				File file = (File) studies.getLastSelectedPathComponent();
+				controller.openStudy(file.toString());
+			}
+		});
+
 	}
 
 	/**
@@ -156,10 +183,10 @@ public class Viewer extends JFrame implements Observer {
 
 		fileSave = new JMenuItem("Save");
 		fileSave.addActionListener(listener);
-		
+
 		fileSetInit = new JMenuItem("Set Initial Study");
 		fileSetInit.addActionListener(listener);
-		
+
 		fileUndo = new JMenuItem("Undo");
 		fileUndo.addActionListener(listener);
 
@@ -172,10 +199,10 @@ public class Viewer extends JFrame implements Observer {
 		viewSetWindowing = new JMenuItem("Set Windowing");
 		viewSetWindowing.addActionListener(listener);
 		jmView.add(viewSetWindowing);
-		
+
 		viewSeparator = new JSeparator();
 		jmView.add(viewSeparator);
-		
+
 		rbQuadViewMode = new JRadioButtonMenuItem("Quad View");
 		rbQuadViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbQuadViewMode);
@@ -183,11 +210,11 @@ public class Viewer extends JFrame implements Observer {
 		rbSingleViewMode = new JRadioButtonMenuItem("Single View");
 		rbSingleViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbSingleViewMode);
-		
+
 		rbCoronalViewMode = new JRadioButtonMenuItem("Coronal Reconstruction");
 		rbCoronalViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbCoronalViewMode);
-		
+
 		rbSagittalViewMode = new JRadioButtonMenuItem("Sagittal Reconstruction");
 		rbSagittalViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbSagittalViewMode);
@@ -229,9 +256,13 @@ public class Viewer extends JFrame implements Observer {
 		navigationPanel.setLayout(navigationAreaLayout);
 		navigationPanel.add(btPrevImage);
 		navigationPanel.add(btNextImage);
+		JScrollPane scrollpane = new JScrollPane(studies);
+		scrollpane.getViewport().add(studies);
+		studiesPanel.add(scrollpane);
 		container.add(navigationPanel, BorderLayout.SOUTH);
-		
-		//set up layered pane
+		container.add(studiesPanel, BorderLayout.WEST);
+
+		// set up layered pane
 		layeredPane = new JLayeredPane();
 		getContentPane().add(layeredPane, BorderLayout.CENTER);
 		layeredPane.setLayout(new BorderLayout(0, 0));
@@ -239,6 +270,185 @@ public class Viewer extends JFrame implements Observer {
 		layeredPane.addMouseMotionListener(listener);
 	}
 
+
+
+	/**
+	 * Set application size,location, and close operation
+	 */
+	public void displayApplication() {
+		//this.setSize(640, 640);
+		this.setExtendedState(Frame.MAXIMIZED_BOTH);
+		this.setLocation(100, 100);
+		this.setJMenuBar(menubar);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// get the buttons, menu items, etc to init to correct states
+		controller.notifyObservers();
+	}
+
+	/**
+	 * Observer for the Viewer
+	 */
+	@Override
+	public void update(Observable obs, Object obj) {
+
+		// disable/enable buttons if first or last image
+		btPrevImage.setEnabled(controller.curState.hasPrev());
+		btNextImage.setEnabled(controller.curState.hasNext());
+
+		// select menu item corresponding to current display strategy
+		DisplayStrategy curStrat = controller.curState.getCurStrategy();
+		if (curStrat instanceof FourUpStrategy) {
+			stratButtonGroup.setSelected(rbQuadViewMode.getModel(), true);
+		} else if (curStrat instanceof OneUpStrategy) {
+			stratButtonGroup.setSelected(rbSingleViewMode.getModel(), true);
+		} else if (curStrat instanceof CoronalReconstructionStrategy) {
+			stratButtonGroup.setSelected(rbCoronalViewMode.getModel(), true);
+		} else if (curStrat instanceof SagittalReconstructionStrategy) {
+			stratButtonGroup.setSelected(rbSagittalViewMode.getModel(), true);
+		} else {
+			System.err
+					.println("Error: Current display strategy was not recognized!");
+			stratButtonGroup.clearSelection();
+		}
+
+		// replace mainPanel with new images
+		layeredPane.remove(mainPanel);
+		mainPanel = controller.generatePanel();
+		layeredPane.add(mainPanel);
+		container.validate();
+	}
+
+	/**
+	 * 
+	 * Handle all clicks from the view
+	 * 
+	 */
+	class ClickListener implements ActionListener, MouseWheelListener,
+			MouseListener, MouseMotionListener {
+		/**
+		 * Get event and perform an action depending on clicked item
+		 */
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+
+			if (command.equals("Next")) {
+				invoker.add(new NextCommand(controller.curState));
+			} else if (command.equals("Previous")) {
+				invoker.add(new PrevCommand(controller.curState));
+			} else if (command.equals("Single View")) {
+				invoker.add(new ChangeToOneUp(controller.curState));
+			} else if (command.equals("Quad View")) {
+				invoker.add(new ChangeToFourUp(controller.curState));
+			} else if (command.equals("Coronal Reconstruction")) {
+				invoker.add(new ChangeToCoronal(controller.curState));
+			} else if (command.equals("Sagittal Reconstruction")) {
+				invoker.add(new ChangeToSagittal(controller.curState));
+			} else if (command.equals("Exit")) {
+				if (!controller.curState.saved) {
+					new UnsavedStatePrompt(controller);
+				}
+				System.exit(0);
+			} else if (command.equals("Save")) {
+				invoker.add(new SaveCommand(controller.curState));
+			} else if (command.equals("Switch Study")) {
+				invoker.add(new OpenCommand(controller));
+			} else if (command.equals("Copy")) {
+				invoker.add(new CopyStudyCommand(controller));
+			} else if (command.equals("Set Initial Study")) {
+				StudySelectorPrompt s = new StudySelectorPrompt(controller);
+				String result = s.showPrompt();
+				if (result != null) {
+					invoker.add(new SetInitialStudyCommand(controller, result));
+				}
+			} else if (command.equals("Undo")) {
+				invoker.undo();
+			} else if (command.equals("Set Windowing")) {
+				WindowingValuesPrompt wvp = new WindowingValuesPrompt();
+				int[] newCutoffs = wvp.showPrompt();
+				if (newCutoffs != null && newCutoffs.length == 2) {
+					invoker.add(new SetWindowingCommand(controller.curState,
+							newCutoffs[0], newCutoffs[1]));
+				}
+			}
+		}
+
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (e.getWheelRotation() < 0) {
+				new NextCommand(controller.curState).execute();
+			} else {
+				new PrevCommand(controller.curState).execute();
+			}
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			ImagePanel studyPanel = controller.curState.getCurStrategy()
+					.getStudyPanel();
+			Point clicked = e.getPoint();
+			if (studyPanel.contains(clicked)) {
+				// get coordinates relative to the panel
+				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y
+						- studyPanel.getY());
+				int scaledX = (p.x * studyPanel.getImageWidth())
+						/ studyPanel.getDisplayedImageWidth();
+				int scaledY = (p.y * studyPanel.getImageHeight())
+						/ studyPanel.getDisplayedImageHeight();
+				Point scaledP = new Point(scaledX, scaledY);
+				if (scaledP.x < studyPanel.getImageWidth()
+						&& scaledP.y < studyPanel.getImageHeight()) {
+					invoker.add(new SetReconstructionIndex(controller.curState,
+							scaledP));
+				}
+			}
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			ImagePanel studyPanel = controller.curState.getCurStrategy()
+					.getStudyPanel();
+			Point clicked = e.getPoint();
+			if (studyPanel.contains(clicked)) {
+				// get coordinates relative to the panel
+				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y
+						- studyPanel.getY());
+				int scaledX = (p.x * studyPanel.getImageWidth())
+						/ studyPanel.getDisplayedImageWidth();
+				int scaledY = (p.y * studyPanel.getImageHeight())
+						/ studyPanel.getDisplayedImageHeight();
+				Point scaledP = new Point(scaledX, scaledY);
+				if (scaledP.x < studyPanel.getImageWidth()
+						&& scaledP.y < studyPanel.getImageHeight()) {
+					invoker.add(new SetReconstructionIndex(controller.curState,
+							scaledP));
+				}
+			}
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+		}
+
+	}
+	
 	/**
 	 * Add accessibility text for menus and buttons
 	 */
@@ -267,162 +477,6 @@ public class Viewer extends JFrame implements Observer {
 				"Menu item for undoing the last action");
 		rbQuadViewMode.getAccessibleContext().setAccessibleDescription(
 				"Menu for enabling or disabling quad view");
-	}
-
-	/**
-	 * Set application size,location, and close operation
-	 */
-	public void displayApplication() {
-		this.setSize(640, 640);
-		this.setLocation(100, 100);
-		this.setJMenuBar(menubar);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//get the buttons, menu items, etc to init to correct states
-		controller.notifyObservers();
-	}
-
-	/**
-	 * Observer for the Viewer
-	 */
-	@Override
-	public void update(Observable obs, Object obj) {
-
-		// disable/enable buttons if first or last image
-		btPrevImage.setEnabled(controller.curState.hasPrev());
-		btNextImage.setEnabled(controller.curState.hasNext());
-		
-		//select menu item corresponding to current display strategy
-		DisplayStrategy curStrat = controller.curState.getCurStrategy();
-		if (curStrat instanceof FourUpStrategy) {
-			stratButtonGroup.setSelected(rbQuadViewMode.getModel(), true);
-		} else if (curStrat instanceof OneUpStrategy) {
-			stratButtonGroup.setSelected(rbSingleViewMode.getModel(), true);
-		} else if (curStrat instanceof CoronalReconstructionStrategy){
-			stratButtonGroup.setSelected(rbCoronalViewMode.getModel(), true);
-		} else if (curStrat instanceof SagittalReconstructionStrategy){
-			stratButtonGroup.setSelected(rbSagittalViewMode.getModel(), true);
-		} else {
-			System.err.println("Error: Current display strategy was not recognized!");
-			stratButtonGroup.clearSelection();
-		}
-
-		// replace mainPanel with new images
-		layeredPane.remove(mainPanel);
-		mainPanel = controller.generatePanel();
-		layeredPane.add(mainPanel);
-		container.validate();
-	}
-
-	/**
-	 * 
-	 * Handle all clicks from the view
-	 * 
-	 */
-	class ClickListener implements ActionListener, MouseWheelListener, MouseListener, MouseMotionListener {
-		/**
-		 * Get event and perform an action depending on clicked item
-		 */
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String command = e.getActionCommand();
-
-			if (command.equals("Next")) {
-				invoker.add(new NextCommand(controller.curState));
-			} else if (command.equals("Previous")) {
-				invoker.add(new PrevCommand(controller.curState));
-			} else if (command.equals("Single View")) {
-				invoker.add(new ChangeToOneUp(controller.curState));
-			} else if (command.equals("Quad View")) {
-				invoker.add(new ChangeToFourUp(controller.curState));
-			} else if (command.equals("Coronal Reconstruction")){
-				invoker.add(new ChangeToCoronal(controller.curState));
-			} else if (command.equals("Sagittal Reconstruction")){
-				invoker.add(new ChangeToSagittal(controller.curState));
-			} else if (command.equals("Exit")) {
-				if (!controller.curState.saved) {
-					new UnsavedStatePrompt(controller);
-				}
-				System.exit(0);
-			} else if (command.equals("Save")) {
-				invoker.add(new SaveCommand(controller.curState));
-			} else if (command.equals("Switch Study")) {
-				invoker.add(new OpenCommand(controller));
-			} else if (command.equals("Copy")){
-				invoker.add(new CopyStudyCommand(controller));
-			} else if (command.equals("Set Initial Study")){
-				StudySelectorPrompt s = new StudySelectorPrompt(controller);
-				String result = s.showPrompt();
-				if(result != null){
-					invoker.add(new SetInitialStudyCommand(controller, result));
-				}
-			} else if (command.equals("Undo")){
-				invoker.undo();
-			} else if (command.equals("Set Windowing")){
-				WindowingValuesPrompt wvp = new WindowingValuesPrompt();
-				int[] newCutoffs = wvp.showPrompt();
-				if(newCutoffs != null && newCutoffs.length == 2){
-					invoker.add(new SetWindowingCommand(controller.curState, newCutoffs[0], newCutoffs[1]));
-				}
-			}
-		}
-
-		@Override
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if (e.getWheelRotation() < 0) {
-				new NextCommand(controller.curState).execute();
-			} else {
-				new PrevCommand(controller.curState).execute();
-			}
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-
-		@Override
-		public void mouseExited(MouseEvent e) {}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			ImagePanel studyPanel = controller.curState.getCurStrategy().getStudyPanel();
-			Point clicked = e.getPoint();
-			if(studyPanel.contains(clicked)){
-				//get coordinates relative to the panel
-				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
-				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedImageWidth();
-				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedImageHeight();
-				Point scaledP = new Point(scaledX, scaledY);
-				if(scaledP.x < studyPanel.getImageWidth() && scaledP.y < studyPanel.getImageHeight()){
-					invoker.add(new SetReconstructionIndex(controller.curState, scaledP));
-				}
-			}
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {}
-
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			ImagePanel studyPanel = controller.curState.getCurStrategy().getStudyPanel();
-			Point clicked = e.getPoint();
-			if(studyPanel.contains(clicked)){
-				//get coordinates relative to the panel
-				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
-				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedImageWidth();
-				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedImageHeight();
-				Point scaledP = new Point(scaledX, scaledY);
-				if(scaledP.x < studyPanel.getImageWidth() && scaledP.y < studyPanel.getImageHeight()){
-					invoker.add(new SetReconstructionIndex(controller.curState, scaledP));
-				}
-			}
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {}
-
 	}
 
 	public static void main(String[] args) {

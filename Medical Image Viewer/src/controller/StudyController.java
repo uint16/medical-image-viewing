@@ -129,6 +129,10 @@ public class StudyController extends Observable implements Observer {
 		prefs.put("HOME_DIR", f.toString());
 		homeDir = f;
 	}
+	
+	public File getHomeDir(){
+		return homeDir;
+	}
 
 	/**
 	 * copies the current study into a new folder with the given name
