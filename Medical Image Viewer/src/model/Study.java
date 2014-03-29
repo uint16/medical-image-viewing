@@ -20,7 +20,7 @@ enum ACCEPTABLE_FILE_EXT {
  */
 public class Study {
 	public ArrayList<MedicalImage> images;
-	public ArrayList<Study> subStudies;
+	public ArrayList<Study> substudies;
 	private File folderPath;
 	private static FilenameFilter validExtFilter = new FilenameFilter() {
 		@Override
@@ -38,7 +38,7 @@ public class Study {
 	public Study(File f) {
 		folderPath = f;
 		images = loadImages(folderPath);
-		subStudies = loadStudies(folderPath);
+		substudies = loadStudies(folderPath);
 	}
 
 	/**
@@ -107,5 +107,25 @@ public class Study {
 	 */
 	public File getSaveFile(){
 		return new File(this.folderPath, "displayState");
+	}
+	
+	/**
+	 * Recursively searches for a study matching the given name
+	 * 
+	 * @param name String representation of the study to find
+	 * @return Study matching the given name
+	 */
+	public Study findStudy(String name){
+		if(this.toString().equals(name)){
+			return this;
+		} else {
+			for(Study s: substudies){
+				Study temp = s.findStudy(name);
+				if(temp != null){
+					return temp;
+				}
+			}
+			return null;
+		}
 	}
 }

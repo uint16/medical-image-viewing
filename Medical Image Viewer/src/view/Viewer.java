@@ -42,6 +42,7 @@ import javax.swing.event.TreeSelectionListener;
 import commandFramework.ChangeToCoronal;
 import commandFramework.ChangeToFourUp;
 import commandFramework.ChangeToOneUp;
+import commandFramework.ChangeToReconstruction;
 import commandFramework.ChangeToSagittal;
 import commandFramework.CopyStudyCommand;
 import commandFramework.Invoker;
@@ -57,6 +58,7 @@ import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
+import displayStrategyFramework.ReconstructionStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
 
 public class Viewer extends JFrame implements Observer {
@@ -71,10 +73,9 @@ public class Viewer extends JFrame implements Observer {
 	// Menubar and items
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
-	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode,
-			rbCoronalViewMode, rbSagittalViewMode;
-	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit,
-			fileSetInit, fileUndo;
+
+	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode, rbCoronalViewMode, rbSagittalViewMode, rbReconstructionViewMode;
+	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit, fileUndo;
 	private JSeparator viewSeparator;
 	private JMenuItem viewSetWindowing;
 
@@ -218,6 +219,10 @@ public class Viewer extends JFrame implements Observer {
 		rbSagittalViewMode = new JRadioButtonMenuItem("Sagittal Reconstruction");
 		rbSagittalViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbSagittalViewMode);
+		
+		rbReconstructionViewMode = new JRadioButtonMenuItem("Reconstruction View");
+		rbReconstructionViewMode.addActionListener(listener);
+		stratButtonGroup.add(rbReconstructionViewMode);
 
 		/*
 		 * Add file menus
@@ -237,6 +242,7 @@ public class Viewer extends JFrame implements Observer {
 		jmView.add(rbSingleViewMode);
 		jmView.add(rbCoronalViewMode);
 		jmView.add(rbSagittalViewMode);
+		jmView.add(rbReconstructionViewMode);
 
 		menubar.add(jmFile);
 		menubar.add(jmView);
@@ -291,6 +297,8 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
+		// show the name of the current study in the title
+		this.setTitle(TITLE + ": " + controller.curState.getStudy().toString());
 
 		// disable/enable buttons if first or last image
 		btPrevImage.setEnabled(controller.curState.hasPrev());
@@ -306,6 +314,8 @@ public class Viewer extends JFrame implements Observer {
 			stratButtonGroup.setSelected(rbCoronalViewMode.getModel(), true);
 		} else if (curStrat instanceof SagittalReconstructionStrategy) {
 			stratButtonGroup.setSelected(rbSagittalViewMode.getModel(), true);
+		} else if (curStrat instanceof ReconstructionStrategy){
+			stratButtonGroup.setSelected(rbReconstructionViewMode.getModel(), true);
 		} else {
 			System.err
 					.println("Error: Current display strategy was not recognized!");
@@ -345,6 +355,8 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new ChangeToCoronal(controller.curState));
 			} else if (command.equals("Sagittal Reconstruction")) {
 				invoker.add(new ChangeToSagittal(controller.curState));
+			} else if (command.equals("Reconstruction View")){
+				invoker.add(new ChangeToReconstruction(controller.curState));
 			} else if (command.equals("Exit")) {
 				if (!controller.curState.saved) {
 					new UnsavedStatePrompt(controller);
