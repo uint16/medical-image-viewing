@@ -1,5 +1,6 @@
 package controller;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.prefs.Preferences;
@@ -29,7 +30,7 @@ public class StudyController extends Observable implements Observer {
 	
 	private static Preferences prefs;
 	private File rootDir;
-	public Study rootStudy;
+	private Study rootStudy;
 	public DisplayState curState;
 
 	public StudyController() {
@@ -143,5 +144,15 @@ public class StudyController extends Observable implements Observer {
 
 	public File getHomeDir() {
 		return rootDir;
+	}
+	
+	/**
+	 * returns a list of all the studies inside the root study
+	 * doesn't include the root study (because it isn't a real study)
+	 * 
+	 * @return ArrayList<Study>
+	 */
+	public ArrayList<Study> getStudies(){
+		return rootStudy.getStudies();
 	}
 }

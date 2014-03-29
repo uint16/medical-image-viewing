@@ -111,12 +111,13 @@ public class Study {
 	
 	/**
 	 * Recursively searches for a study matching the given name
+	 * Doesn't include empty (organizational) studies
 	 * 
 	 * @param name String representation of the study to find
 	 * @return Study matching the given name
 	 */
 	public Study findStudy(String name){
-		if(this.toString().equals(name)){
+		if(this.toString().equals(name) && this.hasImages()){
 			return this;
 		} else {
 			for(Study s: substudies){
@@ -127,5 +128,27 @@ public class Study {
 			}
 			return null;
 		}
+	}
+	
+	public boolean hasImages() {
+		return this.images.size() > 0;
+	}
+
+	/**
+	 * recursively constructs a list of all the studies contained in this root study
+	 * only includes studies if they contain images
+	 * doesn't include empty (organizational) studies
+	 * 
+	 * @return ArrayList<Study>
+	 */
+	public ArrayList<Study> getStudies(){
+		ArrayList<Study> result = new ArrayList<Study>();
+		if(this.hasImages()){
+			result.add(this);
+		}
+		for(Study s: substudies){
+			result.addAll(s.getStudies());
+		}
+		return result;
 	}
 }

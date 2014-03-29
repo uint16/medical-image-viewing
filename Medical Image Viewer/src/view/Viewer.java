@@ -166,7 +166,9 @@ public class Viewer extends JFrame implements Observer {
 		studies.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent event) {
 				File file = (File) studies.getLastSelectedPathComponent();
-				controller.openStudy(file.toString());
+				if(file.isDirectory()){
+					controller.openStudy(file.toString());
+				}
 			}
 		});
 
