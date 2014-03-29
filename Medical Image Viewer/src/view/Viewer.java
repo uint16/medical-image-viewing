@@ -377,7 +377,9 @@ public class Viewer extends JFrame implements Observer {
 			} else if (command.equals("Undo")) {
 				invoker.undo();
 			} else if (command.equals("Set Windowing")) {
-				WindowingValuesPrompt wvp = new WindowingValuesPrompt();
+				int curLow = controller.curState.getLowCutoff();
+				int curHigh = controller.curState.getHighCutoff();
+				WindowingValuesPrompt wvp = new WindowingValuesPrompt(curLow, curHigh);
 				int[] newCutoffs = wvp.showPrompt();
 				if (newCutoffs != null && newCutoffs.length == 2) {
 					invoker.add(new SetWindowingCommand(controller.curState,

@@ -23,7 +23,7 @@ public class WindowingValuesPrompt extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public WindowingValuesPrompt() {
+	public WindowingValuesPrompt(int curLow, int curHigh) {
 		setMaximumSize(new Dimension(275, 2147483647));
 		setMinimumSize(new Dimension(275, 0));
 		setLocationByPlatform(true);
@@ -59,7 +59,6 @@ public class WindowingValuesPrompt extends JDialog {
 		getContentPane().add(lblLowCutoff);
 		
 		lowSlider = new JSlider();
-		lowSlider.setValue(0);
 		lowSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
@@ -69,9 +68,10 @@ public class WindowingValuesPrompt extends JDialog {
 				}
 			}
 		});
+		lowSlider.setMaximum(255);
+		lowSlider.setValue(curLow);
 		springLayout.putConstraint(SpringLayout.WEST, lowSlider, 10, SpringLayout.WEST, getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, lowSlider, -10, SpringLayout.EAST, getContentPane());
-		lowSlider.setMaximum(255);
 		springLayout.putConstraint(SpringLayout.NORTH, lowSlider, 6, SpringLayout.SOUTH, lblLowCutoff);
 		getContentPane().add(lowSlider);
 		
@@ -81,7 +81,6 @@ public class WindowingValuesPrompt extends JDialog {
 		getContentPane().add(lblHighCutoff);
 		
 		highSlider = new JSlider();
-		highSlider.setValue(255);
 		highSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
@@ -91,9 +90,10 @@ public class WindowingValuesPrompt extends JDialog {
 				}
 			}
 		});
+		highSlider.setMaximum(255);
+		highSlider.setValue(curHigh);
 		springLayout.putConstraint(SpringLayout.WEST, highSlider, 10, SpringLayout.WEST, getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, highSlider, -10, SpringLayout.EAST, getContentPane());
-		highSlider.setMaximum(255);
 		springLayout.putConstraint(SpringLayout.NORTH, highSlider, 6, SpringLayout.SOUTH, lblHighCutoff);
 		getContentPane().add(highSlider);
 	}
