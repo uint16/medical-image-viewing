@@ -6,9 +6,8 @@ import model.DisplayState;
 
 
 
-public class SetReconstructionIndex implements UndoableCommand {
+public class SetReconstructionIndex implements Command {
 	private DisplayState state;
-	private Point prevIndex;
 	private Point newIndex;
 	
 	public SetReconstructionIndex(DisplayState ds, Point p){
@@ -19,12 +18,6 @@ public class SetReconstructionIndex implements UndoableCommand {
 
 	@Override
 	public void execute() {
-		prevIndex = state.getCurStrategy().getReconstructionIndex();
 		state.setReconstructionIndex(newIndex);
-	}
-	
-	@Override
-	public void undo() {
-		state.setReconstructionIndex(prevIndex);
 	}
 }
