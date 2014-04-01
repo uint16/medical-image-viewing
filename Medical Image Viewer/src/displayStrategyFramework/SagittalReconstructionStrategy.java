@@ -48,7 +48,7 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 		MedicalImage studyImg = s.getImage(index);
 		BufferedImage copy = studyImg.getImageCopy();
 		Graphics2D cg = copy.createGraphics();
-		cg.setColor(Color.RED);
+		cg.setColor(Color.GREEN);
 		//The line is 3px wide so that it always shows, even when image scaling causes
 		//	the line of pixels at reconstructionIndex to not be shown
 		cg.fillRect(reconstructionIndex-1, 0, 3, copy.getHeight());
@@ -75,7 +75,7 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 		}
 		//add index line to reconstruction
 		Graphics2D rg = recon.createGraphics();
-		rg.setColor(Color.RED);
+		rg.setColor(Color.GREEN);
 		rg.fillRect(0, s.imgAmt()-index-1, recon.getWidth(), 3);
 		result.add(new ImagePanel(recon));
 		
