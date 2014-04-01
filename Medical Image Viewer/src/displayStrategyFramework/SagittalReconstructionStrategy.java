@@ -42,7 +42,7 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 	@Override
 	public JPanel getPanel(int index, Study s, int low, int high) {
 		JPanel result = new JPanel();
-		result.setLayout(new GridLayout(2, 2));
+		result.setLayout(new GridLayout(1, 2));
 		
 		//add study image with line showing reconstructionIndex
 		MedicalImage studyImg = s.getImage(index);
