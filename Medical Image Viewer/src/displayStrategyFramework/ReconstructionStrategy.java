@@ -120,11 +120,6 @@ public class ReconstructionStrategy implements DisplayStrategy, Serializable {
 	}
 
 	@Override
-	public Point getReconstructionIndex() {
-		return reconstructionPoint;
-	}
-
-	@Override
 	public ImagePanel getStudyPanel() {
 		return studyPanel;
 	}

@@ -13,6 +13,15 @@ import model.MedicalImage;
 import model.Study;
 import view.ImagePanel;
 
+/**
+ * Class representing the sagittal reconstruction strategy
+ * Layout is a 2x2 grid
+ * top left grid is a "oneup" view of the study
+ * top right grid is a sagittal reconstruction of the study
+ * 
+ * @author Ethan Davidson (emd1771)
+ *
+ */
 public class SagittalReconstructionStrategy implements DisplayStrategy, Serializable {
 	private int reconstructionIndex;
 	private transient ImagePanel studyPanel;
@@ -95,11 +104,6 @@ public class SagittalReconstructionStrategy implements DisplayStrategy, Serializ
 	@Override
 	public void setReconstructionIndex(Point p) {
 		reconstructionIndex = p.x;
-	}
-
-	@Override
-	public Point getReconstructionIndex() {
-		return new Point(reconstructionIndex, 0);
 	}
 
 	@Override

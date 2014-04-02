@@ -103,11 +103,6 @@ public class CoronalReconstructionStrategy implements DisplayStrategy, Serializa
 	}
 
 	@Override
-	public Point getReconstructionIndex() {
-		return new Point(0, reconstructionIndex);
-	}
-
-	@Override
 	public ImagePanel getStudyPanel() {
 		return studyPanel;
 	}

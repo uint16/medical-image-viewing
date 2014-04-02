@@ -63,11 +63,6 @@ public class OneUpStrategy implements DisplayStrategy, Serializable {
 	}
 
 	@Override
-	public Point getReconstructionIndex() {
-		return new Point(0, 0);
-	}
-
-	@Override
 	public ImagePanel getStudyPanel() {
 		return studyPanel;
 	}

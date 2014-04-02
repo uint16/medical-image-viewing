@@ -65,14 +65,6 @@ public interface DisplayStrategy {
 	public void setReconstructionIndex(Point p);
 
 	/**
-	 * Gets the reconstruction index
-	 * Since the strategies only keep one int for whichever axis they use, one value in the point will be 0
-	 * for strategies that don't display a reconstruction, this method returns Point(0, 0)
-	 * @return
-	 */
-	public Point getReconstructionIndex();
-
-	/**
 	 * Gets the panel displaying the "study" image
 	 * for strategies that don't display a reconstruction, this method returns the top left panel
 	 * @return
