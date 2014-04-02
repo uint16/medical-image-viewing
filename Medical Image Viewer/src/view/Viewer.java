@@ -9,14 +9,10 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -51,7 +47,6 @@ import commandFramework.OpenCommand;
 import commandFramework.PrevCommand;
 import commandFramework.SaveCommand;
 import commandFramework.SetInitialStudyCommand;
-import commandFramework.SetReconstructionIndex;
 import commandFramework.SetWindowingCommand;
 import controller.StudyController;
 import displayStrategyFramework.CoronalReconstructionStrategy;
@@ -125,9 +120,9 @@ public class Viewer extends JFrame implements Observer {
 		});
 		container = getContentPane();
 
-		controller = new StudyController();
-		controller.addObserver(this);
 		invoker = new Invoker();
+		controller = new StudyController(invoker);
+		controller.addObserver(this);
 
 		initComponents();
 		setMenu();
@@ -154,7 +149,7 @@ public class Viewer extends JFrame implements Observer {
 		navigationPanel = new JPanel();
 		studiesPanel = new JPanel();
 
-		container.addMouseWheelListener(listener);
+		container.addMouseWheelListener(controller);
 	}
 
 	public void navigationJTree() {
@@ -258,7 +253,7 @@ public class Viewer extends JFrame implements Observer {
 		// receive panel from the display state
 		mainPanel = controller.generatePanel();
 		mainPanel.addMouseListener(listener);
-		mainPanel.addMouseMotionListener(listener);
+		mainPanel.addMouseMotionListener(controller);
 
 		// complete other UI elements
 		navigationPanel.setLayout(navigationAreaLayout);
@@ -275,7 +270,7 @@ public class Viewer extends JFrame implements Observer {
 		getContentPane().add(layeredPane, BorderLayout.CENTER);
 		layeredPane.setLayout(new BorderLayout(0, 0));
 		layeredPane.addMouseListener(listener);
-		layeredPane.addMouseMotionListener(listener);
+		layeredPane.addMouseMotionListener(controller);
 	}
 
 
@@ -336,8 +331,7 @@ public class Viewer extends JFrame implements Observer {
 	 * Handle all clicks from the view
 	 * 
 	 */
-	class ClickListener implements ActionListener, MouseWheelListener,
-			MouseListener, MouseMotionListener {
+	class ClickListener implements ActionListener, MouseListener {
 		/**
 		 * Get event and perform an action depending on clicked item
 		 */
@@ -391,15 +385,6 @@ public class Viewer extends JFrame implements Observer {
 		}
 
 		@Override
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if (e.getWheelRotation() < 0) {
-				new NextCommand(controller.curState).execute();
-			} else {
-				new PrevCommand(controller.curState).execute();
-			}
-		}
-
-		@Override
 		public void mouseClicked(MouseEvent e) {
 		}
 
@@ -413,34 +398,11 @@ public class Viewer extends JFrame implements Observer {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			mouseDragged(e);
+			controller.mouseDragged(e);
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-		}
-
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			ImagePanel studyPanel = controller.curState.getCurStrategy()
-					.getStudyPanel();
-			Point clicked = e.getPoint();
-			if(studyPanel.contains(clicked)){
-				//get coordinates relative to the panel
-				Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
-				int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedDimensions().width;
-				int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedDimensions().height;
-				Point scaledP = new Point(scaledX, scaledY);
-				if (scaledP.x < studyPanel.getImageWidth()
-						&& scaledP.y < studyPanel.getImageHeight()) {
-					invoker.add(new SetReconstructionIndex(controller.curState,
-							scaledP));
-				}
-			}
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {
 		}
 
 	}

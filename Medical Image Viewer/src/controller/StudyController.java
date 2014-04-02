@@ -1,4 +1,9 @@
 package controller;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -7,11 +12,17 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JPanel;
 
+import commandFramework.Invoker;
+import commandFramework.NextCommand;
+import commandFramework.PrevCommand;
+import commandFramework.SetReconstructionIndex;
+
 import model.DisplayState;
 import model.Study;
 
 import displayStrategyFramework.DisplayStrategy;
 
+import view.ImagePanel;
 import view.RootDirPrompt;
 import view.StudySelectorPrompt;
 import view.UnsavedStatePrompt;
@@ -23,7 +34,7 @@ import view.UnsavedStatePrompt;
  * @author Ethan Davidson (emd1771)
  * 
  */
-public class StudyController extends Observable implements Observer {
+public class StudyController extends Observable implements Observer, MouseMotionListener, MouseWheelListener {
 	public final String NODE_NAME = "MedicalImageViewer";
 	public final String INITIAL_STUDY_KEY = "INITIAL_STUDY";
 	public final String ROOT_STUDY_KEY = "ROOT_STUDY";
@@ -32,8 +43,10 @@ public class StudyController extends Observable implements Observer {
 	private File rootDir;
 	private Study rootStudy;
 	public DisplayState curState;
+	private Invoker invoker;
 
-	public StudyController() {
+	public StudyController(Invoker i) {
+		invoker = i;
 		prefs = Preferences.userRoot().node(NODE_NAME);
 		// If no root dir is saved, ask user where their studies are stored
 		String rootDirPath = prefs.get(ROOT_STUDY_KEY, null);
@@ -154,5 +167,38 @@ public class StudyController extends Observable implements Observer {
 	 */
 	public ArrayList<Study> getStudies(){
 		return rootStudy.getStudies();
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		ImagePanel studyPanel = curState.getCurStrategy().getStudyPanel();
+		Point clicked = e.getPoint();
+		if(studyPanel.contains(clicked)){
+			//get coordinates relative to the panel
+			Point p = new Point(clicked.x - studyPanel.getX(), clicked.y - studyPanel.getY());
+			int scaledX = (p.x*studyPanel.getImageWidth())/studyPanel.getDisplayedDimensions().width;
+			int scaledY = (p.y*studyPanel.getImageHeight())/studyPanel.getDisplayedDimensions().height;
+			Point scaledP = new Point(scaledX, scaledY);
+			if (scaledP.x < studyPanel.getImageWidth()
+					&& scaledP.y < studyPanel.getImageHeight()) {
+				invoker.add(new SetReconstructionIndex(curState, scaledP));
+			}
+		}
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		if (e.getWheelRotation() < 0) {
+			new NextCommand(curState).execute();
+		} else {
+			new PrevCommand(curState).execute();
+		}
 	}
 }
