@@ -151,4 +151,8 @@ public class Study {
 		}
 		return result;
 	}
+
+	public File getFolderPath() {
+		return folderPath;
+	}
 }

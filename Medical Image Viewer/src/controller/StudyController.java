@@ -120,7 +120,7 @@ public class StudyController extends Observable implements Observer {
 	 * @param s Name to save the study as
 	 */
 	public void saveStudyAs(String s) {
-		File newFolder = new File(rootDir.toString() + "/" + s);
+		File newFolder = new File(curState.getStudy().getFolderPath().getParent() + "/" + s);
 		if (!newFolder.exists()) {
 			newFolder.mkdir();
 		}
