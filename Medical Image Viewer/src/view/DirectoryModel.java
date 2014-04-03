@@ -50,31 +50,7 @@ public class DirectoryModel extends DefaultTreeModel implements
 
 	}
 
-	class DirectoryRenderer extends DefaultTreeCellRenderer {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public Component getTreeCellRendererComponent(JTree tree, Object value,
-				boolean sel, boolean expanded, boolean leaf, int row,
-				boolean hasFocus) {
-			JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value,
-					sel, expanded, leaf, row, hasFocus);
-			Object userObject = ((DefaultMutableTreeNode) value)
-					.getUserObject();
-			if (userObject instanceof File) {
-				String name = ((File) userObject).getName();
-				if (name.trim().equals("")) {
-					l.setText(((File) userObject).toString());
-				} else {
-					l.setText(((File) userObject).getName());
-				}
-			}
-			return l;
-		}
-	}
 
 	@Override
 	public void treeWillExpand(TreeExpansionEvent e) throws ExpandVetoException {
@@ -112,5 +88,31 @@ public class DirectoryModel extends DefaultTreeModel implements
 			((DefaultMutableTreeNode) node).add(new DefaultMutableTreeNode());
 		}
 
+	}
+	
+	class DirectoryRenderer extends DefaultTreeCellRenderer {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public Component getTreeCellRendererComponent(JTree tree, Object value,
+				boolean sel, boolean expanded, boolean leaf, int row,
+				boolean hasFocus) {
+			JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value,
+					sel, expanded, leaf, row, hasFocus);
+			Object userObject = ((DefaultMutableTreeNode) value)
+					.getUserObject();
+			if (userObject instanceof File) {
+				String name = ((File) userObject).getName();
+				if (name.trim().equals("")) {
+					l.setText(((File) userObject).toString());
+				} else {
+					l.setText(((File) userObject).getName());
+				}
+			}
+			return l;
+		}
 	}
 }

@@ -158,6 +158,7 @@ public class Viewer extends JFrame implements Observer {
 		model = new DirectoryModel(controller.getHomeDir());
 		studies = new JTree(model);
 		studies.setCellRenderer(model.new DirectoryRenderer());
+		studies.addTreeWillExpandListener(model);
 		studies.setEditable(false);
 		studies.setRootVisible(false);
 		
