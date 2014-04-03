@@ -1,9 +1,5 @@
 package model;
 import java.awt.Point;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -27,7 +23,8 @@ public class DisplayState extends Observable implements Serializable {
 	public transient boolean saved;
 
 	public DisplayState(Study s) {
-		saved = false;
+		//The initial state is technically a saved state, just hardcoded instead of serialized
+		saved = true;
 		index = 0;
 		highCutoff = 255;
 		lowCutoff = 0;
@@ -39,11 +36,14 @@ public class DisplayState extends Observable implements Serializable {
 		strategies.add(new ReconstructionStrategy());
 		curStrategy = strategies.get(0);
 		study = s;
-		load();
 	}
 	
 	public Study getStudy() {
 		return study;
+	}
+	
+	public void setStudy(Study s) {
+		this.study = s;
 	}
 
 	/**
@@ -71,40 +71,6 @@ public class DisplayState extends Observable implements Serializable {
 	 */
 	public JPanel generatePanel(){
 		return curStrategy.getPanel(index, study, lowCutoff, getHighCutoff());
-	}
-	
-	/**
-	 * loads the display state from the text file in the study folder
-	 * This should really be refactored out of this class, but that would be 
-	 * more trouble than it's worth at this point
-	 */
-	private void load(){
-		File saveFile = study.getSaveFile();
-		boolean loadSuccess = true;
-		
-		if (saveFile.exists()) {
-			try {
-				FileInputStream fis = new FileInputStream(saveFile);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				DisplayState ds = (DisplayState) ois.readObject();
-				this.index = ds.index;
-				this.strategies = ds.strategies;
-				this.setStrategy(ds.curStrategy);
-				this.setWindow(ds.lowCutoff, ds.getHighCutoff());
-				
-				ois.close();
-				fis.close();
-			} catch (IOException e) {
-				System.err.println("Error loading display state: " + saveFile.toString());
-				loadSuccess = false;
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				loadSuccess = false;
-			}
-		}
-		if(loadSuccess){	//if we loaded successfully, we are starting in a saved state
-			saved = true;
-		}
 	}
 	
 	/**

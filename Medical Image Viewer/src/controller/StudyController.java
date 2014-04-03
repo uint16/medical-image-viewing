@@ -5,6 +5,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -90,15 +93,41 @@ public class StudyController extends Observable implements Observer, MouseMotion
 
 	/**
 	 * Given a reference to a study, open that study
+	 * If the currently open study isn't saved, ask the user if they want to save it,
+	 * then load the serialized display state from the file in the study folder.
+	 * If the state can't be loaded, initialize a new state
 	 * 
 	 * @param s
 	 */
 	private void openStudy(Study s) {
-		if (curState != null && !curState.saved) { // curState is null when
+		if (curState != null && !curState.saved) {	// curState is null when
 													// loading the first study
 			new UnsavedStatePrompt(this);
 		}
-		curState = new DisplayState(s);
+		File saveFile = s.getSaveFile();
+		boolean loadSuccess = false;
+		
+		if (saveFile.exists()) {
+			try {
+				FileInputStream fis = new FileInputStream(saveFile);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				curState = (DisplayState) ois.readObject();
+				curState.setStudy(s);
+				ois.close();
+				fis.close();
+				loadSuccess = true;
+			} catch (IOException e) {
+				System.err.println("Error loading display state: " + saveFile.toString());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		if(loadSuccess){	//if we loaded successfully, we are starting in a saved state
+			curState.saved = true;
+		} else {
+			curState = new DisplayState(s);
+		}
+		
 		curState.addObserver(this);
 		this.setChanged();
 		this.notifyObservers();
