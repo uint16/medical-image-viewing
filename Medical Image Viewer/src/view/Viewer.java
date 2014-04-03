@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -48,6 +47,7 @@ import commandFramework.PrevCommand;
 import commandFramework.SaveCommand;
 import commandFramework.SetInitialStudyCommand;
 import commandFramework.SetWindowingCommand;
+
 import controller.StudyController;
 import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
@@ -99,7 +99,8 @@ public class Viewer extends JFrame implements Observer {
 	private JLayeredPane layeredPane;
 
 	private JTree studies;
-	FileSystemModel fs;
+	DirectoryModel model;
+	
 
 	/**
 	 * Viewer class, Application's GUI
@@ -153,17 +154,19 @@ public class Viewer extends JFrame implements Observer {
 	}
 
 	public void navigationJTree() {
-		fs = new FileSystemModel(controller.getHomeDir());
-		studies = new JTree(fs);
+		//fs = new FileSystemModel(controller.getHomeDir());
+		model = new DirectoryModel(controller.getHomeDir());
+		studies = new JTree(model);
+		studies.setCellRenderer(model.new DirectoryRenderer());
 		studies.setEditable(false);
 		studies.setRootVisible(false);
+		
 
 		studies.addTreeSelectionListener(new TreeSelectionListener() {
-			public void valueChanged(TreeSelectionEvent event) {
-				File file = (File) studies.getLastSelectedPathComponent();
-				if(file.isDirectory()){
-					controller.openStudy(file.toString());
-				}
+			public void valueChanged(TreeSelectionEvent e) {
+				String[] path = e.getPath().getLastPathComponent().toString().split(System.getProperty("file.separator"));
+				String study_name = path[path.length-1];
+				controller.openStudy(study_name);
 			}
 		});
 
@@ -318,7 +321,7 @@ public class Viewer extends JFrame implements Observer {
 					.println("Error: Current display strategy was not recognized!");
 			stratButtonGroup.clearSelection();
 		}
-
+		
 		// replace mainPanel with new images
 		layeredPane.remove(mainPanel);
 		mainPanel = controller.generatePanel();
@@ -364,6 +367,7 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new OpenCommand(controller));
 			} else if (command.equals("Copy")) {
 				invoker.add(new CopyStudyCommand(controller));
+				model.reload();
 			} else if (command.equals("Set Initial Study")) {
 				StudySelectorPrompt s = new StudySelectorPrompt(controller);
 				String result = s.showPrompt();
