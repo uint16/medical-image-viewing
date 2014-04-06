@@ -71,8 +71,10 @@ public class Viewer extends JFrame implements Observer {
 	private JMenu jmFile, jmView, jmHelp;
 	private JMenuBar menubar;
 
-	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode, rbCoronalViewMode, rbSagittalViewMode, rbReconstructionViewMode;
-	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit, fileSetInit, fileUndo;
+	private JRadioButtonMenuItem rbQuadViewMode, rbSingleViewMode,
+			rbCoronalViewMode, rbSagittalViewMode, rbReconstructionViewMode;
+	private JMenuItem fileSwitchStudy, fileSave, fileCopy, fileExit,
+			fileSetInit, fileUndo;
 	private JSeparator viewSeparator;
 	private JMenuItem viewSetWindowing;
 
@@ -102,7 +104,6 @@ public class Viewer extends JFrame implements Observer {
 
 	private JTree studies;
 	DirectoryModel model;
-	
 
 	/**
 	 * Viewer class, Application's GUI
@@ -156,7 +157,7 @@ public class Viewer extends JFrame implements Observer {
 	}
 
 	public void navigationJTree() {
-		//fs = new FileSystemModel(controller.getHomeDir());
+		// fs = new FileSystemModel(controller.getHomeDir());
 		model = new DirectoryModel(controller.getHomeDir());
 		studies = new JTree(model);
 		studies.setCellRenderer(model.new DirectoryRenderer());
@@ -166,7 +167,8 @@ public class Viewer extends JFrame implements Observer {
 
 		studies.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
-				String study_name = FilenameUtils.getName(e.getPath().getLastPathComponent().toString());
+				String study_name = FilenameUtils.getName(e.getPath()
+						.getLastPathComponent().toString());
 				controller.openStudy(study_name);
 
 				studies.expandPath(e.getPath());
@@ -222,8 +224,9 @@ public class Viewer extends JFrame implements Observer {
 		rbSagittalViewMode = new JRadioButtonMenuItem("Sagittal Reconstruction");
 		rbSagittalViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbSagittalViewMode);
-		
-		rbReconstructionViewMode = new JRadioButtonMenuItem("Reconstruction View");
+
+		rbReconstructionViewMode = new JRadioButtonMenuItem(
+				"Reconstruction View");
 		rbReconstructionViewMode.addActionListener(listener);
 		stratButtonGroup.add(rbReconstructionViewMode);
 
@@ -279,13 +282,11 @@ public class Viewer extends JFrame implements Observer {
 		layeredPane.addMouseMotionListener(controller);
 	}
 
-
-
 	/**
 	 * Set application size,location, and close operation
 	 */
 	public void displayApplication() {
-		//this.setSize(640, 640);
+		// this.setSize(640, 640);
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		this.setLocation(100, 100);
 		this.setJMenuBar(menubar);
@@ -300,7 +301,7 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
-		
+
 		// show the name of the current study in the title
 		this.setTitle(TITLE + ": " + controller.curState.getStudy().toString());
 
@@ -318,14 +319,15 @@ public class Viewer extends JFrame implements Observer {
 			stratButtonGroup.setSelected(rbCoronalViewMode.getModel(), true);
 		} else if (curStrat instanceof SagittalReconstructionStrategy) {
 			stratButtonGroup.setSelected(rbSagittalViewMode.getModel(), true);
-		} else if (curStrat instanceof ReconstructionStrategy){
-			stratButtonGroup.setSelected(rbReconstructionViewMode.getModel(), true);
+		} else if (curStrat instanceof ReconstructionStrategy) {
+			stratButtonGroup.setSelected(rbReconstructionViewMode.getModel(),
+					true);
 		} else {
 			System.err
 					.println("Error: Current display strategy was not recognized!");
 			stratButtonGroup.clearSelection();
 		}
-		
+
 		// replace mainPanel with new images
 		layeredPane.remove(mainPanel);
 		mainPanel = controller.generatePanel();
@@ -358,7 +360,7 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new ChangeToCoronal(controller.curState));
 			} else if (command.equals("Sagittal Reconstruction")) {
 				invoker.add(new ChangeToSagittal(controller.curState));
-			} else if (command.equals("Reconstruction View")){
+			} else if (command.equals("Reconstruction View")) {
 				invoker.add(new ChangeToReconstruction(controller.curState));
 			} else if (command.equals("Exit")) {
 				if (!controller.curState.saved) {
@@ -371,7 +373,7 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new OpenCommand(controller));
 			} else if (command.equals("Copy")) {
 				invoker.add(new CopyStudyCommand(controller));
-				
+
 			} else if (command.equals("Set Initial Study")) {
 				StudySelectorPrompt s = new StudySelectorPrompt(controller);
 				String result = s.showPrompt();
@@ -383,7 +385,8 @@ public class Viewer extends JFrame implements Observer {
 			} else if (command.equals("Set Windowing")) {
 				int curLow = controller.curState.getLowCutoff();
 				int curHigh = controller.curState.getHighCutoff();
-				WindowingValuesPrompt wvp = new WindowingValuesPrompt(curLow, curHigh);
+				WindowingValuesPrompt wvp = new WindowingValuesPrompt(curLow,
+						curHigh);
 				int[] newCutoffs = wvp.showPrompt();
 				if (newCutoffs != null && newCutoffs.length == 2) {
 					invoker.add(new SetWindowingCommand(controller.curState,
@@ -414,7 +417,7 @@ public class Viewer extends JFrame implements Observer {
 		}
 
 	}
-	
+
 	/**
 	 * Add accessibility text for menus and buttons
 	 */
