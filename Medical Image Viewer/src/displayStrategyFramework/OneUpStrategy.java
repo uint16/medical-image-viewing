@@ -7,7 +7,6 @@ import java.io.Serializable;
 import javax.swing.JPanel;
 
 import model.Study;
-
 import view.ImagePanel;
 
 /**

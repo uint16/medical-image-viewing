@@ -9,10 +9,8 @@ import java.io.Serializable;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import model.DisplayState;
 import model.MedicalImage;
 import model.Study;
-
 import view.ImagePanel;
 
 /**
