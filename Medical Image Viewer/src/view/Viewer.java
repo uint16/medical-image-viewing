@@ -34,6 +34,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import org.apache.commons.io.FilenameUtils;
+
 import commandFramework.ChangeToCoronal;
 import commandFramework.ChangeToFourUp;
 import commandFramework.ChangeToOneUp;
@@ -164,8 +166,7 @@ public class Viewer extends JFrame implements Observer {
 
 		studies.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
-				String[] path = e.getPath().getLastPathComponent().toString().split(System.getProperty("file.separator"));
-				String study_name = path[path.length-1];
+				String study_name = FilenameUtils.getName(e.getPath().getLastPathComponent().toString());
 				controller.openStudy(study_name);
 
 				studies.expandPath(e.getPath());
