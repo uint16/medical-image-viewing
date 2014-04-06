@@ -161,13 +161,14 @@ public class Viewer extends JFrame implements Observer {
 		studies.addTreeWillExpandListener(model);
 		studies.setEditable(false);
 		studies.setRootVisible(false);
-		
 
 		studies.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				String[] path = e.getPath().getLastPathComponent().toString().split(System.getProperty("file.separator"));
 				String study_name = path[path.length-1];
 				controller.openStudy(study_name);
+
+				studies.expandPath(e.getPath());
 			}
 		});
 

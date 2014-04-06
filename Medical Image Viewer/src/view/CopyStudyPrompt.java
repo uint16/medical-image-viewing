@@ -26,7 +26,7 @@ public class CopyStudyPrompt extends JDialog {
 	private JTextField textField;
 	private String result;
 	private JCheckBox subStudies;
-	private Boolean subs;
+	private Boolean subs = false;
 
 	/**
 	 * Create the dialog.

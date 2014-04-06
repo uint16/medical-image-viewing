@@ -47,9 +47,7 @@ public class DirectoryModel extends DefaultTreeModel implements
 			fileRoot.add(new DefaultMutableTreeNode());
 			root.add(fileRoot);
 		}
-
 	}
-
 
 
 	@Override
