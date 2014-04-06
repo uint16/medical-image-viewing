@@ -299,6 +299,7 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
+		
 		// show the name of the current study in the title
 		this.setTitle(TITLE + ": " + controller.curState.getStudy().toString());
 
@@ -369,6 +370,7 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new OpenCommand(controller));
 			} else if (command.equals("Copy")) {
 				invoker.add(new CopyStudyCommand(controller));
+				
 			} else if (command.equals("Set Initial Study")) {
 				StudySelectorPrompt s = new StudySelectorPrompt(controller);
 				String result = s.showPrompt();
