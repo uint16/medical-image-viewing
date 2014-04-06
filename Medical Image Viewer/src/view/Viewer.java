@@ -33,6 +33,9 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -300,6 +303,7 @@ public class Viewer extends JFrame implements Observer {
 	 */
 	@Override
 	public void update(Observable obs, Object obj) {
+		
 		// show the name of the current study in the title
 		this.setTitle(TITLE + ": " + controller.curState.getStudy().toString());
 
@@ -323,6 +327,13 @@ public class Viewer extends JFrame implements Observer {
 			System.err
 					.println("Error: Current display strategy was not recognized!");
 			stratButtonGroup.clearSelection();
+		}
+		
+		model.reload();
+
+		//expand all nodes
+		for(int i = 0; i < studies.getRowCount(); i++){
+			studies.expandRow(i);
 		}
 		
 		// replace mainPanel with new images
