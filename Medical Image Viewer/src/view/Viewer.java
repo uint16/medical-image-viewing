@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -168,7 +167,6 @@ public class Viewer extends JFrame implements Observer {
 		studies.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				String study_name = FilenameUtils.getName(e.getPath().getLastPathComponent().toString());
-				System.err.println(study_name);
 				controller.openStudy(study_name);
 
 				studies.expandPath(e.getPath());
