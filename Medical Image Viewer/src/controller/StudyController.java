@@ -161,7 +161,7 @@ public class StudyController extends Observable implements Observer, MouseMotion
 	 * 
 	 * @param s Name to save the study as
 	 */
-	public void saveStudyAs(String s) {
+	public void saveStudyAs(String s, Boolean b) {
 		File newFolder = new File(curState.getStudy().getFolderPath().getParent() + "/" + s);
 		if (!newFolder.exists()) {
 			newFolder.mkdir();
@@ -170,7 +170,14 @@ public class StudyController extends Observable implements Observer, MouseMotion
 			if (!newFolder.exists()) {
 				newFolder.mkdir();
 			}
-			curState.getStudy().copyTo(newFolder);
+			Study temp = curState.getStudy();
+			if(b){
+				temp.copyWithSubStudies(newFolder);
+			} else {				
+				temp.copyWithoutSubStudies(newFolder);
+				
+			}
+			
 		} else {
 			System.err.println("Error: can't copy study into a file: "
 					+ newFolder.toString());

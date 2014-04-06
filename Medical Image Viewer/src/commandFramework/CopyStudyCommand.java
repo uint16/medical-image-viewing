@@ -1,6 +1,6 @@
 package commandFramework;
-import controller.StudyController;
 import view.CopyStudyPrompt;
+import controller.StudyController;
 
 
 
@@ -16,8 +16,10 @@ public class CopyStudyCommand implements Command {
 	public void execute() {
 		CopyStudyPrompt csp = new CopyStudyPrompt();
 		String newName = csp.showCopyStudyPrompt();
+		Boolean subs = csp.getSubs();
+		
 		if(newName != null){
-			controller.saveStudyAs(newName);
+			controller.saveStudyAs(newName, subs);
 		}
 	}
 

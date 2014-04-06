@@ -1,5 +1,6 @@
 package model;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,11 +95,27 @@ public class Study {
 	 * a specified new folder
 	 * @param destFolder
 	 */
-	public void copyTo(File destFolder){
+	public void copyWithSubStudies(File destFolder){
 		try {
 			FileUtils.copyDirectory(folderPath, destFolder);
 		} catch (IOException e) {
 			System.err.println("Error copying study: " + folderPath + " to " + destFolder.toString());
+		}
+	}
+	
+	public void copyWithoutSubStudies(File destFolder){
+		try {
+			FileUtils.copyDirectory(folderPath, destFolder, new FileFilter(){
+
+				@Override
+				public boolean accept(File f) {
+					return !f.isDirectory();
+				}
+				
+			});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

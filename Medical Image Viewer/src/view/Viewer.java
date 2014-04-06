@@ -368,7 +368,6 @@ public class Viewer extends JFrame implements Observer {
 				invoker.add(new OpenCommand(controller));
 			} else if (command.equals("Copy")) {
 				invoker.add(new CopyStudyCommand(controller));
-				model.reload();
 			} else if (command.equals("Set Initial Study")) {
 				StudySelectorPrompt s = new StudySelectorPrompt(controller);
 				String result = s.showPrompt();
