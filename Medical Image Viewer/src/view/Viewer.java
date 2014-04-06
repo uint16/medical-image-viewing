@@ -328,6 +328,15 @@ public class Viewer extends JFrame implements Observer {
 			stratButtonGroup.clearSelection();
 		}
 
+		
+		model.reload();
+
+		//expand all nodes
+		for(int i = 0; i < studies.getRowCount(); i++){
+			studies.expandRow(i);
+		}
+		
+
 		// replace mainPanel with new images
 		layeredPane.remove(mainPanel);
 		mainPanel = controller.generatePanel();

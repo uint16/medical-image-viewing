@@ -15,20 +15,19 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JPanel;
 
+import model.DisplayState;
+import model.Study;
+import view.ImagePanel;
+import view.RootDirPrompt;
+import view.StudySelectorPrompt;
+import view.UnsavedStatePrompt;
+
 import commandFramework.Invoker;
 import commandFramework.NextCommand;
 import commandFramework.PrevCommand;
 import commandFramework.SetReconstructionIndex;
 
-import model.DisplayState;
-import model.Study;
-
 import displayStrategyFramework.DisplayStrategy;
-
-import view.ImagePanel;
-import view.RootDirPrompt;
-import view.StudySelectorPrompt;
-import view.UnsavedStatePrompt;
 
 /**
  * Main controller class Keeps track of the root study and the

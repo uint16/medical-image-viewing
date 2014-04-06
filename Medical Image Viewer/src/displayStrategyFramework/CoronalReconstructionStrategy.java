@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 
 import model.MedicalImage;
 import model.Study;
-
 import view.ImagePanel;
 
 /**

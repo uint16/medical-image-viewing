@@ -1,15 +1,16 @@
 package view;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.SpringLayout;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
+import javax.swing.SpringLayout;
 import javax.swing.event.ChangeEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Dimension;
+import javax.swing.event.ChangeListener;
 
 public class WindowingValuesPrompt extends JDialog {
 	/**

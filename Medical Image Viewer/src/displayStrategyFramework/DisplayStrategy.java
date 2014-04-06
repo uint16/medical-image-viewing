@@ -5,7 +5,6 @@ import java.awt.Point;
 import javax.swing.JPanel;
 
 import model.Study;
-
 import view.ImagePanel;
 
 /**
