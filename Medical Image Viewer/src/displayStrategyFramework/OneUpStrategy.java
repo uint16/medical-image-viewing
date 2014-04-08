@@ -14,7 +14,7 @@ import view.ImagePanel;
  * @author Ethan Davidson (emd1771)
  *
  */
-public class OneUpStrategy implements DisplayStrategy, Serializable {
+public class OneUpStrategy implements DisplayStrategy {
 	private transient ImagePanel studyPanel;
 
 	@Override

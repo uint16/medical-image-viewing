@@ -18,7 +18,7 @@ import view.ImagePanel;
  * @author Ethan Davidson (emd1771)
  *
  */
-public class FourUpStrategy implements DisplayStrategy, Serializable {
+public class FourUpStrategy implements DisplayStrategy {
 	private static int IMG_PER_PAGE = 4;
 	private transient ImagePanel studyPanel;
 	private transient static BufferedImage emptyImg;

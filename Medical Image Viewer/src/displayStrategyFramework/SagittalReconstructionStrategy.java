@@ -22,7 +22,7 @@ import view.ImagePanel;
  * @author Ethan Davidson (emd1771)
  *
  */
-public class SagittalReconstructionStrategy implements DisplayStrategy, Serializable {
+public class SagittalReconstructionStrategy implements DisplayStrategy {
 	private int reconstructionIndex;
 	private transient ImagePanel studyPanel;
 	

@@ -13,7 +13,7 @@ import model.MedicalImage;
 import model.Study;
 import view.ImagePanel;
 
-public class ReconstructionStrategy implements DisplayStrategy, Serializable {
+public class ReconstructionStrategy implements DisplayStrategy {
 	private Point reconstructionPoint;
 	private transient ImagePanel studyPanel;
 	

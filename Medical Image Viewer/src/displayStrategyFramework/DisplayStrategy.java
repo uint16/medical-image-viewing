@@ -1,6 +1,7 @@
 package displayStrategyFramework;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 import javax.swing.JPanel;
 
@@ -12,7 +13,7 @@ import view.ImagePanel;
  * @author Ethan Davidson (emd1771)
  *
  */
-public interface DisplayStrategy {
+public interface DisplayStrategy extends Serializable {
 	
 	/**
 	 * returns the next index, given the current index
