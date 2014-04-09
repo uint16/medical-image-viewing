@@ -99,7 +99,7 @@ public class StudyController extends Observable implements Observer, MouseMotion
 	 * @param s
 	 */
 	private void openStudy(Study s) {
-		if (curState != null && !curState.saved) {	// curState is null when
+		if (curState != null && !curState.isSaved()) {	// curState is null when
 													// loading the first study
 			new UnsavedStatePrompt(this);
 		}
@@ -121,10 +121,9 @@ public class StudyController extends Observable implements Observer, MouseMotion
 				e.printStackTrace();
 			}
 		}
-		if(loadSuccess){	//if we loaded successfully, we are starting in a saved state
-			curState.saved = true;
-		} else {
+		if(!loadSuccess){
 			curState = new DisplayState(s);
+			curState.save();
 		}
 		
 		curState.addObserver(this);

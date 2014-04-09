@@ -115,7 +115,7 @@ public class Viewer extends JFrame implements Observer {
 			public void windowClosing(WindowEvent arg0) {
 				// TODO: exit command? this code is copied from the exit menu
 				// item
-				if (!controller.curState.saved) {
+				if (!controller.curState.isSaved()) {
 					new UnsavedStatePrompt(controller);
 				} else {
 					System.exit(0);
@@ -372,7 +372,7 @@ public class Viewer extends JFrame implements Observer {
 			} else if (command.equals("Reconstruction View")) {
 				invoker.add(new ChangeToReconstruction(controller.curState));
 			} else if (command.equals("Exit")) {
-				if (!controller.curState.saved) {
+				if (!controller.curState.isSaved()) {
 					new UnsavedStatePrompt(controller);
 				}
 				System.exit(0);

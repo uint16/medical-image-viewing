@@ -21,7 +21,7 @@ public class DisplayState extends Observable implements Serializable {
 	private int lowCutoff;
 	private DisplayStrategy curStrategy;
 	private transient Study study;
-	public transient boolean saved;
+	private boolean saved;
 
 	public DisplayState(Study s) {
 		//The initial state is technically a saved state, just hardcoded instead of serialized
@@ -193,5 +193,22 @@ public class DisplayState extends Observable implements Serializable {
 
 	public DisplayStrategy getCurStrategy() {
 		return curStrategy;
+	}
+	
+	public void save(){
+		try{
+			saved = true;
+			FileOutputStream fileOut = new FileOutputStream(getStudy().getSaveFile());
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(this);
+			out.close();
+			fileOut.close();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public boolean isSaved() {
+		return saved;
 	}
 }
