@@ -1,4 +1,5 @@
 package commandFramework;
+
 /**
  * This interface is used by commands which are undoable
  * concrete commands that implement this interface should not be responsible for collecting user input

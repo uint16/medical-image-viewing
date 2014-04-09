@@ -1,10 +1,7 @@
 package commandFramework;
+
 import view.StudySelectorPrompt;
 import controller.StudyController;
-
-
-
-
 
 public class OpenCommand implements Command {
 	private StudyController controller;

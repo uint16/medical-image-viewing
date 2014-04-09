@@ -1,14 +1,10 @@
 package commandFramework;
 
-
-
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import model.DisplayState;
-
 
 public class SaveCommand implements Command {
 	private DisplayState dState;

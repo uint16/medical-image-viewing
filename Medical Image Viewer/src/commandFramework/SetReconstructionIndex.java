@@ -5,7 +5,6 @@ import java.awt.Point;
 import model.DisplayState;
 
 
-
 public class SetReconstructionIndex implements Command {
 	private DisplayState state;
 	private Point newIndex;

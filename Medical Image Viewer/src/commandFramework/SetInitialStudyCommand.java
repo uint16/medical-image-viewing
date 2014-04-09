@@ -1,8 +1,5 @@
 package commandFramework;
 
-
-
-
 import java.util.prefs.Preferences;
 
 import controller.StudyController;

@@ -1,9 +1,6 @@
 package commandFramework;
+
 import model.DisplayState;
-
-
-
-
 
 public class PrevCommand implements Command{
 	private DisplayState dState;

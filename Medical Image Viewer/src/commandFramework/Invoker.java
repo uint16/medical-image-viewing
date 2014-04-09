@@ -1,8 +1,7 @@
 package commandFramework;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
-
-
 
 public class Invoker {
 	private Deque<UndoableCommand> stack;
@@ -25,4 +24,7 @@ public class Invoker {
 		}
 	}
 	
+	public void clearStack(){
+		stack.clear();
+	}
 }

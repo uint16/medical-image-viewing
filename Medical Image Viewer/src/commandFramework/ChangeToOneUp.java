@@ -1,8 +1,8 @@
 package commandFramework;
+
 import model.DisplayState;
 import displayStrategyFramework.DisplayStrategy;
 import displayStrategyFramework.OneUpStrategy;
-
 
 public class ChangeToOneUp implements UndoableCommand{
 	private DisplayState dState;

@@ -1,10 +1,5 @@
 package view;
 
-/**
- * @author Damas Mlabwa
- * Course: Engineering of Software SubSystems, SWEN262
- */
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -57,6 +52,11 @@ import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
 import displayStrategyFramework.ReconstructionStrategy;
 import displayStrategyFramework.SagittalReconstructionStrategy;
+
+/**
+ * @author Damas Mlabwa
+ * Course: Engineering of Software SubSystems, SWEN262
+ */
 
 public class Viewer extends JFrame implements Observer {
 
