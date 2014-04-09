@@ -229,9 +229,9 @@ public class StudyController extends Observable implements Observer, MouseMotion
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if (e.getWheelRotation() < 0) {
-			new NextCommand(curState).execute();
+			invoker.add(new NextCommand(curState));
 		} else {
-			new PrevCommand(curState).execute();
+			invoker.add(new PrevCommand(curState));
 		}
 	}
 }
