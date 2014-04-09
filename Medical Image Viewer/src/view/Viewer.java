@@ -102,7 +102,7 @@ public class Viewer extends JFrame implements Observer {
 	// layeredPane containing mainPanel, for catching drag events
 	private JLayeredPane layeredPane;
 
-	private JTree studies;
+	private JTree studiesTree;
 	DirectoryModel model;
 
 	/**
@@ -159,19 +159,19 @@ public class Viewer extends JFrame implements Observer {
 	public void navigationJTree() {
 		// fs = new FileSystemModel(controller.getHomeDir());
 		model = new DirectoryModel(controller.getHomeDir());
-		studies = new JTree(model);
-		studies.setCellRenderer(model.new DirectoryRenderer());
-		studies.addTreeWillExpandListener(model);
-		studies.setEditable(false);
-		studies.setRootVisible(false);
+		studiesTree = new JTree(model);
+		studiesTree.setCellRenderer(model.new DirectoryRenderer());
+		studiesTree.addTreeWillExpandListener(model);
+		studiesTree.setEditable(false);
+		studiesTree.setRootVisible(false);
 
-		studies.addTreeSelectionListener(new TreeSelectionListener() {
+		studiesTree.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				String study_name = FilenameUtils.getName(e.getPath()
 						.getLastPathComponent().toString());
 				controller.openStudy(study_name);
 
-				studies.expandPath(e.getPath());
+				studiesTree.expandPath(e.getPath());
 			}
 		});
 
@@ -268,8 +268,8 @@ public class Viewer extends JFrame implements Observer {
 		navigationPanel.setLayout(navigationAreaLayout);
 		navigationPanel.add(btPrevImage);
 		navigationPanel.add(btNextImage);
-		JScrollPane scrollpane = new JScrollPane(studies);
-		scrollpane.getViewport().add(studies);
+		JScrollPane scrollpane = new JScrollPane(studiesTree);
+		scrollpane.getViewport().add(studiesTree);
 		studiesPanel.add(scrollpane);
 		container.add(navigationPanel, BorderLayout.SOUTH);
 		container.add(studiesPanel, BorderLayout.WEST);
@@ -332,8 +332,8 @@ public class Viewer extends JFrame implements Observer {
 		model.reload();
 
 		//expand all nodes
-		for(int i = 0; i < studies.getRowCount(); i++){
-			studies.expandRow(i);
+		for(int i = 0; i < studiesTree.getRowCount(); i++){
+			studiesTree.expandRow(i);
 		}
 		
 
