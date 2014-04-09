@@ -80,7 +80,6 @@ public class StudyController extends Observable implements Observer, MouseMotion
 	/**
 	 * Given a string representing the folder name of a study, open that study
 	 * i.e. create the displayState for that study and set it to current 
-	 * TODO: what do if it doesn't find the study matching the string?
 	 * 
 	 * @param savedStudy
 	 */
@@ -129,6 +128,7 @@ public class StudyController extends Observable implements Observer, MouseMotion
 		}
 		
 		curState.addObserver(this);
+		invoker.clearStack();
 		this.setChanged();
 		this.notifyObservers();
 	}
@@ -224,10 +224,7 @@ public class StudyController extends Observable implements Observer, MouseMotion
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseMoved(MouseEvent e) {}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
