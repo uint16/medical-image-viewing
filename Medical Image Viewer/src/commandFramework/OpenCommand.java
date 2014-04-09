@@ -1,22 +1,19 @@
 package commandFramework;
 
-import view.StudySelectorPrompt;
 import controller.StudyController;
 
 public class OpenCommand implements Command {
 	private StudyController controller;
+	private String studyName;
 
-	public OpenCommand(StudyController s) {
-		controller = s;
+	public OpenCommand(StudyController c, String s) {
+		controller = c;
+		studyName = s;
 	}
 
 	@Override
 	public void execute() {
-		StudySelectorPrompt s = new StudySelectorPrompt(controller);
-		String result = s.showPrompt();
-		if(result != null){
-			controller.openStudy(result);
-		}
+		controller.openStudy(studyName);
 	}
 
 }

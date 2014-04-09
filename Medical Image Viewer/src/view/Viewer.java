@@ -169,9 +169,7 @@ public class Viewer extends JFrame implements Observer {
 			public void valueChanged(TreeSelectionEvent e) {
 				String study_name = FilenameUtils.getName(e.getPath()
 						.getLastPathComponent().toString());
-				controller.openStudy(study_name);
-
-				studiesTree.expandPath(e.getPath());
+				invoker.add(new OpenCommand(controller, study_name));
 			}
 		});
 
@@ -379,7 +377,11 @@ public class Viewer extends JFrame implements Observer {
 			} else if (command.equals("Save")) {
 				invoker.add(new SaveCommand(controller.curState));
 			} else if (command.equals("Switch Study")) {
-				invoker.add(new OpenCommand(controller));
+				StudySelectorPrompt s = new StudySelectorPrompt(controller);
+				String result = s.showPrompt();
+				if(result != null){
+					invoker.add(new OpenCommand(controller, result));
+				}
 			} else if (command.equals("Copy")) {
 				invoker.add(new CopyStudyCommand(controller));
 
