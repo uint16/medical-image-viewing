@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -99,5 +98,9 @@ public class FourUpStrategy implements DisplayStrategy {
 	public ImagePanel getStudyPanel() {
 		return studyPanel;
 	}
-
+	
+	@Override
+	public String getSaveFileName() {
+		return "FourUp";
+	}
 }

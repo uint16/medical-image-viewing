@@ -1,23 +1,23 @@
 package model;
 import java.awt.Point;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Observable;
 
 import javax.swing.JPanel;
 
-import displayStrategyFramework.CoronalReconstructionStrategy;
 import displayStrategyFramework.DisplayStrategy;
-import displayStrategyFramework.FourUpStrategy;
 import displayStrategyFramework.OneUpStrategy;
-import displayStrategyFramework.ReconstructionStrategy;
-import displayStrategyFramework.SagittalReconstructionStrategy;
 
 public class DisplayState extends Observable implements Serializable {
 	private int index;
 	private int highCutoff;
 	private int lowCutoff;
-	private ArrayList<DisplayStrategy> strategies;
 	private DisplayStrategy curStrategy;
 	private transient Study study;
 	public transient boolean saved;
@@ -28,13 +28,7 @@ public class DisplayState extends Observable implements Serializable {
 		index = 0;
 		highCutoff = 255;
 		lowCutoff = 0;
-		strategies = new ArrayList<DisplayStrategy>();
-		strategies.add(new OneUpStrategy());
-		strategies.add(new FourUpStrategy());
-		strategies.add(new CoronalReconstructionStrategy());
-		strategies.add(new SagittalReconstructionStrategy());
-		strategies.add(new ReconstructionStrategy());
-		curStrategy = strategies.get(0);
+		curStrategy = new OneUpStrategy();
 		study = s;
 	}
 	
@@ -85,15 +79,52 @@ public class DisplayState extends Observable implements Serializable {
 
 	/**
 	 * sets the display mode to the given mode
-	 * @param m DisplayMode to use
+	 * if a saved instance of this mode exists, load and use that instance
+	 * otherwise, use the new (given) instance
+	 * 
+	 * @param s new instance of the displayStrategy to use
 	 */
-	public void setStrategy(DisplayStrategy m) {
-		for(int i = 0; i < strategies.size(); i++){
-			if(m.getClass() == strategies.get(i).getClass()){
-				curStrategy = strategies.get(i);
+	public void setStrategy(DisplayStrategy s) {
+		//save the current strategy before dropping it
+		saveCurStrategy();
+		
+		//attemp to load the new strategy
+		File loadFile = study.getStrategySaveFile(s);
+		boolean loadSuccess = false;
+		if (loadFile.exists()) {
+			try {
+				FileInputStream fis = new FileInputStream(loadFile);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				curStrategy = (DisplayStrategy) ois.readObject();
+				ois.close();
+				fis.close();
+				loadSuccess = true;
+			} catch (IOException e) {
+				System.err.println("Error loading display strategy: " + loadFile.toString());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 			}
 		}
+		if(!loadSuccess){
+			curStrategy = s;
+		}
 		this.wasChanged();
+	}
+	
+	/**
+	 * serializes and saves the current strategy
+	 */
+	private void saveCurStrategy(){
+		File saveFile = study.getStrategySaveFile(curStrategy);
+		try{
+			FileOutputStream fileOut = new FileOutputStream(saveFile);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(curStrategy);
+			out.close();
+			fileOut.close();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**

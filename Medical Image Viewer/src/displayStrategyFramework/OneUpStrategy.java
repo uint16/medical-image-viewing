@@ -2,7 +2,6 @@ package displayStrategyFramework;
 
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.io.Serializable;
 
 import javax.swing.JPanel;
 
@@ -64,5 +63,10 @@ public class OneUpStrategy implements DisplayStrategy {
 	@Override
 	public ImagePanel getStudyPanel() {
 		return studyPanel;
+	}
+	
+	@Override
+	public String getSaveFileName() {
+		return "OneUp";
 	}
 }

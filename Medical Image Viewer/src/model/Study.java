@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import displayStrategyFramework.DisplayStrategy;
+
 enum ACCEPTABLE_FILE_EXT {
 	JPG, JPEG, ACR
 };
@@ -124,6 +126,13 @@ public class Study {
 	 */
 	public File getSaveFile(){
 		return new File(this.folderPath, "displayState");
+	}
+	
+	/**
+	 * @return File object representing the file used to serialize this displayStrategy's state
+	 */
+	public File getStrategySaveFile(DisplayStrategy s){
+		return new File(this.folderPath, s.getSaveFileName());
 	}
 	
 	/**

@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
 
 import javax.swing.JPanel;
 
@@ -124,4 +123,8 @@ public class ReconstructionStrategy implements DisplayStrategy {
 		return studyPanel;
 	}
 
+	@Override
+	public String getSaveFileName() {
+		return "Reconstruction";
+	}
 }

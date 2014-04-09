@@ -70,4 +70,10 @@ public interface DisplayStrategy extends Serializable {
 	 * @return
 	 */
 	public ImagePanel getStudyPanel();
+	
+	/**
+	 * Returns a standard name for the strategy's save file
+	 * @return String representing the file name
+	 */
+	public String getSaveFileName();
 }
